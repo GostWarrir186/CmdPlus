@@ -17,15 +17,19 @@ enum Design {
         static let rowRadius = tileRadius - rowInset
     }
 
-    /// Окно истории в стиле Spotlight.
-    /// Считаем изнутри наружу: миниатюра → строка → окно.
+    /// Окно истории в стиле Spotlight: список слева, превью справа.
+    /// Скругления считаем изнутри наружу: миниатюра → строка → окно.
     enum History {
-        static let thumbnailSize: CGFloat = 40
+        static let windowSize = CGSize(width: 800, height: 520)
+        static let listWidth: CGFloat = 320
+        static let thumbnailSize: CGFloat = 28
         static let thumbnailRadius = Design.iconRadius(for: thumbnailSize)
-        static let rowPadding: CGFloat = 8
+        static let rowPadding: CGFloat = 6
         static let rowRadius = thumbnailRadius + rowPadding
         static let listPadding: CGFloat = 8
         static let windowRadius = rowRadius + listPadding
+        /// Картинка и текст в превью.
+        static let previewRadius: CGFloat = 10
     }
 
     /// Скругление «квадратных» иконок как у иконок Системных настроек:

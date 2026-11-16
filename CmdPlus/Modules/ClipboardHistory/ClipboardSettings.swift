@@ -44,6 +44,7 @@ final class ClipboardSettings {
         static let historyLimit = "clipboard.historyLimit"
         static let captureSecrets = "clipboard.captureSecrets"
         static let secretRetention = "clipboard.secretRetention"
+        static let pasteDirectly = "clipboard.pasteDirectly"
     }
 
     /// Сколько незакреплённых записей хранить. Закреплённые в лимит не входят.
@@ -64,6 +65,12 @@ final class ClipboardSettings {
         didSet { defaults.set(secretRetention.rawValue, forKey: Key.secretRetention) }
     }
 
+    /// Выбор записи сразу вставляет её в приложение, где вы работали
+    /// (если есть разрешение «Универсальный доступ»). Иначе — только копирует.
+    var pasteDirectly: Bool {
+        didSet { defaults.set(pasteDirectly, forKey: Key.pasteDirectly) }
+    }
+
     @ObservationIgnored private let defaults: UserDefaults
 
     /// `defaults` можно подменить — например, в тестах.
@@ -74,6 +81,7 @@ final class ClipboardSettings {
         captureSecrets = defaults.object(forKey: Key.captureSecrets) as? Bool ?? true
         secretRetention = defaults.string(forKey: Key.secretRetention)
             .flatMap(SecretRetention.init(rawValue:)) ?? .oneDay
+        pasteDirectly = defaults.object(forKey: Key.pasteDirectly) as? Bool ?? true
     }
 }
 

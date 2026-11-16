@@ -19,6 +19,30 @@ struct ClipboardSettingsView: View {
                         .foregroundStyle(.orange)
                 }
                 HistoryLimitPicker(settings: settings, store: store)
+            }
+
+            Section {
+                Toggle("Paste Directly", isOn: $settings.pasteDirectly)
+                if settings.pasteDirectly {
+                    if module.hasPasteAccess {
+                        Label("Access granted", systemImage: "checkmark.circle.fill")
+                            .foregroundStyle(.green)
+                    } else {
+                        LabeledContent {
+                            Button("Allow Access…") { module.requestPasteAccess() }
+                        } label: {
+                            Label("Accessibility permission is needed", systemImage: "exclamationmark.triangle")
+                                .foregroundStyle(.orange)
+                        }
+                    }
+                }
+            } header: {
+                Text("Pasting")
+            } footer: {
+                Text("When you choose an item, CmdPlus pastes it into the app you were working in by pressing ⌘V for you. This needs the Accessibility permission. Without it, items are only copied. Press ⌥↩ to copy without pasting.")
+            }
+
+            Section("Storage") {
                 LabeledContent("Saved Items") {
                     Text("\(store.unpinnedCount) of \(settings.historyLimit)")
                 }
@@ -68,6 +92,11 @@ struct ClipboardSettingsView: View {
         }
         .onChange(of: settings.secretRetention) {
             store.purgeExpiredSecrets()
+        }
+        // Разрешение выдают в Системных настройках — проверяем, когда пользователь вернулся.
+        .onAppear { module.refreshPasteAccess() }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+            module.refreshPasteAccess()
         }
     }
 }

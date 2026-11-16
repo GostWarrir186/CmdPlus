@@ -5,6 +5,8 @@ import SwiftUI
 struct MenuBarPanel: View {
     @Environment(ModuleManager.self) private var modules
     @Environment(\.openSettings) private var openSettings
+    /// Закрывает саму панель строки меню.
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -43,6 +45,8 @@ struct MenuBarPanel: View {
             Spacer()
 
             Button("Settings…", systemImage: "gearshape") {
+                // Панель убираем, чтобы она не висела поверх окна настроек.
+                dismiss()
                 // У приложения без Dock окно настроек нужно явно вывести на передний план.
                 NSApp.activate()
                 openSettings()

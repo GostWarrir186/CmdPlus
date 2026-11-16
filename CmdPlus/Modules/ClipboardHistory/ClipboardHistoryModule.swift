@@ -19,6 +19,13 @@ final class ClipboardHistoryModule: AppModule {
     let store: ClipboardStore
     /// `true`, если ⇧⌘V уже занято другим приложением.
     private(set) var hotKeyFailed = false
+    /// Есть ли разрешение нажимать ⌘V за пользователя. Обновляется через `refreshPasteAccess()`.
+    private(set) var hasPasteAccess = PasteSimulator.hasAccess
+
+    /// Вставка сразу включена и разрешена.
+    var canPasteDirectly: Bool {
+        settings.pasteDirectly && hasPasteAccess
+    }
 
     @ObservationIgnored private let monitor = ClipboardMonitor()
     @ObservationIgnored private var hotKey: GlobalHotKey?
@@ -83,11 +90,32 @@ final class ClipboardHistoryModule: AppModule {
     }
 
     func showPanel() {
+        refreshPasteAccess()
         store.purgeExpiredSecrets()
         if panelController == nil {
             panelController = HistoryPanelController(module: self)
         }
         panelController?.show()
+    }
+
+    // MARK: - Вставка
+
+    func refreshPasteAccess() {
+        hasPasteAccess = PasteSimulator.hasAccess
+    }
+
+    func requestPasteAccess() {
+        PasteSimulator.requestAccess()
+        refreshPasteAccess()
+    }
+
+    /// Нажимает ⌘V в приложении, где работал пользователь.
+    /// Небольшая пауза — чтобы окно истории успело закрыться и фокус вернулся.
+    func pasteIntoFrontApp() {
+        Task {
+            try? await Task.sleep(for: .milliseconds(80))
+            PasteSimulator.pressCommandV()
+        }
     }
 
     // MARK: - Буфер

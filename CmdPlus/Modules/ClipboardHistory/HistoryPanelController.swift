@@ -5,7 +5,7 @@ import SwiftUI
 ///
 /// Это «неактивирующая» панель: она получает ввод с клавиатуры,
 /// но не делает CmdPlus активным приложением. Поэтому после выбора записи
-/// фокус остаётся в вашем приложении — достаточно нажать ⌘V.
+/// фокус остаётся в вашем приложении, и CmdPlus вставляет запись туда сам (⌘V).
 final class HistoryPanelController: NSObject, NSWindowDelegate {
     private let panel: HistoryPanel
     let viewModel: HistoryViewModel
@@ -13,7 +13,7 @@ final class HistoryPanelController: NSObject, NSWindowDelegate {
     var suppressAutoClose = false
     private var keyMonitor: Any?
 
-    private static let size = NSSize(width: 700, height: 480)
+    private static let size: NSSize = Design.History.windowSize
 
     init(module: ClipboardHistoryModule) {
         viewModel = HistoryViewModel(module: module)
@@ -31,6 +31,7 @@ final class HistoryPanelController: NSObject, NSWindowDelegate {
         panel.delegate = self
 
         viewModel.close = { [weak self] in self?.close() }
+        viewModel.dragStarted = { [weak self] in self?.beginDragOut() }
     }
 
     var isVisible: Bool { panel.isVisible }
@@ -46,6 +47,26 @@ final class HistoryPanelController: NSObject, NSWindowDelegate {
         removeKeyMonitor()
         panel.orderOut(nil)
         viewModel.didClose()
+    }
+
+    /// Запись тянут в другое приложение: окно становится прозрачным и пропускает
+    /// мышь, чтобы не закрывать место, куда бросают. Закрываем, когда кнопку отпустили.
+    /// (Сразу убрать окно нельзя — это оборвало бы перетаскивание.)
+    private func beginDragOut() {
+        guard !suppressAutoClose else { return }
+        suppressAutoClose = true
+        panel.ignoresMouseEvents = true
+        panel.animator().alphaValue = 0
+        Task { [weak self] in
+            while NSEvent.pressedMouseButtons & 1 != 0 {
+                try? await Task.sleep(for: .milliseconds(100))
+            }
+            guard let self else { return }
+            self.close()
+            self.panel.alphaValue = 1
+            self.panel.ignoresMouseEvents = false
+            self.suppressAutoClose = false
+        }
     }
 
     func makeKeyIfVisible() {

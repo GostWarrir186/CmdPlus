@@ -138,4 +138,13 @@ struct HistoryPersistenceTests {
         store.clearUnpinned()
         #expect(store.texts == ["b"])
     }
+
+    @Test("«Вставлять сразу» включено по умолчанию и сохраняется")
+    func pasteDirectlySetting() {
+        let env = TestEnvironment()
+        defer { env.cleanUp() }
+        #expect(env.makeSettings().pasteDirectly)
+        env.makeSettings().pasteDirectly = false
+        #expect(!env.makeSettings().pasteDirectly)
+    }
 }

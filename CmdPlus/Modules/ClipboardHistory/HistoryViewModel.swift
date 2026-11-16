@@ -44,6 +44,8 @@ final class HistoryViewModel {
 
     @ObservationIgnored weak var module: ClipboardHistoryModule?
     @ObservationIgnored var close: () -> Void = {}
+    /// Вызывается, когда запись начали перетаскивать из окна.
+    @ObservationIgnored var dragStarted: () -> Void = {}
 
     init(module: ClipboardHistoryModule) {
         self.module = module
@@ -117,13 +119,43 @@ final class HistoryViewModel {
         visibleItems.first { $0.id == selectedID }
     }
 
-    /// Копирует запись в буфер и закрывает окно.
-    func activate(_ item: ClipboardItem) {
+    /// Выбор записи: кладёт её в буфер, закрывает окно и сразу вставляет
+    /// в приложение, где вы работали. `paste: false` (⌥↩) — только копирует.
+    /// Без разрешения «Универсальный доступ» тоже только копирует.
+    func activate(_ item: ClipboardItem, paste: Bool = true) {
         Task {
-            if await module?.copyToPasteboard(item) == true {
-                close()
+            guard let module, await module.copyToPasteboard(item) else { return }
+            close()
+            if paste, module.canPasteDirectly {
+                module.pasteIntoFrontApp()
             }
         }
+    }
+
+    /// Вставка сразу работает — от этого зависят подсказки в окне.
+    var pastesDirectly: Bool {
+        module?.canPasteDirectly ?? false
+    }
+
+    /// Вставка включена в настройках, но разрешения ещё нет.
+    var needsPasteAccess: Bool {
+        guard let module else { return false }
+        return module.settings.pasteDirectly && !module.hasPasteAccess
+    }
+
+    func requestPasteAccess() {
+        module?.requestPasteAccess()
+    }
+
+    /// Данные для перетаскивания. `nil` — запись перетащить нельзя (пароль, файл удалён).
+    func dragProvider(for item: ClipboardItem) -> NSItemProvider? {
+        guard let provider = module?.dragItemProvider(for: item) else { return nil }
+        dragStarted()
+        return provider
+    }
+
+    func canDrag(_ item: ClipboardItem) -> Bool {
+        !item.isSecret
     }
 
     func togglePin(_ item: ClipboardItem) {
@@ -162,7 +194,8 @@ final class HistoryViewModel {
             moveSelection(by: 1)
         case kVK_Return, kVK_ANSI_KeypadEnter:
             guard let item = selectedItem else { return true }
-            activate(item)
+            // ⌥↩ — только скопировать, не вставляя.
+            activate(item, paste: !event.modifierFlags.contains(.option))
         case kVK_Escape:
             close()
         case kVK_Delete where command:
@@ -172,8 +205,22 @@ final class HistoryViewModel {
             guard let item = selectedItem else { return true }
             togglePin(item)
         default:
-            return false
+            // ⌘1…⌘9 — сразу выбрать запись по номеру, без стрелок.
+            guard command, let number = Self.quickPickNumber(for: event) else { return false }
+            let items = visibleItems
+            guard number <= items.count else { return true }
+            activate(items[number - 1], paste: !event.modifierFlags.contains(.option))
         }
         return true
+    }
+
+    /// Цифра 1…9 нажатой клавиши (по символу, поэтому работает в любой раскладке).
+    private static func quickPickNumber(for event: NSEvent) -> Int? {
+        guard let characters = event.charactersIgnoringModifiers,
+              characters.count == 1,
+              let number = Int(characters),
+              (1...9).contains(number)
+        else { return nil }
+        return number
     }
 }

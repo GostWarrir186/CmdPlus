@@ -91,22 +91,22 @@
         }
       }
     },
+    "⇧⌘V is already used by another app." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Сочетание ⇧⌘V уже используется другим приложением."
+          }
+        }
+      }
+    },
     "1 Hour" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "1 час"
-          }
-        }
-      }
-    },
-    "24 Hours" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "24 часа"
           }
         }
       }
@@ -121,12 +121,42 @@
         }
       }
     },
+    "24 Hours" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "24 часа"
+          }
+        }
+      }
+    },
     "About" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "О программе"
+          }
+        }
+      }
+    },
+    "Access granted" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доступ разрешён"
+          }
+        }
+      }
+    },
+    "Accessibility permission is needed" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нужно разрешение «Универсальный доступ»"
           }
         }
       }
@@ -151,12 +181,32 @@
         }
       }
     },
+    "Allow Access…" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Разрешить доступ…"
+          }
+        }
+      }
+    },
     "Allow CmdPlus in System Settings → Login Items." : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "Разрешите CmdPlus в разделе «Системные настройки» → «Объекты входа»."
+          }
+        }
+      }
+    },
+    "Allow Pasting…" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Разрешить вставку…"
           }
         }
       }
@@ -171,12 +221,52 @@
         }
       }
     },
+    "Application" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Приложение"
+          }
+        }
+      }
+    },
     "Apply" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "Применить"
+          }
+        }
+      }
+    },
+    "Characters" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Символов"
+          }
+        }
+      }
+    },
+    "Clear" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очистить"
+          }
+        }
+      }
+    },
+    "Clear clipboard history?" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Очистить историю буфера обмена?"
           }
         }
       }
@@ -201,16 +291,6 @@
         }
       }
     },
-    "Clear clipboard history?" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Очистить историю буфера обмена?"
-          }
-        }
-      }
-    },
     "Clipboard History" : {
       "localizations" : {
         "ru" : {
@@ -222,6 +302,7 @@
       }
     },
     "Close" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ru" : {
           "stringUnit" : {
@@ -241,6 +322,16 @@
         }
       }
     },
+    "CmdPlus needs the Accessibility permission to press ⌘V for you." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CmdPlus нужно разрешение «Универсальный доступ», чтобы нажимать ⌘V за вас."
+          }
+        }
+      }
+    },
     "CmdPlus starts silently: only the menu bar icon appears, no windows." : {
       "localizations" : {
         "ru" : {
@@ -251,12 +342,32 @@
         }
       }
     },
+    "Copied" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скопировано"
+          }
+        }
+      }
+    },
     "Copy" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "Копировать"
+          }
+        }
+      }
+    },
+    "Copy Only" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Только копировать"
           }
         }
       }
@@ -311,6 +422,16 @@
         }
       }
     },
+    "Dimensions" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Размер"
+          }
+        }
+      }
+    },
     "Files" : {
       "localizations" : {
         "ru" : {
@@ -322,6 +443,7 @@
       }
     },
     "Filter" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ru" : {
           "stringUnit" : {
@@ -501,16 +623,6 @@
         }
       }
     },
-    "Open Login Items" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Открыть «Объекты входа»"
-          }
-        }
-      }
-    },
     "Open at Login" : {
       "localizations" : {
         "ru" : {
@@ -521,7 +633,18 @@
         }
       }
     },
+    "Open Login Items" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Открыть «Объекты входа»"
+          }
+        }
+      }
+    },
     "Password" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ru" : {
           "stringUnit" : {
@@ -557,6 +680,36 @@
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "Пароли, скопированные из менеджеров паролей, хранятся в зашифрованном виде только в связке ключей этого Mac. Они никогда не синхронизируются с iCloud и не попадают в экспорт настроек. В списке они скрыты точками и отображаются после проверки Touch ID. Закреплённые пароли не удаляются автоматически."
+          }
+        }
+      }
+    },
+    "Paste" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вставить"
+          }
+        }
+      }
+    },
+    "Paste Directly" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вставлять сразу"
+          }
+        }
+      }
+    },
+    "Pasting" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вставка"
           }
         }
       }
@@ -608,6 +761,17 @@
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "Закреплённые записи будут сохранены."
+          }
+        }
+      }
+    },
+    "Quick Pick" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Быстрый выбор"
           }
         }
       }
@@ -672,6 +836,16 @@
         }
       }
     },
+    "show a password from clipboard history" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "показать пароль из истории буфера обмена"
+          }
+        }
+      }
+    },
     "Show in Finder" : {
       "localizations" : {
         "ru" : {
@@ -688,6 +862,16 @@
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "Запуск"
+          }
+        }
+      }
+    },
+    "Storage" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Хранение"
           }
         }
       }
@@ -772,22 +956,12 @@
         }
       }
     },
-    "show a password from clipboard history" : {
+    "When you choose an item, CmdPlus pastes it into the app you were working in by pressing ⌘V for you. This needs the Accessibility permission. Without it, items are only copied. Press ⌥↩ to copy without pasting." : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "показать пароль из истории буфера обмена"
-          }
-        }
-      }
-    },
-    "⇧⌘V is already used by another app." : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Сочетание ⇧⌘V уже используется другим приложением."
+            "state" : "translated",
+            "value" : "Когда вы выбираете запись, CmdPlus сам вставляет её в приложение, где вы работали, — нажимает ⌘V за вас. Для этого нужно разрешение «Универсальный доступ». Без него запись только копируется. ⌥↩ — скопировать, не вставляя."
           }
         }
       }
