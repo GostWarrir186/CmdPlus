@@ -1,0 +1,797 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%lld" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "%lld"
+          }
+        }
+      }
+    },
+    "%lld items" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "%lld item"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "%lld items"
+                }
+              },
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "%lld items"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "%lld записи"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "%lld записей"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "%lld запись"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "%lld записи"
+                }
+              },
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "%lld записей"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld of %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld of %2$lld"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "%1$lld из %2$lld"
+          }
+        }
+      }
+    },
+    "1 Hour" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "1 час"
+          }
+        }
+      }
+    },
+    "24 Hours" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "24 часа"
+          }
+        }
+      }
+    },
+    "7 Days" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "7 дней"
+          }
+        }
+      }
+    },
+    "About" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "О программе"
+          }
+        }
+      }
+    },
+    "All" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Все"
+          }
+        }
+      }
+    },
+    "All data stays on this Mac. CmdPlus does not use any servers." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Все данные хранятся только на этом Mac. CmdPlus не использует серверы."
+          }
+        }
+      }
+    },
+    "Allow CmdPlus in System Settings → Login Items." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Разрешите CmdPlus в разделе «Системные настройки» → «Объекты входа»."
+          }
+        }
+      }
+    },
+    "Appearance" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оформление"
+          }
+        }
+      }
+    },
+    "Apply" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Применить"
+          }
+        }
+      }
+    },
+    "Clear History" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Очистить историю"
+          }
+        }
+      }
+    },
+    "Clear History…" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Очистить историю…"
+          }
+        }
+      }
+    },
+    "Clear clipboard history?" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Очистить историю буфера обмена?"
+          }
+        }
+      }
+    },
+    "Clipboard History" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "История буфера обмена"
+          }
+        }
+      }
+    },
+    "Close" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Закрыть"
+          }
+        }
+      }
+    },
+    "CmdPlus" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "CmdPlus"
+          }
+        }
+      }
+    },
+    "CmdPlus starts silently: only the menu bar icon appears, no windows." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "CmdPlus запускается незаметно: появляется только значок в строке меню, без окон."
+          }
+        }
+      }
+    },
+    "Copy" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Копировать"
+          }
+        }
+      }
+    },
+    "Copy something and it will appear here." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Скопируйте что-нибудь, и оно появится здесь."
+          }
+        }
+      }
+    },
+    "Couldn't save to Keychain: %@" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Не удалось сохранить в связку ключей: %@"
+          }
+        }
+      }
+    },
+    "Custom…" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Своё значение…"
+          }
+        }
+      }
+    },
+    "Dark" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тёмная"
+          }
+        }
+      }
+    },
+    "Delete" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Удалить"
+          }
+        }
+      }
+    },
+    "Files" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Файлы"
+          }
+        }
+      }
+    },
+    "Filter" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Фильтр"
+          }
+        }
+      }
+    },
+    "Forever" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Всегда"
+          }
+        }
+      }
+    },
+    "From 1 to 500 items. Pinned items don't count toward the limit. When you lower the limit, the oldest unpinned items are deleted right away." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "От 1 до 500 записей. Закреплённые записи не учитываются в лимите. При уменьшении лимита самые старые незакреплённые записи удаляются сразу."
+          }
+        }
+      }
+    },
+    "General" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Основные"
+          }
+        }
+      }
+    },
+    "Hide" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Скрыть"
+          }
+        }
+      }
+    },
+    "History" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "История"
+          }
+        }
+      }
+    },
+    "History Limit" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Размер истории"
+          }
+        }
+      }
+    },
+    "Image" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Изображение"
+          }
+        }
+      }
+    },
+    "Images" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Изображения"
+          }
+        }
+      }
+    },
+    "Keep Passwords For" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Хранить пароли"
+          }
+        }
+      }
+    },
+    "Keeps text, images and files you copy. Open with ⇧⌘V." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Хранит скопированные текст, изображения и файлы. Открывается сочетанием ⇧⌘V."
+          }
+        }
+      }
+    },
+    "Keyboard Shortcut" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Сочетание клавиш"
+          }
+        }
+      }
+    },
+    "Light" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Светлая"
+          }
+        }
+      }
+    },
+    "Modules" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Модули"
+          }
+        }
+      }
+    },
+    "No Items" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Нет записей"
+          }
+        }
+      }
+    },
+    "No Modules Enabled" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Нет включённых модулей"
+          }
+        }
+      }
+    },
+    "No Results" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Нет результатов"
+          }
+        }
+      }
+    },
+    "Number of Items" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Количество записей"
+          }
+        }
+      }
+    },
+    "Open Login Items" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Открыть «Объекты входа»"
+          }
+        }
+      }
+    },
+    "Open at Login" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Открывать при входе"
+          }
+        }
+      }
+    },
+    "Password" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Пароль"
+          }
+        }
+      }
+    },
+    "Passwords" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Пароли"
+          }
+        }
+      }
+    },
+    "Passwords and Codes" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Пароли и коды"
+          }
+        }
+      }
+    },
+    "Passwords copied from password managers are encrypted in the Keychain of this Mac only. They are never synced to iCloud and never included in settings export. In the list they are shown as dots and revealed with Touch ID. Pinned passwords are not deleted automatically." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Пароли, скопированные из менеджеров паролей, хранятся в зашифрованном виде только в связке ключей этого Mac. Они никогда не синхронизируются с iCloud и не попадают в экспорт настроек. В списке они скрыты точками и отображаются после проверки Touch ID. Закреплённые пароли не удаляются автоматически."
+          }
+        }
+      }
+    },
+    "Pin" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Закрепить"
+          }
+        }
+      }
+    },
+    "Pinned" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Закреплённые"
+          }
+        }
+      }
+    },
+    "Pinned Items" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Закреплённые записи"
+          }
+        }
+      }
+    },
+    "Pinned items don't count toward the limit. When you lower the limit, the oldest unpinned items are deleted right away." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Закреплённые записи не учитываются в лимите. При уменьшении лимита самые старые незакреплённые записи удаляются сразу."
+          }
+        }
+      }
+    },
+    "Pinned items will be kept." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Закреплённые записи будут сохранены."
+          }
+        }
+      }
+    },
+    "Quit" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Завершить"
+          }
+        }
+      }
+    },
+    "Save Passwords and Codes" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Сохранять пароли и коды"
+          }
+        }
+      }
+    },
+    "Saved Items" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Сохранённые записи"
+          }
+        }
+      }
+    },
+    "Search Clipboard History" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Поиск в истории буфера обмена"
+          }
+        }
+      }
+    },
+    "Settings…" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Настройки…"
+          }
+        }
+      }
+    },
+    "Show" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Показать"
+          }
+        }
+      }
+    },
+    "Show in Finder" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Показать в Finder"
+          }
+        }
+      }
+    },
+    "Startup" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Запуск"
+          }
+        }
+      }
+    },
+    "System" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Как в системе"
+          }
+        }
+      }
+    },
+    "Text" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Текст"
+          }
+        }
+      }
+    },
+    "Theme" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тема"
+          }
+        }
+      }
+    },
+    "Try different words or another filter." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Попробуйте другие слова или другой фильтр."
+          }
+        }
+      }
+    },
+    "Turn on modules in Settings." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Включите модули в Настройках."
+          }
+        }
+      }
+    },
+    "Turn on the module to change its settings." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Включите модуль, чтобы изменить его настройки."
+          }
+        }
+      }
+    },
+    "Unpin" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Открепить"
+          }
+        }
+      }
+    },
+    "Version" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Версия"
+          }
+        }
+      }
+    },
+    "show a password from clipboard history" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "показать пароль из истории буфера обмена"
+          }
+        }
+      }
+    },
+    "⇧⌘V is already used by another app." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Сочетание ⇧⌘V уже используется другим приложением."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.3"
+}
