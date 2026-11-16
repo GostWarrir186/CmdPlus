@@ -81,9 +81,10 @@ Everything you copy (text, images, files) is one shortcut away.
 
 Make a regular mouse feel right on a Mac.
 
-- **Reverse scrolling** for mice with a scroll wheel, vertical and horizontal separately. Trackpads and Magic Mouse keep the direction set in System Settings.
-- **Side buttons** (the two extra buttons on many mice) can do something useful: Back/Forward, Mission Control, App Windows, switch desktops, Show Desktop, open Clipboard History, Copy/Paste/Undo, New/Close Tab — or nothing at all.
-- Click the tile in the menu bar to turn reverse scrolling on or off.
+- **Smooth scrolling** for wheel mice, with adjustable **speed** (0.5–3×).
+- **Reverse scrolling** for the wheel only, vertical and horizontal separately. Trackpads and Magic Mouse keep the system settings.
+- **Assign any extra button**: hover the **+** field and press the middle button, button 4, 5 or more. Single and double clicks can do different things.
+- Actions include Look Up, Middle Click, Back/Forward, Mission Control, Application Windows, Show Desktop, Launchpad, switching Spaces, Clipboard History, Copy/Paste/Undo, New/Close Tab — or any **keyboard shortcut** you record.
 - Off by default. When there's nothing to do, it doesn't watch the mouse at all.
 
 <div align="center">
@@ -143,7 +144,7 @@ CmdPlus asks for a permission only when you turn on the feature that needs it, a
 ## Roadmap
 
 - [x] App shell and **Clipboard History**
-- [x] **Mouse**: reverse scrolling and side-button actions
+- [x] **Mouse**: smooth and reversible scrolling, actions for any extra button
 - [ ] Window management
 - [ ] File converter
 - [ ] System monitor

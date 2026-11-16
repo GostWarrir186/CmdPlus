@@ -8,7 +8,7 @@ final class MouseModule: AppModule {
     static let descriptor = ModuleDescriptor(
         id: "mouse",
         title: "Mouse",
-        summary: "Reverse scrolling for mice and actions for side buttons.",
+        summary: "Smooth, adjustable scrolling and actions for mouse buttons.",
         systemImage: "computermouse.fill",
         tint: .indigo,
         // Needs Accessibility permission, so the user turns it on deliberately.

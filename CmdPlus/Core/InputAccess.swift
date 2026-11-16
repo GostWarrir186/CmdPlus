@@ -20,7 +20,7 @@ enum InputAccess {
 }
 
 /// A keyboard shortcut CmdPlus can press for the user.
-nonisolated struct KeyCombo: Equatable, Sendable {
+nonisolated struct KeyCombo: Equatable, Sendable, Codable {
     let keyCode: CGKeyCode
     let flags: CGEventFlags
 
@@ -30,6 +30,20 @@ nonisolated struct KeyCombo: Equatable, Sendable {
         // when they carry the same flags a real arrow key has.
         let arrows = [kVK_LeftArrow, kVK_RightArrow, kVK_UpArrow, kVK_DownArrow]
         self.flags = arrows.contains(keyCode) ? flags.union([.maskSecondaryFn, .maskNumericPad]) : flags
+    }
+
+    private enum CodingKeys: String, CodingKey { case keyCode, flags }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        keyCode = try container.decode(CGKeyCode.self, forKey: .keyCode)
+        flags = CGEventFlags(rawValue: try container.decode(UInt64.self, forKey: .flags))
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(keyCode, forKey: .keyCode)
+        try container.encode(flags.rawValue, forKey: .flags)
     }
 
     /// Returns `false` without permission.

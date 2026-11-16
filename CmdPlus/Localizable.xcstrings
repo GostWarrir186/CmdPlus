@@ -121,6 +121,16 @@
         }
       }
     },
+    "Add a mouse button" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить кнопку мыши"
+          }
+        }
+      }
+    },
     "All" : {
       "localizations" : {
         "ru" : {
@@ -171,16 +181,6 @@
         }
       }
     },
-    "App Windows" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Окна приложения"
-          }
-        }
-      }
-    },
     "Appearance" : {
       "localizations" : {
         "ru" : {
@@ -197,6 +197,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Приложение"
+          }
+        }
+      }
+    },
+    "Application Windows" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Окна приложения"
           }
         }
       }
@@ -221,12 +231,22 @@
         }
       }
     },
-    "Back Button" : {
+    "Button %lld" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Кнопка «Назад»"
+            "value" : "Кнопка %lld"
+          }
+        }
+      }
+    },
+    "Buttons" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кнопки"
           }
         }
       }
@@ -281,6 +301,16 @@
         }
       }
     },
+    "Click" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Клик"
+          }
+        }
+      }
+    },
     "Clipboard History" : {
       "localizations" : {
         "ru" : {
@@ -331,12 +361,12 @@
         }
       }
     },
-    "CmdPlus needs the Accessibility permission to change scrolling direction and to react to mouse buttons. Nothing is recorded or sent anywhere." : {
+    "CmdPlus needs the Accessibility permission to change scrolling and to react to mouse buttons. Nothing is recorded or sent anywhere." : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "CmdPlus нужно разрешение «Универсальный доступ», чтобы менять направление прокрутки и реагировать на кнопки мыши. Ничего не записывается и никуда не отправляется."
+            "value" : "CmdPlus нужно разрешение «Универсальный доступ», чтобы менять прокрутку и реагировать на кнопки мыши. Ничего не записывается и никуда не отправляется."
           }
         }
       }
@@ -451,6 +481,16 @@
         }
       }
     },
+    "Double Click" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Двойной клик"
+          }
+        }
+      }
+    },
     "Files" : {
       "localizations" : {
         "ru" : {
@@ -472,22 +512,22 @@
         }
       }
     },
+    "For example ⌥⌘4. Press Esc to cancel." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Например, ⌥⌘4. Esc — отмена."
+          }
+        }
+      }
+    },
     "Forward" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Вперёд"
-          }
-        }
-      }
-    },
-    "Forward Button" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Кнопка «Вперёд»"
           }
         }
       }
@@ -572,12 +612,62 @@
         }
       }
     },
+    "Keyboard Shortcut…" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сочетание клавиш…"
+          }
+        }
+      }
+    },
+    "Launchpad" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Launchpad"
+          }
+        }
+      }
+    },
     "Light" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Светлая"
+          }
+        }
+      }
+    },
+    "Look Up" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Найти"
+          }
+        }
+      }
+    },
+    "Middle Button" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Средняя кнопка"
+          }
+        }
+      }
+    },
+    "Middle Click" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Средний клик"
           }
         }
       }
@@ -612,22 +702,42 @@
         }
       }
     },
+    "Move Left a Space" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "На рабочий стол влево"
+          }
+        }
+      }
+    },
+    "Move Right a Space" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "На рабочий стол вправо"
+          }
+        }
+      }
+    },
+    "Move the pointer into the + field and press a mouse button to assign an action to it. Double-press to assign a double click." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Наведите указатель на поле «+» и нажмите кнопку мыши, чтобы назначить ей действие. Нажмите дважды — чтобы назначить двойной клик."
+          }
+        }
+      }
+    },
     "New Tab" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Новая вкладка"
-          }
-        }
-      }
-    },
-    "Next Desktop" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Следующий рабочий стол"
           }
         }
       }
@@ -672,12 +782,12 @@
         }
       }
     },
-    "Only mice with a scroll wheel are affected. Trackpads and Magic Mouse keep the direction set in System Settings." : {
+    "Only mice with a scroll wheel are affected. Trackpads and Magic Mouse keep the behavior set in System Settings." : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Действует только на мыши с колёсиком. Трекпад и Magic Mouse прокручивают так, как задано в Системных настройках."
+            "value" : "Действует только на мыши с колёсиком. Трекпад и Magic Mouse работают так, как задано в Системных настройках."
           }
         }
       }
@@ -803,12 +913,12 @@
         }
       }
     },
-    "Previous Desktop" : {
+    "Press a keyboard shortcut" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Предыдущий рабочий стол"
+            "value" : "Нажмите сочетание клавиш"
           }
         }
       }
@@ -834,6 +944,16 @@
         }
       }
     },
+    "Remove" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить"
+          }
+        }
+      }
+    },
     "Reverse Horizontal Scrolling" : {
       "localizations" : {
         "ru" : {
@@ -850,16 +970,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Обратная вертикальная прокрутка"
-          }
-        }
-      }
-    },
-    "Reverse scrolling for mice and actions for side buttons." : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Обратная прокрутка для мыши и действия на боковые кнопки."
           }
         }
       }
@@ -904,6 +1014,16 @@
         }
       }
     },
+    "Scrolling Speed" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скорость прокрутки"
+          }
+        }
+      }
+    },
     "Search Clipboard History" : {
       "localizations" : {
         "ru" : {
@@ -944,12 +1064,22 @@
         }
       }
     },
-    "Side Buttons" : {
+    "Smooth Scrolling" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Боковые кнопки"
+            "value" : "Плавная прокрутка"
+          }
+        }
+      }
+    },
+    "Smooth, adjustable scrolling and actions for mouse buttons." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Плавная настраиваемая прокрутка и действия на кнопки мыши."
           }
         }
       }
@@ -1000,16 +1130,6 @@
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "Текст"
-          }
-        }
-      }
-    },
-    "The two extra buttons on the side of many mice. Choose “System Default” to leave a button as it is." : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Две дополнительные кнопки сбоку у многих мышей. «Как в системе» — оставить кнопку как есть."
           }
         }
       }

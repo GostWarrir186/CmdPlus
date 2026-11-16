@@ -33,7 +33,7 @@ The author is new to Swift: explain in Russian, briefly — what you did and how
 
 ## Roadmap
 1. ✅ App shell (menu bar, tile panel, Settings window) + Clipboard History (⇧⌘V, word search, user-set 1–500 limit, pinned items don't count).
-2. ✅ Mouse: reverse scrolling + side-button actions  3. Window management  4. File converter  5. System monitor
+2. ✅ Mouse: smooth/reversible scrolling, speed, actions for any extra button  3. Window management  4. File converter  5. System monitor
 6. Small modules: sleep and power, QR and Wi-Fi, currency rates, color picker, text converter, hide menu bar icons, Windows compatibility
 7. Polish for 1.0: onboarding, languages, "What's New", settings export, app icon, README, GitHub release
 Later: disk analyzer, PDF editor, video compression, key remapping, screen recording, OCR.
