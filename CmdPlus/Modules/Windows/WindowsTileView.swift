@@ -1,12 +1,13 @@
 import Carbon.HIToolbox
 import SwiftUI
 
-/// Menu bar tile. Click it to show a compact grid of layouts — each a tiny
+/// Menu bar tile. Click it to expand a compact grid of layouts — each a tiny
 /// picture of where the window goes, with its name.
 struct WindowsTileView: View {
     let module: WindowsModule
     @Environment(\.dismiss) private var dismiss
-    @AppStorage("windows.tileExpanded") private var isExpanded = true
+    /// Collapsed every time the panel opens, so the panel stays compact.
+    @State private var isExpanded = false
 
     var body: some View {
         let descriptor = WindowsModule.descriptor
