@@ -1,0 +1,19 @@
+# macOS
+.DS_Store
+
+# Xcode — личные настройки и сборки
+xcuserdata/
+DerivedData/
+build/
+*.xcscmblueprint
+*.xccheckout
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# Секреты — никогда не коммитить
+*.p12
+*.cer
+*.mobileprovision
+.env
