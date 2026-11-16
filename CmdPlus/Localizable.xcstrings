@@ -241,6 +241,26 @@
         }
       }
     },
+    "Arrange" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Расставить"
+          }
+        }
+      }
+    },
+    "Arrange lays out the front window and the ones right behind it at once." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«Расставить» раскладывает сразу переднее окно и те, что прямо за ним."
+          }
+        }
+      }
+    },
     "Back" : {
       "localizations" : {
         "ru" : {
@@ -251,12 +271,22 @@
         }
       }
     },
-    "Bottom Half" : {
+    "Bottom" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Нижняя половина"
+            "value" : "Внизу"
+          }
+        }
+      }
+    },
+    "Bottom & Top" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Внизу и вверху"
           }
         }
       }
@@ -378,6 +408,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Клик"
+          }
+        }
+      }
+    },
+    "Click the window you want to move, then press its shortcut — for example ⌃⌥← puts it on the left half." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нажмите на окно, которое хотите переместить, и затем сочетание клавиш — например, ⌃⌥← поставит его слева."
           }
         }
       }
@@ -623,6 +663,16 @@
         }
       }
     },
+    "For the window you were using" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для окна, в котором вы работали"
+          }
+        }
+      }
+    },
     "Forward" : {
       "localizations" : {
         "ru" : {
@@ -663,6 +713,16 @@
         }
       }
     },
+    "Halves" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "По краям"
+          }
+        }
+      }
+    },
     "High" : {
       "localizations" : {
         "ru" : {
@@ -699,6 +759,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Удерживайте клавишу во время прокрутки. Чтобы поменять её, нажмите на поле и затем ⇧, ⌃, ⌥ или ⌘."
+          }
+        }
+      }
+    },
+    "How to Use" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Как пользоваться"
           }
         }
       }
@@ -793,22 +863,22 @@
         }
       }
     },
-    "Layout for the active window" : {
+    "Left" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Раскладка для активного окна"
+            "value" : "Слева"
           }
         }
       }
     },
-    "Left Half" : {
+    "Left & Right" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Левая половина"
+            "value" : "Слева и справа"
           }
         }
       }
@@ -933,6 +1003,16 @@
         }
       }
     },
+    "Move & Resize" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переместить и изменить размер"
+          }
+        }
+      }
+    },
     "Move Left a Space" : {
       "localizations" : {
         "ru" : {
@@ -949,6 +1029,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "На рабочий стол вправо"
+          }
+        }
+      }
+    },
+    "Move and resize windows with shortcuts or from the menu bar." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перемещайте окна и меняйте их размер сочетаниями клавиш или из строки меню."
           }
         }
       }
@@ -1093,6 +1183,16 @@
         }
       }
     },
+    "Or open the Move & Resize menu from the CmdPlus icon in the menu bar." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Или откройте меню «Переместить и изменить размер» из значка CmdPlus в строке меню."
+          }
+        }
+      }
+    },
     "Paste" : {
       "localizations" : {
         "ru" : {
@@ -1204,6 +1304,16 @@
         }
       }
     },
+    "Quarters" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "По углам"
+          }
+        }
+      }
+    },
     "Quick Pick" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1285,6 +1395,16 @@
         }
       }
     },
+    "Return to Previous Size" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вернуть к предыдущему размеру"
+          }
+        }
+      }
+    },
     "Reverse Direction" : {
       "localizations" : {
         "ru" : {
@@ -1325,12 +1445,22 @@
         }
       }
     },
-    "Right Half" : {
+    "Right" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Правая половина"
+            "value" : "Справа"
+          }
+        }
+      }
+    },
+    "Right & Left" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Справа и слева"
           }
         }
       }
@@ -1455,6 +1585,16 @@
         }
       }
     },
+    "Size" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Размер"
+          }
+        }
+      }
+    },
     "Small" : {
       "localizations" : {
         "ru" : {
@@ -1481,16 +1621,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Плавность"
-          }
-        }
-      }
-    },
-    "Snap windows to halves, quarters and thirds with shortcuts." : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Раскладывайте окна по половинам, четвертям и третям сочетаниями клавиш."
           }
         }
       }
@@ -1565,12 +1695,32 @@
         }
       }
     },
-    "Top Half" : {
+    "Thirds" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Верхняя половина"
+            "value" : "По третям"
+          }
+        }
+      }
+    },
+    "Top" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вверху"
+          }
+        }
+      }
+    },
+    "Top & Bottom" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вверху и внизу"
           }
         }
       }

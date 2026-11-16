@@ -54,7 +54,7 @@ Instead of a dozen separate menu bar apps, CmdPlus gives you one lightweight app
 | --- | --- | --- |
 | 📋 | [Clipboard History](#clipboard-history) | Everything you copy, one shortcut away |
 | 🖱️ | [Mouse](#mouse) | Smooth scrolling and actions for any mouse button |
-| 🪟 | [Windows](#windows) | Snap windows to halves, quarters and thirds |
+| 🪟 | [Windows](#windows) | Move and resize windows from the keyboard or the menu bar |
 
 Every module can be turned on or off in **Settings**. Mouse and Windows are off until you turn them on.
 
@@ -109,14 +109,15 @@ Make a regular mouse feel right on a Mac.
 
 ### Windows
 
-Put the window you're working in exactly where you want it — from the keyboard or the menu bar.
+Put the window you're working in exactly where you want it — laid out like macOS's own **Window → Move & Resize** menu.
 
-- **Halves, quarters, thirds and two thirds**, plus Maximize, Almost Maximize and Center.
-- **Restore** puts a window back where it was before you snapped it.
-- **Next Display** moves a window to your other screen, keeping its place and size.
+- **Halves, quarters, thirds and two thirds**, plus Maximize, Almost Maximize, Center and Next Display.
+- **Arrange** several windows at once: Left & Right, Top & Bottom or all four Quarters — the front window and the ones right behind it.
+- **Return to Previous Size** puts a window back where it was.
+- A short highlight shows where the window landed.
 - **Gaps** between windows: none, small or large.
 - Every shortcut can be re-recorded or removed. Defaults match Rectangle, so switching is easy.
-- The menu bar tile has one-click buttons for the most common layouts.
+- The menu bar tile has a **Move & Resize** menu with every layout and its shortcut.
 
 <details>
 <summary><b>Default shortcuts</b></summary>
@@ -124,19 +125,21 @@ Put the window you're working in exactly where you want it — from the keyboard
 
 | Shortcut | Layout |
 | --- | --- |
-| <kbd>⌃</kbd><kbd>⌥</kbd><kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd> | Left, right, top, bottom half |
+| <kbd>⌃</kbd><kbd>⌥</kbd><kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd> | Left, right, top, bottom |
 | <kbd>⌃</kbd><kbd>⌥</kbd><kbd>U</kbd> <kbd>I</kbd> <kbd>J</kbd> <kbd>K</kbd> | Top left, top right, bottom left, bottom right |
 | <kbd>⌃</kbd><kbd>⌥</kbd><kbd>D</kbd> <kbd>F</kbd> <kbd>G</kbd> | Left, center, right third |
 | <kbd>⌃</kbd><kbd>⌥</kbd><kbd>E</kbd> <kbd>T</kbd> | Left, right two thirds |
+| <kbd>⌃</kbd><kbd>⌥</kbd><kbd>⇧</kbd><kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd> | Arrange: left & right, right & left, top & bottom, bottom & top |
+| <kbd>⌃</kbd><kbd>⌥</kbd><kbd>⇧</kbd><kbd>Q</kbd> | Arrange in quarters |
 | <kbd>⌃</kbd><kbd>⌥</kbd><kbd>↩</kbd> | Maximize |
 | <kbd>⌃</kbd><kbd>⌥</kbd><kbd>C</kbd> | Center |
-| <kbd>⌃</kbd><kbd>⌥</kbd><kbd>⌫</kbd> | Restore |
 | <kbd>⌃</kbd><kbd>⌥</kbd><kbd>⌘</kbd><kbd>→</kbd> | Next display |
+| <kbd>⌃</kbd><kbd>⌥</kbd><kbd>⌫</kbd> | Return to previous size |
 
 </details>
 
 <div align="center">
-<img src="docs/images/windows.png" width="520" alt="Windows settings: gaps and a shortcut for every layout">
+<img src="docs/images/windows.png" width="520" alt="Windows settings: how to use, gaps and a shortcut for every layout">
 </div>
 
 ### General
@@ -200,7 +203,7 @@ CmdPlus asks for a permission only when you turn on the feature that needs it, a
 
 - [x] App shell and **Clipboard History**
 - [x] **Mouse**: smooth and reversible scrolling, actions for any extra button
-- [x] **Windows**: layouts with keyboard shortcuts and from the menu bar
+- [x] **Windows**: layouts and arranging with shortcuts or from the menu bar
 - [ ] File converter
 - [ ] System monitor
 - [ ] Small tools: sleep and power, QR and Wi-Fi, currency rates, color picker, text converter, hide menu bar icons, Windows-friendly shortcuts

@@ -72,7 +72,7 @@ struct ReadmeScreenshots {
             Showcase(scheme: .dark) {
                 WindowsSettingsView(module: WindowsModule(settings: WindowSettings(defaults: env.defaults)))
                     .environment(ModuleManager.shared)
-                    .frame(width: 640, height: 1085)
+                    .frame(width: 640, height: 828)
                     .background(Color(nsColor: .windowBackgroundColor))
                     .clipShape(.rect(cornerRadius: 16))
             },

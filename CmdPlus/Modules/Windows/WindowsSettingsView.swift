@@ -22,6 +22,27 @@ struct WindowsSettingsView: View {
             }
 
             Section {
+                Label {
+                    Text("Click the window you want to move, then press its shortcut — for example ⌃⌥← puts it on the left half.")
+                } icon: {
+                    Image(systemName: "keyboard")
+                }
+                Label {
+                    Text("Or open the Move & Resize menu from the CmdPlus icon in the menu bar.")
+                } icon: {
+                    Image(systemName: "menubar.rectangle")
+                }
+                Label {
+                    Text("Arrange lays out the front window and the ones right behind it at once.")
+                } icon: {
+                    Image(systemName: "rectangle.split.2x2")
+                }
+            } header: {
+                Text("How to Use")
+            }
+            .foregroundStyle(.secondary)
+
+            Section {
                 Picker("Gaps Between Windows", selection: $settings.gap) {
                     ForEach(WindowGap.allCases) { Text($0.title).tag($0) }
                 }
@@ -31,11 +52,13 @@ struct WindowsSettingsView: View {
 
             ForEach(Array(WindowAction.groups.enumerated()), id: \.offset) { _, group in
                 Section {
-                    ForEach(group) { action in
+                    ForEach(group.actions) { action in
                         ShortcutRow(action: action, module: module) {
                             recordingFor = action
                         }
                     }
+                } header: {
+                    Text(group.title)
                 }
             }
 

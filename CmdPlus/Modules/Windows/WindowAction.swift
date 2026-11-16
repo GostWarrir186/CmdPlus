@@ -9,25 +9,38 @@ nonisolated enum WindowAction: String, CaseIterable, Identifiable, Sendable, Cod
     case leftThird, centerThird, rightThird
     case leftTwoThirds, rightTwoThirds
     case maximize, almostMaximize, center
+    case leftAndRight, rightAndLeft, topAndBottom, bottomAndTop, quarters
     case restore, nextDisplay
 
     var id: String { rawValue }
 
-    /// Settings sections, in order.
-    static let groups: [[WindowAction]] = [
-        [.leftHalf, .rightHalf, .topHalf, .bottomHalf],
-        [.topLeft, .topRight, .bottomLeft, .bottomRight],
-        [.leftThird, .centerThird, .rightThird, .leftTwoThirds, .rightTwoThirds],
-        [.maximize, .almostMaximize, .center],
-        [.restore, .nextDisplay],
+    /// Sections, in order — grouped like macOS's own Window → Move & Resize menu.
+    static let groups: [(title: LocalizedStringResource, actions: [WindowAction])] = [
+        ("Halves", [.leftHalf, .rightHalf, .topHalf, .bottomHalf]),
+        ("Quarters", [.topLeft, .topRight, .bottomLeft, .bottomRight]),
+        ("Thirds", [.leftThird, .centerThird, .rightThird, .leftTwoThirds, .rightTwoThirds]),
+        ("Arrange", [.leftAndRight, .rightAndLeft, .topAndBottom, .bottomAndTop, .quarters]),
+        ("Size", [.maximize, .almostMaximize, .center, .nextDisplay, .restore]),
     ]
+
+    /// "Arrange" actions lay out several of the frontmost windows at once.
+    var arrangement: [WindowAction]? {
+        switch self {
+        case .leftAndRight: [.leftHalf, .rightHalf]
+        case .rightAndLeft: [.rightHalf, .leftHalf]
+        case .topAndBottom: [.topHalf, .bottomHalf]
+        case .bottomAndTop: [.bottomHalf, .topHalf]
+        case .quarters: [.topLeft, .topRight, .bottomLeft, .bottomRight]
+        default: nil
+        }
+    }
 
     var title: LocalizedStringResource {
         switch self {
-        case .leftHalf: "Left Half"
-        case .rightHalf: "Right Half"
-        case .topHalf: "Top Half"
-        case .bottomHalf: "Bottom Half"
+        case .leftHalf: "Left"
+        case .rightHalf: "Right"
+        case .topHalf: "Top"
+        case .bottomHalf: "Bottom"
         case .topLeft: "Top Left"
         case .topRight: "Top Right"
         case .bottomLeft: "Bottom Left"
@@ -40,7 +53,12 @@ nonisolated enum WindowAction: String, CaseIterable, Identifiable, Sendable, Cod
         case .maximize: "Maximize"
         case .almostMaximize: "Almost Maximize"
         case .center: "Center"
-        case .restore: "Restore"
+        case .leftAndRight: "Left & Right"
+        case .rightAndLeft: "Right & Left"
+        case .topAndBottom: "Top & Bottom"
+        case .bottomAndTop: "Bottom & Top"
+        case .quarters: "Quarters"
+        case .restore: "Return to Previous Size"
         case .nextDisplay: "Next Display"
         }
     }
@@ -63,6 +81,9 @@ nonisolated enum WindowAction: String, CaseIterable, Identifiable, Sendable, Cod
         case .maximize: "rectangle.inset.filled"
         case .almostMaximize: "rectangle.dashed"
         case .center: "rectangle.center.inset.filled"
+        case .leftAndRight, .rightAndLeft: "rectangle.split.2x1"
+        case .topAndBottom, .bottomAndTop: "rectangle.split.1x2"
+        case .quarters: "rectangle.split.2x2"
         case .restore: "arrow.uturn.backward"
         case .nextDisplay: "display.2"
         }
@@ -88,6 +109,11 @@ nonisolated enum WindowAction: String, CaseIterable, Identifiable, Sendable, Cod
         case .maximize: return KeyCombo(kVK_Return, ctrlOpt)
         case .almostMaximize: return nil
         case .center: return KeyCombo(kVK_ANSI_C, ctrlOpt)
+        case .leftAndRight: return KeyCombo(kVK_LeftArrow, ctrlOpt.union(.maskShift))
+        case .rightAndLeft: return KeyCombo(kVK_RightArrow, ctrlOpt.union(.maskShift))
+        case .topAndBottom: return KeyCombo(kVK_UpArrow, ctrlOpt.union(.maskShift))
+        case .bottomAndTop: return KeyCombo(kVK_DownArrow, ctrlOpt.union(.maskShift))
+        case .quarters: return KeyCombo(kVK_ANSI_Q, ctrlOpt.union(.maskShift))
         case .restore: return KeyCombo(kVK_Delete, ctrlOpt)
         case .nextDisplay: return KeyCombo(kVK_RightArrow, ctrlOpt.union(.maskCommand))
         }
@@ -136,7 +162,7 @@ nonisolated enum WindowAction: String, CaseIterable, Identifiable, Sendable, Cod
             let width = min(current.width, area.width)
             let height = min(current.height, area.height)
             return CGRect(x: area.midX - width / 2, y: area.midY - height / 2, width: width, height: height)
-        case .restore, .nextDisplay:
+        case .restore, .nextDisplay, .leftAndRight, .rightAndLeft, .topAndBottom, .bottomAndTop, .quarters:
             return nil
         }
     }

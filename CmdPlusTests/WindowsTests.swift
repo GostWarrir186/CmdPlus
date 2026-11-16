@@ -1,5 +1,6 @@
 import AppKit
 import Carbon.HIToolbox
+import SwiftUI
 import Testing
 @testable import CmdPlus
 
@@ -54,10 +55,30 @@ struct WindowLayoutTests {
         #expect(screen.contains(almost) && almost.width < screen.width)
     }
 
-    @Test("Restore and Next Display aren't layouts")
+    @Test("Restore, Next Display and Arrange aren't single-window layouts")
     func notLayouts() {
         #expect(frame(.restore) == nil)
         #expect(frame(.nextDisplay) == nil)
+        #expect(frame(.quarters) == nil)
+    }
+
+    @Test("Arrange places 2 or 4 windows side by side without overlap",
+          arguments: [WindowAction.leftAndRight, .rightAndLeft, .topAndBottom, .bottomAndTop, .quarters])
+    func arrange(action: WindowAction) throws {
+        let layouts = try #require(action.arrangement)
+        #expect(layouts.count == (action == .quarters ? 4 : 2))
+        let frames = layouts.compactMap { $0.frame(in: screen, current: window, gap: 8) }
+        #expect(frames.count == layouts.count)
+        for (i, a) in frames.enumerated() {
+            #expect(screen.contains(a))
+            for b in frames[(i + 1)...] { #expect(!a.intersects(b)) }
+        }
+    }
+
+    @Test("Left & Right puts the front window on the left; Right & Left on the right")
+    func arrangeOrder() {
+        #expect(WindowAction.leftAndRight.arrangement?.first == .leftHalf)
+        #expect(WindowAction.rightAndLeft.arrangement?.first == .rightHalf)
     }
 
     @Test("Layouts work on a second screen with an offset origin")
@@ -90,9 +111,9 @@ struct WindowLayoutTests {
         }
     }
 
-    @Test("Settings groups list every action exactly once")
+    @Test("Groups list every action exactly once")
     func groups() {
-        let grouped = WindowAction.groups.flatMap { $0 }
+        let grouped = WindowAction.groups.flatMap(\.actions)
         #expect(Set(grouped) == Set(WindowAction.allCases) && grouped.count == WindowAction.allCases.count)
     }
 }
@@ -124,6 +145,16 @@ struct WindowShortcutTests {
 
         reloaded.resetShortcuts()
         #expect(reloaded.shortcuts == WindowSettings.defaultShortcuts)
+    }
+
+    @Test("Shortcuts show up in menus the same way")
+    func menuShortcuts() throws {
+        let left = try #require(WindowSettings.defaultShortcuts[.leftHalf]?.swiftUIShortcut)
+        #expect(left.key == .leftArrow)
+        #expect(left.modifiers == [.control, .option])
+        let quarters = try #require(WindowSettings.defaultShortcuts[.quarters]?.swiftUIShortcut)
+        #expect(quarters.key == KeyEquivalent("q"))
+        #expect(quarters.modifiers == [.control, .option, .shift])
     }
 
     @Test("Key combos convert to Carbon hotkey modifiers")

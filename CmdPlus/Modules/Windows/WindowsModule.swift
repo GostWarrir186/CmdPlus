@@ -10,7 +10,7 @@ final class WindowsModule: AppModule {
     static let descriptor = ModuleDescriptor(
         id: "windows",
         title: "Windows",
-        summary: "Snap windows to halves, quarters and thirds with shortcuts.",
+        summary: "Move and resize windows with shortcuts or from the menu bar.",
         systemImage: "uiwindow.split.2x1",
         tint: .teal,
         // Needs Accessibility permission, so the user turns it on deliberately.
@@ -24,6 +24,7 @@ final class WindowsModule: AppModule {
     private(set) var conflicts: Set<WindowAction> = []
 
     @ObservationIgnored private let mover = WindowMover()
+    @ObservationIgnored private let footprint = WindowFootprint()
     @ObservationIgnored private var hotKeys: [GlobalHotKey] = []
     /// While a shortcut is being recorded, hotkeys are off so the keys reach the recorder.
     @ObservationIgnored var isRecordingShortcut = false {
@@ -57,7 +58,9 @@ final class WindowsModule: AppModule {
             NSSound.beep()
             return
         }
-        if !mover.perform(action, gap: settings.gap.points) {
+        if let frames = mover.perform(action, gap: settings.gap.points) {
+            footprint.flash(frames)
+        } else {
             NSSound.beep()
         }
     }
