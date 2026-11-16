@@ -23,9 +23,8 @@ final class MouseEventTap {
 
     private var scroller = SmoothScroller()
     private var glideTimer: Timer?
-    /// Modifier keys and position of the last real wheel event, reused for the glide.
+    /// Modifier keys of the last real wheel event, reused for the glide.
     private var glideFlags: CGEventFlags = []
-    private var glideLocation: CGPoint = .zero
 
     private lazy var eventSource: CGEventSource? = {
         let source = CGEventSource(stateID: .combinedSessionState)
@@ -133,7 +132,6 @@ final class MouseEventTap {
             scroller.stepFraction = fraction
             scroller.add(dx: horizontal * ScrollPlanner.pixelsPerLine, dy: vertical * ScrollPlanner.pixelsPerLine)
             glideFlags = flags
-            glideLocation = event.location
             startGlide()
             return nil
         }
@@ -171,8 +169,10 @@ final class MouseEventTap {
             event.setIntegerValueField(.scrollWheelEventScrollPhase, value: Self.phaseValue(step.phase))
         }
         event.flags = glideFlags
-        event.location = glideLocation
-        event.post(tap: .cghidEventTap)
+        // No location and not the HID level: posting there with a position
+        // would pull the cursor back to where the glide started. A fresh event
+        // already carries the current cursor position.
+        event.post(tap: .cgSessionEventTap)
     }
 
     /// Values of `kCGScrollPhase…` (began 1, changed 2, ended 4).
