@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Параметры модуля «История буфера» в окне настроек.
 struct ClipboardSettingsView: View {
     let module: ClipboardHistoryModule
     @State private var isConfirmingClear = false
@@ -93,7 +92,7 @@ struct ClipboardSettingsView: View {
         .onChange(of: settings.secretRetention) {
             store.purgeExpiredSecrets()
         }
-        // Разрешение выдают в Системных настройках — проверяем, когда пользователь вернулся.
+        // Permission is granted in System Settings, so re-check when the user comes back.
         .onAppear { module.refreshPasteAccess() }
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
             module.refreshPasteAccess()
@@ -101,15 +100,13 @@ struct ClipboardSettingsView: View {
     }
 }
 
-/// Выбор лимита: готовые варианты или своё число.
-///
-/// Готовый вариант применяется сразу. Своё число — только по Enter или кнопке
-/// «Применить», иначе при наборе «100» после первой «1» удалилась бы почти вся история.
+/// Limit picker: presets apply immediately, a custom number only on Return
+/// or Apply — otherwise typing "100" would wipe history right after the "1".
 private struct HistoryLimitPicker: View {
     @Bindable var settings: ClipboardSettings
     let store: ClipboardStore
 
-    /// `nil` в списке означает «Своё значение…».
+    /// `nil` means "Custom…".
     @State private var choice: Int?
     @State private var customValue = ClipboardSettings.defaultLimit
 

@@ -1,7 +1,6 @@
 import Foundation
 import Observation
 
-/// Сколько хранить пароли и коды.
 enum SecretRetention: String, CaseIterable, Identifiable {
     case oneHour
     case oneDay
@@ -10,7 +9,7 @@ enum SecretRetention: String, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
-    /// `nil` — хранить всегда.
+    /// `nil` means keep forever.
     var interval: TimeInterval? {
         switch self {
         case .oneHour: 60 * 60
@@ -30,14 +29,11 @@ enum SecretRetention: String, CaseIterable, Identifiable {
     }
 }
 
-/// Настройки модуля. Лежат в UserDefaults — это обычные параметры,
-/// сами пароли сюда никогда не попадают.
+/// Module settings, stored in UserDefaults. Passwords never end up here.
 @Observable
 final class ClipboardSettings {
-    /// Готовые варианты лимита в настройках.
     static let limitPresets = [5, 10, 25, 50, 100, 250, 500]
     static let defaultLimit = 10
-    /// Допустимые значения для своего числа.
     static let limitRange = 1...500
 
     private enum Key {
@@ -47,8 +43,8 @@ final class ClipboardSettings {
         static let pasteDirectly = "clipboard.pasteDirectly"
     }
 
-    /// Сколько незакреплённых записей хранить. Закреплённые в лимит не входят.
-    /// Значение всегда держится в пределах `limitRange`.
+    /// How many unpinned items to keep (pinned ones don't count).
+    /// Always clamped to `limitRange`.
     var historyLimit: Int {
         didSet {
             let clamped = historyLimit.clamped(to: Self.limitRange)
@@ -65,15 +61,15 @@ final class ClipboardSettings {
         didSet { defaults.set(secretRetention.rawValue, forKey: Key.secretRetention) }
     }
 
-    /// Выбор записи сразу вставляет её в приложение, где вы работали
-    /// (если есть разрешение «Универсальный доступ»). Иначе — только копирует.
+    /// Choosing an item pastes it into the previous app. Needs Accessibility
+    /// permission; without it the item is only copied.
     var pasteDirectly: Bool {
         didSet { defaults.set(pasteDirectly, forKey: Key.pasteDirectly) }
     }
 
     @ObservationIgnored private let defaults: UserDefaults
 
-    /// `defaults` можно подменить — например, в тестах.
+    /// Pass custom defaults in tests.
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         let savedLimit = defaults.object(forKey: Key.historyLimit) as? Int ?? Self.defaultLimit

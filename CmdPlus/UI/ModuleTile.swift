@@ -1,8 +1,7 @@
 import SwiftUI
 
-/// Плитка в стиле Пункта управления: цветной кружок с иконкой,
-/// заголовок, подпись, сочетание клавиш справа и произвольное содержимое снизу.
-/// Фон — Liquid Glass.
+/// Control Center-style tile on Liquid Glass: tinted icon, title, subtitle,
+/// optional shortcut, and any extra content below.
 struct ModuleTile<Content: View>: View {
     let title: LocalizedStringResource
     let subtitle: String
@@ -12,7 +11,7 @@ struct ModuleTile<Content: View>: View {
     let action: () -> Void
     @ViewBuilder var content: Content
 
-    /// Ширина колонки иконки и отступ до текста — по ним выравнивается содержимое плитки.
+    /// Icon column width and spacing — tile content lines up with these.
     static var iconSize: CGFloat { 32 }
     static var iconSpacing: CGFloat { 10 }
 
@@ -64,8 +63,7 @@ extension ModuleTile where Content == EmptyView {
     }
 }
 
-/// Сочетание клавиш в виде маленькой «клавиши». Форма — капсула,
-/// она одинаково хорошо смотрится внутри любого скругления.
+/// A keyboard shortcut drawn as a small key. A capsule fits inside any corner radius.
 struct KeyCap: View {
     let text: String
 
@@ -79,13 +77,9 @@ struct KeyCap: View {
     }
 }
 
-/// Иконка в цветной подложке: кружок (как в Пункте управления)
-/// или скруглённый квадрат (как в Системных настройках).
-///
-/// Квадратная иконка следует теме, как в Системных настройках macOS 26:
-/// - светлая тема — цветная подложка, белый символ;
-/// - тёмная тема — тёмная подложка с тонкой рамкой, цветной символ.
-/// Кружки Пункта управления остаются цветными в обеих темах.
+/// An SF Symbol on a tinted background — a circle (Control Center) or a rounded
+/// square (System Settings). Like System Settings in macOS 26, squares turn dark
+/// with a tinted symbol in dark mode; circles stay colored.
 struct TintedIcon: View {
     enum Style {
         case circle
@@ -100,9 +94,8 @@ struct TintedIcon: View {
     var style: Style = .roundedSquare
 
     var body: some View {
-        // Символ вписывается в квадрат 58% подложки: у разных SF Symbols разные
-        // пропорции и базовая линия, а так любой символ встаёт точно по центру
-        // и выглядит одного размера с соседями.
+        // Fit the symbol into 58% of the tile. Symbols differ in proportions and
+        // baseline, so this keeps every one centered and the same visual size.
         Image(systemName: systemImage)
             .resizable()
             .fontWeight(.semibold)

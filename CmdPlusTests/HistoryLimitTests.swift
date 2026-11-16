@@ -2,16 +2,16 @@ import Foundation
 import Testing
 @testable import CmdPlus
 
-@Suite("Лимит записей")
+@Suite("History limit")
 struct HistoryLimitTests {
-    @Test("По умолчанию лимит — 10")
+    @Test("Default limit is 10")
     func defaultLimit() {
         let env = TestEnvironment()
         defer { env.cleanUp() }
         #expect(env.makeSettings().historyLimit == ClipboardSettings.defaultLimit)
     }
 
-    @Test("Лимит удерживается в пределах 1–500", arguments: [
+    @Test("Limit is clamped to 1–500", arguments: [
         (-5, 1), (0, 1), (1, 1), (37, 37), (500, 500), (501, 500), (10_000, 500),
     ])
     func limitIsClamped(input: Int, expected: Int) {
@@ -22,7 +22,7 @@ struct HistoryLimitTests {
         #expect(settings.historyLimit == expected)
     }
 
-    @Test("Лимит сохраняется в UserDefaults и читается при следующем запуске")
+    @Test("Limit persists across launches")
     func limitPersists() {
         let env = TestEnvironment()
         defer { env.cleanUp() }
@@ -30,7 +30,7 @@ struct HistoryLimitTests {
         #expect(env.makeSettings().historyLimit == 42)
     }
 
-    @Test("Сохранённое недопустимое значение исправляется при чтении")
+    @Test("Invalid saved limit is clamped on load")
     func invalidSavedLimitIsClamped() {
         let env = TestEnvironment()
         defer { env.cleanUp() }
@@ -38,7 +38,7 @@ struct HistoryLimitTests {
         #expect(env.makeSettings().historyLimit == 500)
     }
 
-    @Test("Сверх лимита удаляются самые старые записи")
+    @Test("Oldest items are dropped over the limit")
     func trimsOldest() async {
         let env = TestEnvironment()
         defer { env.cleanUp() }
@@ -47,7 +47,7 @@ struct HistoryLimitTests {
         #expect(store.texts == ["5", "4", "3"])
     }
 
-    @Test("Лимит 1 оставляет только последнюю запись")
+    @Test("Limit of 1 keeps only the newest item")
     func limitOne() async {
         let env = TestEnvironment()
         defer { env.cleanUp() }
@@ -57,7 +57,7 @@ struct HistoryLimitTests {
         #expect(store.texts == ["новое"])
     }
 
-    @Test("Лимит 500 вмещает ровно 500 записей")
+    @Test("Limit of 500 holds exactly 500 items")
     func limitFiveHundred() async {
         let env = TestEnvironment()
         defer { env.cleanUp() }
@@ -68,7 +68,7 @@ struct HistoryLimitTests {
         #expect(!store.texts.contains("запись 1"))
     }
 
-    @Test("Закреплённые записи не считаются в лимит и не удаляются")
+    @Test("Pinned items don't count toward the limit and aren't removed")
     func pinnedNotCounted() async {
         let env = TestEnvironment()
         defer { env.cleanUp() }
@@ -82,7 +82,7 @@ struct HistoryLimitTests {
         #expect(Set(store.texts) == ["важное", "d", "c"])
     }
 
-    @Test("Закреплённые остаются, даже если их больше лимита")
+    @Test("Pinned items stay even when they exceed the limit")
     func manyPinned() async {
         let env = TestEnvironment()
         defer { env.cleanUp() }
@@ -96,7 +96,7 @@ struct HistoryLimitTests {
         #expect(store.unpinnedCount == 1)
     }
 
-    @Test("Уменьшение лимита сразу удаляет лишние старые записи")
+    @Test("Lowering the limit trims old items right away")
     func applyLimitAfterChange() async {
         let env = TestEnvironment()
         defer { env.cleanUp() }
@@ -107,7 +107,7 @@ struct HistoryLimitTests {
         #expect(store.texts == ["5", "4"])
     }
 
-    @Test("Повторное копирование поднимает запись наверх, а не дублирует")
+    @Test("Copying again moves the item to the top instead of duplicating it")
     func duplicateMovesToTop() async {
         let env = TestEnvironment()
         defer { env.cleanUp() }

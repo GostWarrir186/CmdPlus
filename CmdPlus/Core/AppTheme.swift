@@ -1,8 +1,7 @@
 import AppKit
 import SwiftUI
 
-/// Тема оформления приложения. Хранится в UserDefaults.
-/// Применяется ко всему приложению сразу: окно настроек, панель в строке меню, окно истории.
+/// App-wide appearance, applied to every window at once.
 enum AppTheme: String, CaseIterable, Identifiable {
     case system
     case light
@@ -20,7 +19,6 @@ enum AppTheme: String, CaseIterable, Identifiable {
         }
     }
 
-    /// `nil` — следовать системной теме.
     private var appearance: NSAppearance? {
         switch self {
         case .system: nil

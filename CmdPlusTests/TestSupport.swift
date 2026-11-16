@@ -1,8 +1,8 @@
 import Foundation
 @testable import CmdPlus
 
-/// Изолированное окружение для теста: своя временная папка и свои UserDefaults.
-/// Настоящая история и настройки пользователя не затрагиваются.
+/// Isolated test environment: its own temp folder and UserDefaults,
+/// so real history and settings are never touched.
 struct TestEnvironment {
     let directory: URL
     let defaults: UserDefaults
@@ -23,7 +23,7 @@ struct TestEnvironment {
         return settings
     }
 
-    /// Создаёт хранилище и дожидается загрузки (как при запуске приложения).
+    /// Creates a store and waits for it to load, like at app launch.
     func makeStore(limit: Int? = nil, settings: ClipboardSettings? = nil) async -> ClipboardStore {
         let store = ClipboardStore(settings: settings ?? makeSettings(limit: limit), directory: directory)
         await store.load()

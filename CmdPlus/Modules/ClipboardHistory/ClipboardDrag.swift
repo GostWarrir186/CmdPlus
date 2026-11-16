@@ -1,13 +1,10 @@
 import AppKit
 import UniformTypeIdentifiers
 
-/// Перетаскивание записи из окна истории в другие приложения.
 extension ClipboardHistoryModule {
-    /// Что «несёт» перетаскиваемая запись:
-    /// - текст — как обычный текст;
-    /// - картинка — как PNG (в Finder появится файл, в редакторах — сама картинка);
-    /// - файлы — как ссылка на файл (берём первый: SwiftUI перетаскивает один объект).
-    /// Пароли не перетаскиваются: для них нужен Touch ID.
+    /// What a dragged item carries: text as text, images as PNG (a file in Finder,
+    /// an image in editors), files as file URLs — only the first one, since SwiftUI
+    /// drags a single item. Passwords can't be dragged; they need Touch ID.
     func dragItemProvider(for item: ClipboardItem) -> NSItemProvider? {
         guard !item.isSecret else { return nil }
         switch item.kind {

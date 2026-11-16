@@ -1,29 +1,26 @@
 import Foundation
 
-/// Тип содержимого записи в истории.
 nonisolated enum ClipboardKind: String, Codable, Sendable {
     case text
     case image
     case files
 }
 
-/// Одна запись истории. Хранится в history.json.
-/// Для паролей (`isSecret`) сам текст здесь НЕ хранится — только в Keychain.
+/// One history entry, stored in history.json.
+/// Passwords never store their text here — it lives only in the Keychain.
 nonisolated struct ClipboardItem: Identifiable, Codable, Equatable, Sendable {
     let id: UUID
     var kind: ClipboardKind
     var createdAt: Date
-    /// Текст записи (для обычного текста). У секретов всегда `nil`.
     var text: String?
-    /// Имя PNG-файла в папке images.
+    /// PNG file name inside the images folder.
     var imageFile: String?
     var imageWidth: Int?
     var imageHeight: Int?
-    /// Пути скопированных файлов.
     var filePaths: [String]?
     var isPinned: Bool
     var isSecret: Bool
-    /// Отпечаток содержимого для поиска дублей. У секретов не хранится.
+    /// Used to spot duplicates. Not stored for passwords.
     var contentHash: String?
     var sourceAppName: String?
     var sourceBundleID: String?
@@ -62,7 +59,7 @@ nonisolated struct ClipboardItem: Identifiable, Codable, Equatable, Sendable {
         (filePaths ?? []).map { URL(filePath: $0) }
     }
 
-    /// Текст, по которому идёт поиск. У секретов — только имя приложения.
+    /// What search looks at. For passwords that's only the source app name.
     var searchableText: String {
         var parts: [String] = []
         if !isSecret, let text { parts.append(text) }

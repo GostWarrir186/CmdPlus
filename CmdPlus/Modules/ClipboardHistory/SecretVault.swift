@@ -2,13 +2,11 @@ import Foundation
 import LocalAuthentication
 import Security
 
-/// Хранилище паролей и кодов из буфера.
-///
-/// Каждый секрет — отдельная запись в Keychain этого Мака:
-/// - `kSecUseDataProtectionKeychain` — современная связка ключей, где работают флаги ниже;
-/// - `kSecAttrSynchronizable = false` — никакой синхронизации через iCloud;
-/// - `kSecAttrAccessibleWhenUnlockedThisDeviceOnly` — доступно только на этом Маке и только когда он разблокирован;
-/// - `.userPresence` — прочитать можно только после Touch ID или пароля пользователя.
+/// Stores passwords and codes from the clipboard — one Keychain item each:
+/// - data protection keychain, so the flags below actually apply;
+/// - never synced to iCloud;
+/// - only on this Mac, only while it's unlocked;
+/// - reading requires Touch ID or the user's password.
 enum SecretVault {
     private static let service = "com.azam.CmdPlus.clipboard-secret"
 
@@ -52,12 +50,11 @@ enum SecretVault {
         guard status == errSecSuccess else { throw VaultError(status: status) }
     }
 
-    /// Запрашивает Touch ID (или пароль) и возвращает секрет.
     static func reveal(account: String, reason: String) async throws -> String {
         let context = LAContext()
         try await context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: reason)
 
-        // Передаём уже подтверждённый контекст, чтобы система не спрашивала второй раз.
+        // Reuse the already-authenticated context so the user isn't asked twice.
         var query = baseQuery(account: account)
         query[kSecReturnData as String] = true
         query[kSecMatchLimit as String] = kSecMatchLimitOne

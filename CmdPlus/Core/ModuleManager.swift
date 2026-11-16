@@ -1,14 +1,14 @@
 import SwiftUI
 import Observation
 
-/// Включает и выключает модули, помнит выбор пользователя между запусками.
+/// Turns modules on and off and remembers the choice between launches.
 @Observable
 final class ModuleManager {
     static let shared = ModuleManager()
 
     let descriptors: [ModuleDescriptor] = ModuleRegistry.all
     private(set) var enabledIDs: Set<String>
-    /// Только запущенные модули. Выключенных здесь нет — их объекты не существуют.
+    /// Disabled modules aren't here at all — their objects don't exist.
     private(set) var activeModules: [String: any AppModule] = [:]
 
     private static let enabledKey = "modules.enabled"
@@ -21,7 +21,6 @@ final class ModuleManager {
         }
     }
 
-    /// Запущенные модули в порядке реестра — для плиток в строке меню.
     var activeDescriptors: [ModuleDescriptor] {
         descriptors.filter { activeModules[$0.id] != nil }
     }
@@ -46,7 +45,6 @@ final class ModuleManager {
         UserDefaults.standard.set(Array(enabledIDs).sorted(), forKey: Self.enabledKey)
     }
 
-    /// Готовая привязка для `Toggle` в настройках.
     func binding(for id: String) -> Binding<Bool> {
         Binding(
             get: { self.isEnabled(id) },
@@ -75,7 +73,7 @@ final class ModuleManager {
 
     private func deactivate(_ id: String) {
         guard let module = activeModules.removeValue(forKey: id) else { return }
-        // После stop() на модуль больше никто не ссылается, и он освобождается.
+        // Nothing holds the module after stop(), so it's freed here.
         module.stop()
     }
 }

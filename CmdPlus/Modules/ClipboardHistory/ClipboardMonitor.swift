@@ -1,10 +1,10 @@
 import AppKit
 
-/// Следит за системным буфером обмена.
+/// Watches the system clipboard.
 ///
-/// У macOS нет уведомления «буфер изменился», поэтому дважды в секунду
-/// сравниваем счётчик `changeCount` — это дёшево и не читает само содержимое.
-/// Содержимое читаем только когда счётчик изменился.
+/// macOS has no "clipboard changed" notification, so we poll `changeCount`
+/// twice a second. That's cheap and doesn't read the contents — we only read
+/// them when the count actually changes.
 final class ClipboardMonitor {
     enum Content {
         case text(String)
@@ -13,7 +13,7 @@ final class ClipboardMonitor {
         case secret(String)
     }
 
-    /// Типы, которыми менеджеры паролей помечают секретные данные (см. nspasteboard.org).
+    /// Types password managers use to mark secrets (see nspasteboard.org).
     static let concealedType = NSPasteboard.PasteboardType("org.nspasteboard.ConcealedType")
     private static let secretTypes: Set<String> = [
         "org.nspasteboard.ConcealedType",
@@ -21,7 +21,6 @@ final class ClipboardMonitor {
         "com.agilebits.onepassword",
     ]
 
-    /// Слишком большие данные не сохраняем.
     private static let maxTextLength = 1_000_000
     private static let maxImageBytes = 30 * 1024 * 1024
 
@@ -47,7 +46,7 @@ final class ClipboardMonitor {
         pollTask = nil
     }
 
-    /// Вызываем после того, как сами положили что-то в буфер, чтобы не записать это повторно.
+    /// Call after we write to the clipboard ourselves, so we don't capture it again.
     func markOwnWrite() {
         ownChangeCount = pasteboard.changeCount
         lastChangeCount = pasteboard.changeCount
@@ -82,7 +81,7 @@ final class ClipboardMonitor {
             return .files(urls)
         }
 
-        // Если есть и текст, и картинка (например, ячейка из таблицы), берём текст.
+        // Prefer text when both are present (e.g. a spreadsheet cell).
         if let text = pasteboard.string(forType: .string),
            !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             guard text.count <= Self.maxTextLength else { return nil }

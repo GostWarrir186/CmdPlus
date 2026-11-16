@@ -1,20 +1,17 @@
 import SwiftUI
 
-/// Работающий экземпляр модуля. Создаётся только когда модуль включён
-/// и уничтожается при выключении — поэтому выключенный модуль не занимает память.
+/// A running module instance. It only exists while the module is enabled,
+/// so a disabled module costs nothing.
 protocol AppModule: AnyObject {
-    /// Вызывается сразу после создания: подписки, таймеры, горячие клавиши.
     func start()
-    /// Вызывается перед уничтожением: сохранить данные и всё отключить.
+    /// Save state and tear everything down.
     func stop()
-    /// Плитка для панели в строке меню.
     func makeTile() -> AnyView
-    /// Параметры модуля для правой части окна настроек.
     func makeSettingsView() -> AnyView
 }
 
-/// «Паспорт» модуля: лёгкое описание, которое есть всегда (имя, иконка),
-/// плюс фабрика `make`, создающая тяжёлый экземпляр только по требованию.
+/// Lightweight info that's always available (name, icon), plus a factory
+/// that builds the real module only when it's turned on.
 struct ModuleDescriptor: Identifiable {
     let id: String
     let title: LocalizedStringResource
@@ -25,7 +22,7 @@ struct ModuleDescriptor: Identifiable {
     let make: () -> any AppModule
 }
 
-/// Список всех модулей приложения. Новый модуль = одна строка здесь.
+/// Every module in the app. Adding one is a single line here.
 enum ModuleRegistry {
     static let all: [ModuleDescriptor] = [
         ClipboardHistoryModule.descriptor,

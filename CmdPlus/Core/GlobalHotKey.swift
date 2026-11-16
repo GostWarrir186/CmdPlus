@@ -1,8 +1,7 @@
 import Carbon.HIToolbox
 
-/// Глобальное сочетание клавиш (работает, даже когда активно другое приложение).
-/// Используем Carbon `RegisterEventHotKey`: он разрешён в песочнице
-/// и не требует доступа к «Универсальному доступу».
+/// A system-wide shortcut. Carbon's `RegisterEventHotKey` works inside the
+/// sandbox and doesn't need Accessibility permission.
 final class GlobalHotKey {
     private var hotKeyRef: EventHotKeyRef?
     private let identifier: UInt32
@@ -11,10 +10,7 @@ final class GlobalHotKey {
     private static var nextIdentifier: UInt32 = 1
     private static var isHandlerInstalled = false
 
-    /// - Parameters:
-    ///   - keyCode: виртуальный код клавиши, например `kVK_ANSI_V`.
-    ///   - modifiers: Carbon-модификаторы, например `cmdKey | shiftKey`.
-    /// Возвращает `nil`, если сочетание уже занято другим приложением.
+    /// Returns `nil` if another app already owns the shortcut.
     init?(keyCode: Int, modifiers: Int, action: @escaping () -> Void) {
         Self.installHandlerIfNeeded()
         identifier = Self.nextIdentifier
@@ -31,7 +27,7 @@ final class GlobalHotKey {
         Self.actions[identifier] = action
     }
 
-    /// Обязательно вызывать при выключении модуля.
+    /// Must be called when the module shuts down.
     func unregister() {
         if let hotKeyRef {
             UnregisterEventHotKey(hotKeyRef)
@@ -55,8 +51,7 @@ final class GlobalHotKey {
     }
 }
 
-/// C-функция, которую вызывает система при нажатии сочетания.
-/// Она приходит на главном потоке, поэтому безопасно переходим в MainActor.
+/// Called by the system on the main thread, so hopping to the main actor is safe.
 nonisolated private func hotKeyEventHandler(
     _ handler: EventHandlerCallRef?,
     _ event: EventRef?,

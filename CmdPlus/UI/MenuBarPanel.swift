@@ -1,11 +1,9 @@
 import SwiftUI
 
-/// Окно, которое выпадает по клику на иконку в строке меню.
-/// Показывает плитки только включённых модулей.
+/// The panel that drops down from the menu bar icon. Shows tiles for enabled modules.
 struct MenuBarPanel: View {
     @Environment(ModuleManager.self) private var modules
     @Environment(\.openSettings) private var openSettings
-    /// Закрывает саму панель строки меню.
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -35,7 +33,7 @@ struct MenuBarPanel: View {
         .frame(width: 340)
     }
 
-    /// Шапка как в Пункте управления: название слева, круглые кнопки справа.
+    /// Control Center-style header: title on the left, round buttons on the right.
     private var header: some View {
         HStack(spacing: 8) {
             Text(verbatim: "CmdPlus")
@@ -45,9 +43,9 @@ struct MenuBarPanel: View {
             Spacer()
 
             Button("Settings…", systemImage: "gearshape") {
-                // Панель убираем, чтобы она не висела поверх окна настроек.
+                // Close the panel so it doesn't sit on top of Settings.
                 dismiss()
-                // У приложения без Dock окно настроек нужно явно вывести на передний план.
+                // Without a Dock icon, Settings has to be brought forward explicitly.
                 NSApp.activate()
                 openSettings()
             }

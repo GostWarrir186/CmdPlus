@@ -2,8 +2,7 @@ import Foundation
 import Observation
 import ServiceManagement
 
-/// Автозапуск при входе в систему через SMAppService.
-/// Приложение стартует тихо: у него нет окон при запуске, только иконка в строке меню.
+/// Launch at login via SMAppService. The app starts quietly — menu bar icon only.
 @Observable
 final class LaunchAtLogin {
     private(set) var status: SMAppService.Status = SMAppService.mainApp.status

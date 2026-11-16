@@ -2,9 +2,9 @@ import Foundation
 import Testing
 @testable import CmdPlus
 
-@Suite("Сохранение, загрузка и удаление старых записей")
+@Suite("Saving, loading and cleanup")
 struct HistoryPersistenceTests {
-    @Test("История сохраняется на диск и загружается обратно без потерь")
+    @Test("History round-trips through disk unchanged")
     func roundTrip() async throws {
         let env = TestEnvironment()
         defer { env.cleanUp() }
@@ -21,7 +21,7 @@ struct HistoryPersistenceTests {
         #expect(reloaded.items.last?.sourceAppName == "Safari")
     }
 
-    @Test("Нет файла истории — пустая история без ошибок")
+    @Test("Missing history file means empty history, no errors")
     func missingFile() async {
         let env = TestEnvironment()
         defer { env.cleanUp() }
@@ -30,7 +30,7 @@ struct HistoryPersistenceTests {
         #expect(store.isLoaded)
     }
 
-    @Test("До загрузки история не перезаписывает файл")
+    @Test("Saving before load doesn't overwrite the file")
     func noSaveBeforeLoad() throws {
         let env = TestEnvironment()
         defer { env.cleanUp() }
@@ -44,7 +44,7 @@ struct HistoryPersistenceTests {
         #expect(try JSONDecoder().decode([ClipboardItem].self, from: data) == saved)
     }
 
-    @Test("Повреждённый файл откладывается в сторону, а не теряется")
+    @Test("Corrupt file is moved aside, not lost")
     func corruptFileBackedUp() async throws {
         let env = TestEnvironment()
         defer { env.cleanUp() }
@@ -58,7 +58,7 @@ struct HistoryPersistenceTests {
         #expect(try Data(contentsOf: backup) == Data("не json".utf8))
     }
 
-    @Test("Скопированное во время загрузки остаётся сверху")
+    @Test("Items copied during load stay on top")
     func captureDuringLoad() async throws {
         let env = TestEnvironment()
         defer { env.cleanUp() }
@@ -70,7 +70,7 @@ struct HistoryPersistenceTests {
         #expect(store.texts == ["свежее", "из файла"])
     }
 
-    @Test("При загрузке применяется текущий лимит")
+    @Test("Current limit is applied on load")
     func limitAppliedOnLoad() async throws {
         let env = TestEnvironment()
         defer { env.cleanUp() }
@@ -80,7 +80,7 @@ struct HistoryPersistenceTests {
         #expect(store.texts == ["1", "2"])
     }
 
-    @Test("Пароли старше срока хранения удаляются, закреплённые и свежие остаются")
+    @Test("Expired passwords are removed; pinned and fresh ones stay")
     func expiredSecretsPurged() async throws {
         let env = TestEnvironment()
         defer { env.cleanUp() }
@@ -101,7 +101,7 @@ struct HistoryPersistenceTests {
         #expect(store.items.last?.text == "обычный старый текст")
     }
 
-    @Test("Срок «Навсегда» не удаляет пароли")
+    @Test("\"Forever\" retention keeps passwords")
     func foreverKeepsSecrets() async throws {
         let env = TestEnvironment()
         defer { env.cleanUp() }
@@ -113,7 +113,7 @@ struct HistoryPersistenceTests {
         #expect(store.items.count == 1)
     }
 
-    @Test("Пароль не попадает в history.json открытым текстом")
+    @Test("Passwords never reach history.json in plain text")
     func secretTextNotWritten() async throws {
         let env = TestEnvironment()
         defer { env.cleanUp() }
@@ -126,7 +126,7 @@ struct HistoryPersistenceTests {
         #expect(store.items.first { $0.isSecret }?.text == nil)
     }
 
-    @Test("Удаление и очистка незакреплённых")
+    @Test("Delete and clear unpinned")
     func deleteAndClear() async {
         let env = TestEnvironment()
         defer { env.cleanUp() }
@@ -139,7 +139,7 @@ struct HistoryPersistenceTests {
         #expect(store.texts == ["b"])
     }
 
-    @Test("«Вставлять сразу» включено по умолчанию и сохраняется")
+    @Test("\"Paste directly\" is on by default and persists")
     func pasteDirectlySetting() {
         let env = TestEnvironment()
         defer { env.cleanUp() }

@@ -1,9 +1,9 @@
 import SwiftUI
 
-/// Подсвечивает найденные слова в тексте.
+/// Highlights search matches in text.
 enum SearchHighlighter {
-    /// Сжимает переводы строк в пробелы и обрезает текст до `limit` символов.
-    /// Если первое совпадение далеко от начала, показывает фрагмент вокруг него.
+    /// Flattens newlines and trims to `limit` characters. If the first match is far
+    /// from the start, shows a snippet around it instead.
     static func preview(of text: String, terms: [String], limit: Int = 300) -> String {
         let flat = text.split(whereSeparator: \.isNewline)
             .map { $0.trimmingCharacters(in: .whitespaces) }
@@ -26,7 +26,6 @@ enum SearchHighlighter {
         return prefix + flat[start..<end] + suffix
     }
 
-    /// Строка, в которой совпадения выделены жирным и цветной подложкой.
     static func highlight(_ text: String, terms: [String]) -> AttributedString {
         var ranges: [Range<String.Index>] = []
         for term in terms where !term.isEmpty {
@@ -42,7 +41,7 @@ enum SearchHighlighter {
         var result = AttributedString()
         var cursor = text.startIndex
         for range in ranges {
-            // Совпадения могут пересекаться — выделяем только ещё не выделенную часть.
+            // Matches can overlap — only highlight the part not highlighted yet.
             let start = max(range.lowerBound, cursor)
             guard start < range.upperBound else { continue }
             result += AttributedString(text[cursor..<start])

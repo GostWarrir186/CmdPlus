@@ -1,9 +1,8 @@
 import AppKit
-import ImageIO
 import SwiftUI
 
-/// Окно истории в стиле Spotlight: поиск и фильтры сверху,
-/// слева компактный список, справа — превью выбранной записи.
+/// The history window: search and filters on top, a compact list on the left,
+/// a preview of the selected item on the right.
 struct HistoryView: View {
     @Bindable var model: HistoryViewModel
     @FocusState private var isSearchFocused: Bool
@@ -49,17 +48,35 @@ struct HistoryView: View {
             footer(count: items.count)
         }
         .frame(width: Design.History.windowSize.width, height: Design.History.windowSize.height)
+        // A backdrop under the glass so wallpaper doesn't bleed through the text.
+        // Window background color adapts to light and dark mode.
+        .background(Color(nsColor: .windowBackgroundColor).opacity(Design.History.backgroundOpacity))
         .onChange(of: model.focusRequest, initial: true) {
             isSearchFocused = true
         }
         .onChange(of: model.query) { model.selectFirst() }
         .onChange(of: model.filter) { model.selectFirst() }
+        // Preload neighbors' images so arrowing through the list is instant.
+        .onChange(of: selected?.id, initial: true) {
+            prefetchNeighbors(of: selected, in: items)
+        }
     }
 
-    // MARK: - Поиск и фильтры
+    private func prefetchNeighbors(of item: ClipboardItem?, in items: [ClipboardItem]) {
+        guard let item, let store = model.store,
+              let index = items.firstIndex(where: { $0.id == item.id }) else { return }
+        let range = max(index - 2, 0)...min(index + 2, items.count - 1)
+        let urls = items[range].compactMap { $0.kind == .image && !$0.isSecret ? store.imageURL(for: $0) : nil }
+        ImageLoader.prefetch(urls, size: .preview)
+    }
+
+    // MARK: - Search and filters
 
     private var searchBar: some View {
         HStack(spacing: 10) {
+            // Close sits on the left, like every macOS window (Esc and ⇧⌘V work too).
+            WindowCloseButton { model.close() }
+                .padding(.trailing, 4)
             Image(systemName: "magnifyingglass")
                 .font(.title3.weight(.medium))
                 .foregroundStyle(.secondary)
@@ -79,6 +96,7 @@ struct HistoryView: View {
         .padding(.horizontal, 18)
         .padding(.top, 16)
         .padding(.bottom, 12)
+        .background(WindowDragArea())
     }
 
     private var filterBar: some View {
@@ -92,9 +110,10 @@ struct HistoryView: View {
         }
         .padding(.horizontal, 14)
         .padding(.bottom, 10)
+        .background(WindowDragArea())
     }
 
-    // MARK: - Список
+    // MARK: - List
 
     private func list(_ items: [ClipboardItem], terms: [String]) -> some View {
         ScrollViewReader { proxy in
@@ -122,7 +141,7 @@ struct HistoryView: View {
         }
     }
 
-    // MARK: - Подвал
+    // MARK: - Footer
 
     private func footer(count: Int) -> some View {
         HStack(spacing: 14) {
@@ -136,7 +155,7 @@ struct HistoryView: View {
             ShortcutHint(keys: "⌘⌫", title: "Delete")
             Spacer()
             if model.needsPasteAccess {
-                // Разрешение просим только по нажатию — с понятной подписью.
+                // Only ask for permission when the user clicks.
                 Button("Allow Pasting…") { model.requestPasteAccess() }
                     .buttonStyle(.link)
                     .help(Text("CmdPlus needs the Accessibility permission to press ⌘V for you."))
@@ -148,12 +167,38 @@ struct HistoryView: View {
         .foregroundStyle(.secondary)
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
+        .background(WindowDragArea())
     }
 }
 
-// MARK: - Мелкие элементы
+// MARK: - Small pieces
 
-/// Фильтр-капсула: иконка + название. Выбранный — залит акцентным цветом.
+/// Close button styled like the system one: a red dot that shows × on hover.
+private struct WindowCloseButton: View {
+    let action: () -> Void
+    @State private var isHovered = false
+
+    var body: some View {
+        Button(action: action) {
+            Circle()
+                .fill(Color(nsColor: .systemRed))
+                .overlay(Circle().strokeBorder(.black.opacity(0.15), lineWidth: 0.5))
+                .overlay {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 7, weight: .heavy))
+                        .foregroundStyle(.black.opacity(0.55))
+                        .opacity(isHovered ? 1 : 0)
+                }
+                .frame(width: 13, height: 13)
+                .contentShape(.circle)
+        }
+        .buttonStyle(.plain)
+        .onHover { isHovered = $0 }
+        .help(Text("Close (esc)"))
+        .accessibilityLabel(Text("Close"))
+    }
+}
+
 private struct FilterChip: View {
     let filter: HistoryViewModel.Filter
     let isSelected: Bool
@@ -184,7 +229,6 @@ private struct FilterChip: View {
     }
 }
 
-/// Подсказка в подвале: клавиша в капсуле + действие.
 private struct ShortcutHint: View {
     let keys: String
     let title: LocalizedStringResource
@@ -197,12 +241,12 @@ private struct ShortcutHint: View {
     }
 }
 
-// MARK: - Строка списка
+// MARK: - List row
 
 private struct HistoryRow: View {
     let item: ClipboardItem
     let terms: [String]
-    /// Номер для ⌘1…⌘9 (у первых девяти строк).
+    /// Shortcut number for ⌘1…⌘9 (first nine rows only).
     let quickPickNumber: Int?
     let isSelected: Bool
     let imageURL: URL?
@@ -242,10 +286,16 @@ private struct HistoryRow: View {
             in: .rect(cornerRadius: Design.History.rowRadius)
         )
         .contentShape(.rect)
-        // Двойной клик — вставить, одинарный — показать в превью.
-        .onTapGesture(count: 2) { model.activate(item) }
-        .onTapGesture { model.selectedID = item.id }
-        // Запись можно перетащить в любое приложение.
+        // One tap handler, not two: pairing onTapGesture(count: 2) with onTapGesture
+        // makes SwiftUI wait out the double-click interval (~0.5s) before selecting.
+        // Select immediately and detect double-clicks from the event's click count.
+        .onTapGesture {
+            if NSApp.currentEvent?.clickCount ?? 1 >= 2 {
+                model.activate(item)
+            } else {
+                model.selectedID = item.id
+            }
+        }
         .draggableItem(item, model: model, imageURL: imageURL)
         .contextMenu {
             if model.pastesDirectly {
@@ -283,7 +333,6 @@ private struct HistoryRow: View {
         }
     }
 
-    /// «Приложение · когда».
     private var subtitle: some View {
         HStack(spacing: 4) {
             if let app = item.sourceAppName {
@@ -296,7 +345,7 @@ private struct HistoryRow: View {
 }
 
 extension View {
-    /// Делает запись перетаскиваемой (кроме паролей). Под курсором — иконка и название.
+    /// Makes an item draggable (except passwords), with its icon as the drag preview.
     @ViewBuilder
     fileprivate func draggableItem(_ item: ClipboardItem, model: HistoryViewModel, imageURL: URL?) -> some View {
         if model.canDrag(item) {
@@ -311,7 +360,7 @@ extension View {
     }
 }
 
-/// Иконка записи: миниатюра картинки, иконка файла или символ в цветной подложке.
+/// Image thumbnail, file icon, or a symbol on a tinted background.
 private struct HistoryItemIcon: View {
     let item: ClipboardItem
     let imageURL: URL?
@@ -346,9 +395,8 @@ private struct HistoryItemIcon: View {
     }
 }
 
-// MARK: - Превью
+// MARK: - Preview
 
-/// Правая часть окна: содержимое записи целиком, сведения и действия.
 private struct HistoryPreview: View {
     let item: ClipboardItem
     let terms: [String]
@@ -356,7 +404,7 @@ private struct HistoryPreview: View {
     let imageURL: URL?
     let model: HistoryViewModel
 
-    /// Больше не показываем — превью должно открываться мгновенно.
+    /// Cap the preview so it always opens instantly.
     private static let maxTextLength = 20_000
 
     var body: some View {
@@ -374,7 +422,7 @@ private struct HistoryPreview: View {
         }
     }
 
-    // MARK: Содержимое
+    // MARK: Content
 
     @ViewBuilder
     private var content: some View {
@@ -448,7 +496,7 @@ private struct HistoryPreview: View {
         }
     }
 
-    // MARK: Сведения и действия
+    // MARK: Details and actions
 
     private var details: some View {
         VStack(spacing: 4) {
@@ -526,40 +574,53 @@ private struct DetailRow: View {
     }
 }
 
-/// Картинка в превью: целиком, со скруглением и тонкой рамкой.
-/// Читается в фоне, уменьшенной — большие скриншоты не тормозят окно.
+/// Full image with rounded corners. Comes from the cache when possible,
+/// otherwise decoded in the background.
 private struct PreviewImage: View {
     let url: URL
     @State private var image: CGImage?
+
+    init(url: URL) {
+        self.url = url
+        _image = State(initialValue: ImageLoader.cached(url, size: .preview))
+    }
 
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: Design.History.previewRadius)
         Group {
             if let image {
+                // No shadow: on a large image it forced an extra render pass on every update.
                 Image(decorative: image, scale: 2)
                     .resizable()
                     .scaledToFit()
                     .clipShape(shape)
                     .overlay(shape.strokeBorder(.separator, lineWidth: 0.5))
-                    .shadow(color: .black.opacity(0.15), radius: 6, y: 2)
             } else {
-                ProgressView()
-                    .controlSize(.small)
+                Color.clear
             }
         }
         .task(id: url) {
-            image = await ThumbnailView.load(url, maxPixelSize: 1400)
+            guard image == nil else { return }
+            // Holding an arrow key flies past items — don't decode every one.
+            try? await Task.sleep(for: .milliseconds(40))
+            guard !Task.isCancelled else { return }
+            image = await ImageLoader.load(url, size: .preview)
         }
     }
 }
 
-/// Миниатюра картинки: целиком (scaledToFit) на нейтральной подложке,
-/// чтобы у скриншотов и широких картинок не обрезались края.
-/// Читается в фоне и в уменьшенном виде — 500 картинок не занимают много памяти.
+/// Thumbnail shown whole (scaledToFit) so screenshots aren't cropped.
+/// Served from the shared cache, so reopening the window doesn't decode again.
 struct ThumbnailView: View {
     let url: URL
     var size: CGFloat
     @State private var image: CGImage?
+
+    init(url: URL, size: CGFloat) {
+        self.url = url
+        self.size = size
+        _image = State(initialValue: ImageLoader.cached(url, size: .thumbnail))
+    }
 
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: Design.iconRadius(for: size))
@@ -576,20 +637,8 @@ struct ThumbnailView: View {
         .clipShape(shape)
         .overlay(shape.strokeBorder(.separator, lineWidth: 0.5))
         .task(id: url) {
-            image = await Self.load(url, maxPixelSize: 120)
+            guard image == nil else { return }
+            image = await ImageLoader.load(url, size: .thumbnail)
         }
-    }
-
-    /// Уменьшенная копия картинки с диска, в фоне.
-    static func load(_ url: URL, maxPixelSize: Int) async -> CGImage? {
-        await Task.detached(priority: .utility) {
-            guard let source = CGImageSourceCreateWithURL(url as CFURL, nil) else { return nil }
-            let options: [CFString: Any] = [
-                kCGImageSourceCreateThumbnailFromImageAlways: true,
-                kCGImageSourceThumbnailMaxPixelSize: maxPixelSize,
-                kCGImageSourceCreateThumbnailWithTransform: true,
-            ]
-            return CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary)
-        }.value
     }
 }

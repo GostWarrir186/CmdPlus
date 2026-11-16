@@ -2,18 +2,16 @@ import AppKit
 import CryptoKit
 import Observation
 
-/// Хранилище истории: список записей в памяти + файлы на диске.
+/// History storage: items in memory plus files on disk.
 ///
-/// Папка: `~/Library/Application Support/CmdPlus/ClipboardHistory/`
-/// (в песочнице macOS это `~/Library/Containers/com.azam.CmdPlus/Data/Library/Application Support/...`).
-/// - `history.json` — список записей (без паролей);
-/// - `images/` — картинки в PNG.
+/// Lives in `Application Support/CmdPlus/ClipboardHistory/` (inside the sandbox
+/// container): `history.json` for items (no passwords) and `images/` for PNGs.
 @Observable
 final class ClipboardStore {
-    /// Записи, новые — первыми.
+    /// Newest first.
     private(set) var items: [ClipboardItem] = []
     private(set) var isLoaded = false
-    /// Последняя ошибка Keychain — показываем её в настройках.
+    /// Last Keychain error, shown in Settings.
     var vaultError: String?
 
     let settings: ClipboardSettings
@@ -26,7 +24,7 @@ final class ClipboardStore {
         URL.applicationSupportDirectory.appending(path: "CmdPlus/ClipboardHistory", directoryHint: .isDirectory)
     }
 
-    /// `directory` можно подменить — например, на временную папку в тестах.
+    /// Tests pass a temporary directory here.
     init(settings: ClipboardSettings, directory: URL = ClipboardStore.defaultDirectory) {
         self.settings = settings
         self.directory = directory
@@ -35,9 +33,9 @@ final class ClipboardStore {
         try? FileManager.default.createDirectory(at: imagesDirectory, withIntermediateDirectories: true)
     }
 
-    // MARK: - Загрузка и сохранение
+    // MARK: - Loading and saving
 
-    /// Читает history.json в фоне, чтобы не тормозить запуск.
+    /// Reads history.json in the background so launch isn't blocked.
     func load() async {
         let url = historyURL
         let loaded: [ClipboardItem] = await Task.detached(priority: .utility) {
@@ -45,7 +43,7 @@ final class ClipboardStore {
             do {
                 return try JSONDecoder().decode([ClipboardItem].self, from: data)
             } catch {
-                // Файл повреждён — откладываем его в сторону, а не затираем молча.
+                // Corrupt file — move it aside instead of silently overwriting it.
                 let backup = url.deletingPathExtension().appendingPathExtension("corrupt.json")
                 try? FileManager.default.removeItem(at: backup)
                 try? FileManager.default.moveItem(at: url, to: backup)
@@ -53,7 +51,7 @@ final class ClipboardStore {
             }
         }.value
 
-        // Если что-то успели скопировать, пока шла загрузка, — оставляем это сверху.
+        // Anything copied while loading stays on top.
         let capturedIDs = Set(items.map(\.id))
         items += loaded.filter { !capturedIDs.contains($0.id) }
         isLoaded = true
@@ -61,7 +59,7 @@ final class ClipboardStore {
         applyLimit()
     }
 
-    /// Сохраняет не чаще раза в секунду, чтобы не писать на диск на каждое копирование.
+    /// Debounced to once a second so we don't hit the disk on every copy.
     private func scheduleSave() {
         saveTask?.cancel()
         saveTask = Task { [weak self] in
@@ -72,7 +70,7 @@ final class ClipboardStore {
     }
 
     func save(synchronously: Bool) {
-        // Пока старая история не прочитана, не перезаписываем файл.
+        // Don't overwrite the file before the old history has been read.
         guard isLoaded, let data = try? JSONEncoder().encode(items) else { return }
         let url = historyURL
         if synchronously {
@@ -84,7 +82,7 @@ final class ClipboardStore {
         }
     }
 
-    // MARK: - Добавление
+    // MARK: - Adding
 
     func addText(_ text: String, source: SourceApp?) {
         insert(ClipboardItem(
@@ -107,7 +105,7 @@ final class ClipboardStore {
         ))
     }
 
-    /// Картинку перекодируем в PNG в фоне — это может занять время.
+    /// PNG conversion can take a moment, so it runs in the background.
     func addImage(_ data: Data, source: SourceApp?) {
         let folder = imagesDirectory
         Task {
@@ -127,7 +125,7 @@ final class ClipboardStore {
         }
     }
 
-    /// Пароль кладём в Keychain, а в историю — только запись-заглушку без текста.
+    /// The password goes to the Keychain; history only gets a placeholder entry.
     func addSecret(_ secret: String, source: SourceApp?) {
         let item = ClipboardItem(
             kind: .text,
@@ -140,14 +138,14 @@ final class ClipboardStore {
             vaultError = nil
             insert(item)
         } catch {
-            // Не смогли зашифровать — не сохраняем вовсе. Открытым текстом пароли не храним.
+            // Couldn't encrypt it — so don't keep it at all. No plain-text passwords.
             vaultError = error.localizedDescription
         }
     }
 
     private func insert(_ newItem: ClipboardItem) {
         var item = newItem
-        // Тот же текст/файл/картинка уже есть — поднимаем старую запись наверх.
+        // Same content already exists — move the old entry to the top.
         if let hash = item.contentHash, let index = items.firstIndex(where: { $0.contentHash == hash }) {
             var existing = items.remove(at: index)
             existing.createdAt = item.createdAt
@@ -160,7 +158,7 @@ final class ClipboardStore {
         scheduleSave()
     }
 
-    // MARK: - Действия с записями
+    // MARK: - Item actions
 
     func togglePin(_ id: ClipboardItem.ID) {
         guard let index = items.firstIndex(where: { $0.id == id }) else { return }
@@ -168,12 +166,12 @@ final class ClipboardStore {
         scheduleSave()
     }
 
-    /// Поднимает запись наверх (после повторного копирования из истории).
+    /// Moves an item to the top (after it's reused from history).
     func touch(_ id: ClipboardItem.ID) {
         guard let index = items.firstIndex(where: { $0.id == id }) else { return }
         var item = items.remove(at: index)
         if !item.isSecret {
-            // Для секретов дату не меняем, чтобы не продлевать срок хранения.
+            // Don't bump the date for passwords, or they'd never expire.
             item.createdAt = .now
         }
         items.insert(item, at: 0)
@@ -186,7 +184,6 @@ final class ClipboardStore {
         scheduleSave()
     }
 
-    /// Удаляет всё, кроме закреплённых записей.
     func clearUnpinned() {
         let removed = items.filter { !$0.isPinned }
         items.removeAll { !$0.isPinned }
@@ -194,7 +191,7 @@ final class ClipboardStore {
         scheduleSave()
     }
 
-    /// Удаляет пароли старше выбранного срока. Закреплённые не трогаем.
+    /// Removes passwords past their retention period. Pinned ones are kept.
     func purgeExpiredSecrets() {
         guard let interval = settings.secretRetention.interval else { return }
         let cutoff = Date.now.addingTimeInterval(-interval)
@@ -210,25 +207,24 @@ final class ClipboardStore {
         item.imageFile.map { imagesDirectory.appending(path: $0) }
     }
 
-    // MARK: - Внутреннее
+    // MARK: - Internals
 
-    /// Число незакреплённых записей — только они считаются в лимит.
+    /// Only unpinned items count toward the limit.
     var unpinnedCount: Int {
         items.count { !$0.isPinned }
     }
 
-    /// Вызывается после смены лимита: сразу удаляет лишние старые незакреплённые записи.
+    /// Call after the limit changes to trim right away.
     func applyLimit() {
         if trimToLimit() { scheduleSave() }
     }
 
-    /// Удаляет самые старые незакреплённые записи сверх лимита.
-    /// Возвращает `true`, если что-то удалили.
+    /// Drops the oldest unpinned items over the limit. Returns `true` if anything was removed.
     @discardableResult
     private func trimToLimit() -> Bool {
         let excess = unpinnedCount - settings.historyLimit
         guard excess > 0 else { return false }
-        // Записи идут от новых к старым, поэтому лишние — последние незакреплённые.
+        // Items are newest-first, so the extras are the last unpinned ones.
         let removedIDs = Set(items.filter { !$0.isPinned }.suffix(excess).map(\.id))
         let removed = items.filter { removedIDs.contains($0.id) }
         items.removeAll { removedIDs.contains($0.id) }
@@ -236,7 +232,7 @@ final class ClipboardStore {
         return true
     }
 
-    /// Удаляет «хвосты» записи: файл картинки или секрет в Keychain.
+    /// Cleans up what an item leaves behind: its image file or Keychain entry.
     private func removeFiles(of item: ClipboardItem) {
         if let url = imageURL(for: item),
            !items.contains(where: { $0.imageFile == item.imageFile }) {
@@ -263,7 +259,7 @@ final class ClipboardStore {
               let png = rep.representation(using: .png, properties: [:])
         else { return nil }
         let hash = hash(png)
-        // Имя файла = отпечаток, поэтому одинаковые картинки не дублируются на диске.
+        // Named by content hash, so identical images are stored once.
         let fileName = "\(hash.prefix(32)).png"
         let url = folder.appending(path: fileName)
         if !FileManager.default.fileExists(atPath: url.path) {
@@ -277,7 +273,6 @@ final class ClipboardStore {
     }
 }
 
-/// Приложение, из которого скопировали.
 struct SourceApp {
     let name: String?
     let bundleID: String?

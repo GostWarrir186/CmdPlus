@@ -3,7 +3,7 @@ import Carbon.HIToolbox
 import Observation
 import SwiftUI
 
-/// Модуль «История буфера». Объект существует только пока модуль включён.
+/// Clipboard History module. Only alive while the module is enabled.
 @Observable
 final class ClipboardHistoryModule: AppModule {
     static let descriptor = ModuleDescriptor(
@@ -17,19 +17,16 @@ final class ClipboardHistoryModule: AppModule {
 
     let settings = ClipboardSettings()
     let store: ClipboardStore
-    /// `true`, если ⇧⌘V уже занято другим приложением.
     private(set) var hotKeyFailed = false
-    /// Есть ли разрешение нажимать ⌘V за пользователя. Обновляется через `refreshPasteAccess()`.
     private(set) var hasPasteAccess = PasteSimulator.hasAccess
 
-    /// Вставка сразу включена и разрешена.
     var canPasteDirectly: Bool {
         settings.pasteDirectly && hasPasteAccess
     }
 
     @ObservationIgnored private let monitor = ClipboardMonitor()
     @ObservationIgnored private var hotKey: GlobalHotKey?
-    /// Окно истории создаётся лениво — при первом нажатии ⇧⌘V.
+    /// Created lazily on the first ⇧⌘V.
     @ObservationIgnored private var panelController: HistoryPanelController?
     @ObservationIgnored private var maintenanceTask: Task<Void, Never>?
 
@@ -52,7 +49,7 @@ final class ClipboardHistoryModule: AppModule {
 
         Task { await store.load() }
 
-        // Раз в 5 минут удаляем пароли с истёкшим сроком хранения.
+        // Every 5 minutes, drop passwords that are past their retention period.
         maintenanceTask = Task { [weak self] in
             while !Task.isCancelled {
                 try? await Task.sleep(for: .seconds(300))
@@ -79,26 +76,34 @@ final class ClipboardHistoryModule: AppModule {
         AnyView(ClipboardSettingsView(module: self))
     }
 
-    // MARK: - Окно истории
+    // MARK: - History window
 
+    /// ⇧⌘V: close if focused, bring forward if covered, open if closed.
     func togglePanel() {
-        if panelController?.isVisible == true {
-            panelController?.close()
-        } else {
+        guard let panelController, panelController.isVisible else {
             showPanel()
+            return
+        }
+        if panelController.isActive {
+            panelController.close()
+        } else {
+            panelController.bringToFront()
         }
     }
 
     func showPanel() {
         refreshPasteAccess()
         store.purgeExpiredSecrets()
+        // Warm up thumbnails so the list shows images right away.
+        let imageURLs = store.items.prefix(40).compactMap { $0.isSecret ? nil : store.imageURL(for: $0) }
+        ImageLoader.prefetch(imageURLs, size: .thumbnail)
         if panelController == nil {
             panelController = HistoryPanelController(module: self)
         }
         panelController?.show()
     }
 
-    // MARK: - Вставка
+    // MARK: - Pasting
 
     func refreshPasteAccess() {
         hasPasteAccess = PasteSimulator.hasAccess
@@ -109,8 +114,8 @@ final class ClipboardHistoryModule: AppModule {
         refreshPasteAccess()
     }
 
-    /// Нажимает ⌘V в приложении, где работал пользователь.
-    /// Небольшая пауза — чтобы окно истории успело закрыться и фокус вернулся.
+    /// A short pause lets the history window close and focus return to the
+    /// previous app before ⌘V is sent.
     func pasteIntoFrontApp() {
         Task {
             try? await Task.sleep(for: .milliseconds(80))
@@ -118,7 +123,7 @@ final class ClipboardHistoryModule: AppModule {
         }
     }
 
-    // MARK: - Буфер
+    // MARK: - Clipboard
 
     private func handle(_ content: ClipboardMonitor.Content, source: SourceApp?) {
         switch content {
@@ -134,8 +139,8 @@ final class ClipboardHistoryModule: AppModule {
         }
     }
 
-    /// Кладёт запись обратно в буфер. Для паролей сначала спрашивает Touch ID.
-    /// Возвращает `false`, если не получилось (отмена Touch ID, файл удалён и т. п.).
+    /// Puts an item back on the clipboard (passwords ask for Touch ID first).
+    /// Returns `false` if that didn't work — Touch ID cancelled, file gone, etc.
     @discardableResult
     func copyToPasteboard(_ item: ClipboardItem) async -> Bool {
         let pasteboard = NSPasteboard.general
@@ -143,7 +148,7 @@ final class ClipboardHistoryModule: AppModule {
         if item.isSecret {
             guard let secret = await revealSecret(item) else { return false }
             pasteboard.clearContents()
-            // Помечаем как секрет, чтобы другие менеджеры буфера его не записывали.
+            // Mark it as concealed so other clipboard managers skip it.
             pasteboard.declareTypes([.string, ClipboardMonitor.concealedType], owner: nil)
             pasteboard.setString(secret, forType: .string)
             pasteboard.setData(Data(), forType: ClipboardMonitor.concealedType)
@@ -175,7 +180,7 @@ final class ClipboardHistoryModule: AppModule {
         return true
     }
 
-    /// Показывает пароль после Touch ID. Окно истории на это время не закрывается.
+    /// The history window stays open while Touch ID is up.
     func revealSecret(_ item: ClipboardItem) async -> String? {
         panelController?.suppressAutoClose = true
         defer {

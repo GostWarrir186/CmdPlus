@@ -1,11 +1,9 @@
 import SwiftUI
 
-/// Окно настроек в стиле Системных настроек:
-/// слева «Основные» и список модулей с тумблерами, справа — параметры выбранного пункта.
+/// Settings window in the style of System Settings.
 ///
-/// Боковая панель фиксированной ширины, как в Системных настройках: её нельзя
-/// ни сузить, ни скрыть. Поэтому здесь не `NavigationSplitView` (у него край
-/// всегда можно перетащить), а простая раскладка: панель + разделитель + содержимое.
+/// The sidebar has a fixed width and can't be collapsed, which is why this isn't
+/// a `NavigationSplitView` (its divider is always draggable).
 struct SettingsView: View {
     @Environment(ModuleManager.self) private var modules
     @State private var selection: SettingsPane? = .general
@@ -30,7 +28,7 @@ struct SettingsView: View {
 
             Section("Modules") {
                 ForEach(modules.descriptors) { descriptor in
-                    // Тумблер модуля — в шапке его страницы справа, в боковой панели его нет.
+                    // The module's on/off switch lives in its page header, not the sidebar.
                     SidebarRow(title: descriptor.title, systemImage: descriptor.systemImage, tint: descriptor.tint)
                         .tag(SettingsPane.module(descriptor.id))
                 }
@@ -52,11 +50,8 @@ struct SettingsView: View {
     }
 }
 
-/// Строка боковой панели как в Системных настройках:
-/// длинное название переносится на вторую строку, а иконка стоит
-/// напротив первой строки текста.
-/// Размер иконки следует настройке «Размер значков боковой панели», чтобы
-/// иконка и текст масштабировались вместе.
+/// Sidebar row like System Settings: long titles wrap, and the icon lines up
+/// with the first line. Icon size follows the system sidebar size setting.
 private struct SidebarRow: View {
     @Environment(\.sidebarRowSize) private var rowSize
     let title: LocalizedStringResource
@@ -66,11 +61,10 @@ private struct SidebarRow: View {
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
             TintedIcon(systemImage: systemImage, tint: tint, size: iconSize)
-                // Центр иконки — на середине первой строки текста (чуть выше базовой линии).
+                // Center the icon on the first line of text, just above the baseline.
                 .alignmentGuide(.firstTextBaseline) { d in
                     d[VerticalAlignment.center] + iconSize * 0.22
                 }
-            // Без ограничения строк: название целиком, как в Системных настройках.
             Text(title)
                 .lineLimit(nil)
                 .fixedSize(horizontal: false, vertical: true)
@@ -92,8 +86,8 @@ enum SettingsPane: Hashable {
     case module(String)
 }
 
-/// Правая часть для модуля: настройки самого модуля, если он включён,
-/// или подсказка, если выключен (тогда модуль даже не создаётся).
+/// A module's page: its own settings when enabled, a hint when it's off
+/// (a disabled module isn't even created).
 private struct ModuleSettingsDetail: View {
     @Environment(ModuleManager.self) private var modules
     let descriptor: ModuleDescriptor
@@ -112,8 +106,8 @@ private struct ModuleSettingsDetail: View {
     }
 }
 
-/// Общая обёртка для страницы настроек модуля: шапка с иконкой,
-/// описанием и тумблером, ниже — разделы самого модуля.
+/// Shared wrapper for module pages: header with icon, summary and switch,
+/// then the module's own sections.
 struct ModuleSettingsForm<Content: View>: View {
     @Environment(ModuleManager.self) private var modules
     let descriptor: ModuleDescriptor

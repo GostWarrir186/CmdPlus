@@ -1,8 +1,6 @@
 import SwiftUI
 
-/// Точка входа. У приложения нет обычных окон при запуске:
-/// только иконка в строке меню (MenuBarExtra) и окно настроек (Settings),
-/// которое открывается лишь по запросу пользователя.
+/// No windows at launch — just the menu bar icon. Settings opens on demand.
 @main
 struct CmdPlusApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate

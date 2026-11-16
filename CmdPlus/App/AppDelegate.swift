@@ -1,20 +1,17 @@
 import AppKit
 
-/// Делегат приложения: здесь ловим события жизненного цикла,
-/// которых нет в чистом SwiftUI (запуск и завершение).
+/// Handles app lifecycle events SwiftUI doesn't expose (launch, quit).
 final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
-        // Тему ставим до появления любых окон, чтобы не было мигания.
+        // Apply the theme before any window appears to avoid a flash.
         AppTheme.saved.apply()
-        // Запускаем только включённые модули. Делаем это на следующем
-        // проходе главного цикла, чтобы старт приложения был мгновенным.
+        // Start modules on the next run loop pass so launch feels instant.
         Task { @MainActor in
             ModuleManager.shared.startEnabledModules()
         }
     }
 
     func applicationWillTerminate(_ notification: Notification) {
-        // Даём модулям сохранить данные на диск перед выходом.
         ModuleManager.shared.stopAll()
     }
 }

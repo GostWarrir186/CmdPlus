@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Раздел «Основные»: автозапуск и сведения о приложении.
 struct GeneralSettingsView: View {
     @State private var launchAtLogin = LaunchAtLogin()
     @AppStorage(AppTheme.storageKey) private var theme: AppTheme = .system

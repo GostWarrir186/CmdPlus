@@ -1,21 +1,18 @@
 import AppKit
 import Carbon.HIToolbox
 
-/// Вставка «за пользователя»: нажимает ⌘V в приложении, которое сейчас активно.
+/// Pastes for the user by sending ⌘V to the frontmost app.
 ///
-/// Окно истории не делает CmdPlus активным, поэтому после его закрытия
-/// фокус остаётся там, где вы работали, — туда и уходит ⌘V.
-///
-/// Нужно разрешение «Универсальный доступ». Запрашиваем его только
-/// по кнопке пользователя, с объяснением (см. настройки модуля).
+/// The history window never activates CmdPlus, so focus is still wherever you
+/// were working. Needs Accessibility permission, requested only from a button.
 enum PasteSimulator {
-    /// Есть ли разрешение отправлять нажатия клавиш. Системное окно не показывает.
+    /// Checks permission without showing a system prompt.
     static var hasAccess: Bool {
         CGPreflightPostEventAccess()
     }
 
-    /// Показывает системный запрос. Если пользователь уже отказывал и запрос
-    /// больше не появляется — открывает нужный раздел Системных настроек.
+    /// Shows the system prompt. If the user already declined (so no prompt appears),
+    /// opens the right pane in System Settings instead.
     static func requestAccess() {
         guard !CGRequestPostEventAccess() else { return }
         if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
@@ -23,7 +20,7 @@ enum PasteSimulator {
         }
     }
 
-    /// Нажимает ⌘V. Возвращает `false`, если разрешения нет.
+    /// Returns `false` without permission.
     @discardableResult
     static func pressCommandV() -> Bool {
         guard hasAccess else { return false }

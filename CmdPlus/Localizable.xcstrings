@@ -302,12 +302,21 @@
       }
     },
     "Close" : {
-      "extractionState" : "stale",
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "Закрыть"
+          }
+        }
+      }
+    },
+    "Close (esc)" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закрыть (esc)"
           }
         }
       }
@@ -629,6 +638,16 @@
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "Открывать при входе"
+          }
+        }
+      }
+    },
+    "Open Clipboard History" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открыть историю буфера обмена"
           }
         }
       }

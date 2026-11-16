@@ -3,7 +3,7 @@ import Carbon.HIToolbox
 import Observation
 import SwiftUI
 
-/// Состояние окна истории: поиск, фильтр, выделенная строка.
+/// State of the history window: search, filter, selection.
 @Observable
 final class HistoryViewModel {
     enum Filter: String, CaseIterable, Identifiable {
@@ -37,14 +37,13 @@ final class HistoryViewModel {
     var query = ""
     var filter: Filter = .all
     var selectedID: ClipboardItem.ID?
-    /// Пароли, раскрытые по Touch ID. Сбрасываются при закрытии окна.
+    /// Passwords revealed with Touch ID. Cleared when the window closes.
     var revealed: [ClipboardItem.ID: String] = [:]
-    /// Меняется при каждом показе окна — сигнал поставить курсор в поиск.
+    /// Bumped on every show — tells the view to focus the search field.
     private(set) var focusRequest = 0
 
     @ObservationIgnored weak var module: ClipboardHistoryModule?
     @ObservationIgnored var close: () -> Void = {}
-    /// Вызывается, когда запись начали перетаскивать из окна.
     @ObservationIgnored var dragStarted: () -> Void = {}
 
     init(module: ClipboardHistoryModule) {
@@ -53,12 +52,12 @@ final class HistoryViewModel {
 
     var store: ClipboardStore? { module?.store }
 
-    /// Слова из строки поиска. Запись подходит, если содержит все слова.
+    /// Search words. An item matches only if it contains all of them.
     var terms: [String] {
         Self.terms(from: query)
     }
 
-    /// Записи с учётом фильтра и поиска; закреплённые — сверху.
+    /// Filtered and searched items, pinned first.
     var visibleItems: [ClipboardItem] {
         guard let store else { return [] }
         return Self.filter(store.items, by: filter, terms: terms)
@@ -68,7 +67,6 @@ final class HistoryViewModel {
         query.split(whereSeparator: \.isWhitespace).map(String.init)
     }
 
-    /// Чистая функция поиска: запись подходит, если проходит фильтр и содержит все слова.
     static func filter(_ items: [ClipboardItem], by filter: Filter, terms: [String]) -> [ClipboardItem] {
         let matched = items.filter { item in
             matches(item, filter: filter) && terms.allSatisfy { item.searchableText.localizedStandardContains($0) }
@@ -87,7 +85,7 @@ final class HistoryViewModel {
         }
     }
 
-    // MARK: - Жизненный цикл окна
+    // MARK: - Window lifecycle
 
     func prepareForShow() {
         query = ""
@@ -101,7 +99,7 @@ final class HistoryViewModel {
         revealed = [:]
     }
 
-    // MARK: - Выделение и действия
+    // MARK: - Selection and actions
 
     func selectFirst() {
         selectedID = visibleItems.first?.id
@@ -119,9 +117,8 @@ final class HistoryViewModel {
         visibleItems.first { $0.id == selectedID }
     }
 
-    /// Выбор записи: кладёт её в буфер, закрывает окно и сразу вставляет
-    /// в приложение, где вы работали. `paste: false` (⌥↩) — только копирует.
-    /// Без разрешения «Универсальный доступ» тоже только копирует.
+    /// Copies the item, closes the window and pastes into the previous app.
+    /// `paste: false` (⌥↩) only copies — as does missing Accessibility permission.
     func activate(_ item: ClipboardItem, paste: Bool = true) {
         Task {
             guard let module, await module.copyToPasteboard(item) else { return }
@@ -132,12 +129,11 @@ final class HistoryViewModel {
         }
     }
 
-    /// Вставка сразу работает — от этого зависят подсказки в окне.
     var pastesDirectly: Bool {
         module?.canPasteDirectly ?? false
     }
 
-    /// Вставка включена в настройках, но разрешения ещё нет.
+    /// Pasting is on in Settings, but permission hasn't been granted yet.
     var needsPasteAccess: Bool {
         guard let module else { return false }
         return module.settings.pasteDirectly && !module.hasPasteAccess
@@ -147,7 +143,7 @@ final class HistoryViewModel {
         module?.requestPasteAccess()
     }
 
-    /// Данные для перетаскивания. `nil` — запись перетащить нельзя (пароль, файл удалён).
+    /// `nil` if the item can't be dragged (a password, or the file is gone).
     func dragProvider(for item: ClipboardItem) -> NSItemProvider? {
         guard let provider = module?.dragItemProvider(for: item) else { return nil }
         dragStarted()
@@ -184,7 +180,7 @@ final class HistoryViewModel {
         }
     }
 
-    /// Клавиатура окна. Возвращает `true`, если клавиша обработана.
+    /// Window keyboard handling. Returns `true` if the key was used.
     func handleKey(_ event: NSEvent) -> Bool {
         let command = event.modifierFlags.contains(.command)
         switch Int(event.keyCode) {
@@ -194,7 +190,7 @@ final class HistoryViewModel {
             moveSelection(by: 1)
         case kVK_Return, kVK_ANSI_KeypadEnter:
             guard let item = selectedItem else { return true }
-            // ⌥↩ — только скопировать, не вставляя.
+            // ⌥↩ copies without pasting.
             activate(item, paste: !event.modifierFlags.contains(.option))
         case kVK_Escape:
             close()
@@ -205,7 +201,7 @@ final class HistoryViewModel {
             guard let item = selectedItem else { return true }
             togglePin(item)
         default:
-            // ⌘1…⌘9 — сразу выбрать запись по номеру, без стрелок.
+            // ⌘1…⌘9 picks an item directly.
             guard command, let number = Self.quickPickNumber(for: event) else { return false }
             let items = visibleItems
             guard number <= items.count else { return true }
@@ -214,7 +210,7 @@ final class HistoryViewModel {
         return true
     }
 
-    /// Цифра 1…9 нажатой клавиши (по символу, поэтому работает в любой раскладке).
+    /// Uses the typed character, so it works with any keyboard layout.
     private static func quickPickNumber(for event: NSEvent) -> Int? {
         guard let characters = event.charactersIgnoringModifiers,
               characters.count == 1,
