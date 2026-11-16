@@ -81,8 +81,10 @@ Everything you copy (text, images, files) is one shortcut away.
 
 Make a regular mouse feel right on a Mac.
 
-- **Smooth scrolling** for wheel mice, with adjustable **speed** (0.5–3×).
-- **Reverse scrolling** for the wheel only, vertical and horizontal separately. Trackpads and Magic Mouse keep the system settings.
+- **Smooth scrolling** for wheel mice — Off, Regular or High — with optional **trackpad simulation**, so apps like Safari react to the wheel like to a trackpad.
+- **Speed** (Low, Medium, High) and **Precision**: move the wheel slowly for fine control.
+- **Keyboard modifiers** while scrolling: scroll horizontally (⇧), zoom (⌘), scroll swiftly (⌃) or precisely (⌥) — all reassignable.
+- **Reverse scrolling** for the wheel only. Trackpads and Magic Mouse keep the system settings.
 - **Assign any extra button**: hover the **+** field and press the middle button, button 4, 5 or more. Single and double clicks can do different things.
 - Actions include Look Up, Middle Click, Back/Forward, Mission Control, Application Windows, Show Desktop, Launchpad, switching Spaces, Clipboard History, Copy/Paste/Undo, New/Close Tab — or any **keyboard shortcut** you record.
 - Off by default. When there's nothing to do, it doesn't watch the mouse at all.

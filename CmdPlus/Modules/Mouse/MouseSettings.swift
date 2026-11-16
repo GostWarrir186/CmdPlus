@@ -1,17 +1,22 @@
+import CoreGraphics
 import Foundation
 import Observation
 
 /// Mouse module settings, stored in UserDefaults.
 @Observable
 final class MouseSettings {
-    static let speedRange = 0.5...3.0
-
     private enum Key {
         static let reverseVertical = "mouse.reverseVertical"
         static let reverseHorizontal = "mouse.reverseHorizontal"
-        static let smoothScrolling = "mouse.smoothScrolling"
-        static let scrollSpeed = "mouse.scrollSpeed"
+        static let smoothness = "mouse.smoothness"
+        static let trackpadSimulation = "mouse.trackpadSimulation"
+        static let speed = "mouse.speed"
+        static let precision = "mouse.precision"
+        static let modifiers = "mouse.modifiers"
         static let buttonBindings = "mouse.buttonBindings"
+        // Older builds.
+        static let legacySmooth = "mouse.smoothScrolling"
+        static let legacySpeed = "mouse.scrollSpeed"
     }
 
     var reverseVertical: Bool {
@@ -22,16 +27,30 @@ final class MouseSettings {
         didSet { defaults.set(reverseHorizontal, forKey: Key.reverseHorizontal); onChange() }
     }
 
-    var smoothScrolling: Bool {
-        didSet { defaults.set(smoothScrolling, forKey: Key.smoothScrolling); onChange() }
+    var smoothness: ScrollSmoothness {
+        didSet { defaults.set(smoothness.rawValue, forKey: Key.smoothness); onChange() }
     }
 
-    /// Multiplier for how far one wheel notch scrolls. Always within `speedRange`.
-    var scrollSpeed: Double {
+    /// Smooth scrolling sends trackpad-style gesture phases, so apps like Safari
+    /// react to the wheel as they would to a trackpad.
+    var trackpadSimulation: Bool {
+        didSet { defaults.set(trackpadSimulation, forKey: Key.trackpadSimulation); onChange() }
+    }
+
+    var speed: ScrollSpeed {
+        didSet { defaults.set(speed.rawValue, forKey: Key.speed); onChange() }
+    }
+
+    /// Slow wheel movement scrolls in small steps.
+    var precision: Bool {
+        didSet { defaults.set(precision, forKey: Key.precision); onChange() }
+    }
+
+    /// Which key does what while scrolling. A role without a key is off.
+    var modifiers: [ScrollModifierRole: ScrollModifierKey] {
         didSet {
-            let clamped = scrollSpeed.clamped(to: Self.speedRange)
-            if clamped != scrollSpeed { scrollSpeed = clamped }
-            defaults.set(scrollSpeed, forKey: Key.scrollSpeed)
+            defaults.set(Dictionary(uniqueKeysWithValues: modifiers.map { ($0.key.rawValue, $0.value.rawValue) }),
+                         forKey: Key.modifiers)
             onChange()
         }
     }
@@ -57,8 +76,36 @@ final class MouseSettings {
         self.defaults = defaults
         reverseVertical = defaults.object(forKey: Key.reverseVertical) as? Bool ?? true
         reverseHorizontal = defaults.object(forKey: Key.reverseHorizontal) as? Bool ?? false
-        smoothScrolling = defaults.object(forKey: Key.smoothScrolling) as? Bool ?? true
-        scrollSpeed = (defaults.object(forKey: Key.scrollSpeed) as? Double ?? 1).clamped(to: Self.speedRange)
+        trackpadSimulation = defaults.object(forKey: Key.trackpadSimulation) as? Bool ?? true
+        precision = defaults.object(forKey: Key.precision) as? Bool ?? false
+
+        // Migration: older builds had an on/off switch and a 0.5–3× slider.
+        if let saved = defaults.string(forKey: Key.smoothness).flatMap(ScrollSmoothness.init) {
+            smoothness = saved
+        } else if let legacy = defaults.object(forKey: Key.legacySmooth) as? Bool {
+            smoothness = legacy ? .regular : .off
+        } else {
+            smoothness = .regular
+        }
+        if let saved = defaults.string(forKey: Key.speed).flatMap(ScrollSpeed.init) {
+            speed = saved
+        } else if let legacy = defaults.object(forKey: Key.legacySpeed) as? Double {
+            speed = .nearest(to: legacy)
+        } else {
+            speed = .medium
+        }
+        defaults.removeObject(forKey: Key.legacySmooth)
+        defaults.removeObject(forKey: Key.legacySpeed)
+
+        if let saved = defaults.dictionary(forKey: Key.modifiers) as? [String: String] {
+            modifiers = Dictionary(uniqueKeysWithValues: saved.compactMap { role, key in
+                guard let role = ScrollModifierRole(rawValue: role), let key = ScrollModifierKey(rawValue: key) else { return nil }
+                return (role, key)
+            })
+        } else {
+            modifiers = Dictionary(uniqueKeysWithValues: ScrollModifierRole.allCases.map { ($0, $0.defaultKey) })
+        }
+
         bindings = defaults.data(forKey: Key.buttonBindings)
             .flatMap { try? JSONDecoder().decode([ButtonBinding].self, from: $0) }
             ?? Self.migrateFixedButtons(in: defaults)
@@ -66,8 +113,25 @@ final class MouseSettings {
 
     /// Nothing to do means no event tap at all — zero cost.
     var needsEventTap: Bool {
-        reverseVertical || reverseHorizontal || smoothScrolling || scrollSpeed != 1
-            || bindings.contains { $0.action.interceptsButton }
+        reverseVertical || reverseHorizontal || smoothness != .off || speed != .medium || precision
+            || !modifiers.isEmpty || bindings.contains { $0.action.interceptsButton }
+    }
+
+    /// Assigns a key to a role. A key can only do one thing, so it's taken off any other role.
+    func setModifier(_ key: ScrollModifierKey?, for role: ScrollModifierRole) {
+        var updated = modifiers
+        if let key {
+            for (other, otherKey) in updated where otherKey == key && other != role {
+                updated[other] = nil
+            }
+        }
+        updated[role] = key
+        modifiers = updated
+    }
+
+    /// Roles whose key is held in these flags.
+    func activeRoles(for flags: CGEventFlags) -> Set<ScrollModifierRole> {
+        Set(modifiers.filter { flags.contains($0.value.eventFlag) }.map(\.key))
     }
 
     func bindings(forButton button: Int64) -> [ButtonBinding] {

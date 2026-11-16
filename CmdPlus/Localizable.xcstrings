@@ -91,16 +91,6 @@
         }
       }
     },
-    "⇧⌘V is already used by another app." : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Сочетание ⇧⌘V уже используется другим приложением."
-          }
-        }
-      }
-    },
     "About" : {
       "localizations" : {
         "ru" : {
@@ -261,9 +251,7 @@
         }
       }
     },
-    "Cancel" : {
-
-    },
+    "Cancel" : {},
     "Characters" : {
       "localizations" : {
         "ru" : {
@@ -284,16 +272,6 @@
         }
       }
     },
-    "Clear clipboard history?" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Очистить историю буфера обмена?"
-          }
-        }
-      }
-    },
     "Clear History" : {
       "localizations" : {
         "ru" : {
@@ -310,6 +288,16 @@
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "Очистить историю…"
+          }
+        }
+      }
+    },
+    "Clear clipboard history?" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Очистить историю буфера обмена?"
           }
         }
       }
@@ -565,6 +553,16 @@
         }
       }
     },
+    "High" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Высокая"
+          }
+        }
+      }
+    },
     "History" : {
       "localizations" : {
         "ru" : {
@@ -581,6 +579,16 @@
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "Размер истории"
+          }
+        }
+      }
+    },
+    "Hold a key while scrolling. Click a field and press ⇧, ⌃, ⌥ or ⌘ to change it." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удерживайте клавишу во время прокрутки. Чтобы поменять её, нажмите на поле и затем ⇧, ⌃, ⌥ или ⌘."
           }
         }
       }
@@ -611,6 +619,16 @@
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "Хранит скопированные текст, изображения и файлы. Открывается сочетанием ⇧⌘V."
+          }
+        }
+      }
+    },
+    "Keyboard Modifiers" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Клавиши-модификаторы"
           }
         }
       }
@@ -661,6 +679,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Найти"
+          }
+        }
+      }
+    },
+    "Low" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Низкая"
+          }
+        }
+      }
+    },
+    "Medium" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Средняя"
           }
         }
       }
@@ -735,6 +773,16 @@
         }
       }
     },
+    "Move between pages in Safari by scrolling horizontally, and more" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Листайте страницы в Safari горизонтальной прокруткой и не только"
+          }
+        }
+      }
+    },
     "Move the pointer into the + field and press a mouse button to assign an action to it. Double-press to assign a double click." : {
       "localizations" : {
         "ru" : {
@@ -795,22 +843,22 @@
         }
       }
     },
+    "Off" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выкл."
+          }
+        }
+      }
+    },
     "Only mice with a scroll wheel are affected. Trackpads and Magic Mouse keep the behavior set in System Settings." : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Действует только на мыши с колёсиком. Трекпад и Magic Mouse работают так, как задано в Системных настройках."
-          }
-        }
-      }
-    },
-    "Open at Login" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Открывать при входе"
           }
         }
       }
@@ -831,6 +879,16 @@
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "Открыть «Объекты входа»"
+          }
+        }
+      }
+    },
+    "Open at Login" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Открывать при входе"
           }
         }
       }
@@ -926,6 +984,16 @@
         }
       }
     },
+    "Precision" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Точность"
+          }
+        }
+      }
+    },
     "Press a keyboard shortcut" : {
       "localizations" : {
         "ru" : {
@@ -957,12 +1025,32 @@
         }
       }
     },
+    "Regular" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обычная"
+          }
+        }
+      }
+    },
     "Remove" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Удалить"
+          }
+        }
+      }
+    },
+    "Reverse Direction" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обратное направление"
           }
         }
       }
@@ -997,16 +1085,6 @@
         }
       }
     },
-    "Reverse Vertical Scrolling" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Обратная вертикальная прокрутка"
-          }
-        }
-      }
-    },
     "Saved Items" : {
       "localizations" : {
         "ru" : {
@@ -1017,22 +1095,52 @@
         }
       }
     },
+    "Scroll Horizontally" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Горизонтальная прокрутка"
+          }
+        }
+      }
+    },
+    "Scroll Precisely" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Точная прокрутка"
+          }
+        }
+      }
+    },
+    "Scroll Swiftly" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Быстрая прокрутка"
+          }
+        }
+      }
+    },
+    "Scroll precisely, even without a keyboard modifier, by moving the scroll wheel slowly" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Медленно вращайте колёсико — и прокрутка будет точной даже без клавиши-модификатора"
+          }
+        }
+      }
+    },
     "Scrolling" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Прокрутка"
-          }
-        }
-      }
-    },
-    "Scrolling Speed" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Скорость прокрутки"
           }
         }
       }
@@ -1077,22 +1185,32 @@
         }
       }
     },
-    "Smooth Scrolling" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Плавная прокрутка"
-          }
-        }
-      }
-    },
     "Smooth, adjustable scrolling and actions for mouse buttons." : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Плавная настраиваемая прокрутка и действия на кнопки мыши."
+          }
+        }
+      }
+    },
+    "Smoothness" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Плавность"
+          }
+        }
+      }
+    },
+    "Speed" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скорость"
           }
         }
       }
@@ -1153,6 +1271,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Тема"
+          }
+        }
+      }
+    },
+    "Trackpad Simulation" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Имитация трекпада"
           }
         }
       }
@@ -1233,6 +1361,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Когда вы выбираете запись, CmdPlus сам вставляет её в приложение, где вы работали, — нажимает ⌘V за вас. Для этого нужно разрешение «Универсальный доступ». Без него запись только копируется. ⌥↩ — скопировать, не вставляя."
+          }
+        }
+      }
+    },
+    "Zoom In or Out" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Масштаб"
+          }
+        }
+      }
+    },
+    "⇧⌘V is already used by another app." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Сочетание ⇧⌘V уже используется другим приложением."
           }
         }
       }

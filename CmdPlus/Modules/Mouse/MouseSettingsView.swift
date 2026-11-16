@@ -23,27 +23,49 @@ struct MouseSettingsView: View {
             }
 
             Section {
-                Toggle("Smooth Scrolling", isOn: $settings.smoothScrolling)
-                LabeledContent("Scrolling Speed") {
-                    HStack(spacing: 10) {
-                        Image(systemName: "tortoise")
-                            .foregroundStyle(.secondary)
-                        Slider(value: $settings.scrollSpeed, in: MouseSettings.speedRange, step: 0.25)
-                            .frame(width: 180)
-                        Image(systemName: "hare")
-                            .foregroundStyle(.secondary)
-                        Text(verbatim: settings.scrollSpeed.formatted(.number.precision(.fractionLength(2))) + "×")
-                            .monospacedDigit()
-                            .foregroundStyle(.secondary)
-                            .frame(width: 44, alignment: .trailing)
-                    }
+                Picker("Smoothness", selection: $settings.smoothness) {
+                    ForEach(ScrollSmoothness.allCases) { Text($0.title).tag($0) }
                 }
-                Toggle("Reverse Vertical Scrolling", isOn: $settings.reverseVertical)
+                Toggle(isOn: $settings.trackpadSimulation) {
+                    Text("Trackpad Simulation")
+                    Text("Move between pages in Safari by scrolling horizontally, and more")
+                }
+                .disabled(settings.smoothness == .off)
+                Toggle("Reverse Direction", isOn: $settings.reverseVertical)
                 Toggle("Reverse Horizontal Scrolling", isOn: $settings.reverseHorizontal)
             } header: {
                 Text("Scrolling")
             } footer: {
                 Text("Only mice with a scroll wheel are affected. Trackpads and Magic Mouse keep the behavior set in System Settings.")
+            }
+
+            Section {
+                Picker("Speed", selection: $settings.speed) {
+                    ForEach(ScrollSpeed.allCases) { Text($0.title).tag($0) }
+                }
+                Toggle(isOn: $settings.precision) {
+                    Text("Precision")
+                    Text("Scroll precisely, even without a keyboard modifier, by moving the scroll wheel slowly")
+                }
+            }
+
+            Section {
+                Grid(horizontalSpacing: 24, verticalSpacing: 14) {
+                    GridRow {
+                        ModifierField(role: .horizontal, settings: settings)
+                        ModifierField(role: .zoom, settings: settings)
+                    }
+                    GridRow {
+                        ModifierField(role: .swift, settings: settings)
+                        ModifierField(role: .precise, settings: settings)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 4)
+            } header: {
+                Text("Keyboard Modifiers")
+            } footer: {
+                Text("Hold a key while scrolling. Click a field and press ⇧, ⌃, ⌥ or ⌘ to change it.")
             }
 
             Section {

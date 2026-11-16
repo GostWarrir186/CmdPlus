@@ -6,15 +6,18 @@ import Testing
 
 @Suite("Mouse settings")
 struct MouseSettingsTests {
-    @Test("Defaults: smooth, 1× speed, vertical reverse on, no button rows")
+    @Test("Defaults: regular smoothness, medium speed, standard modifiers, no button rows")
     func defaults() {
         let env = TestEnvironment()
         defer { env.cleanUp() }
         let settings = MouseSettings(defaults: env.defaults)
-        #expect(settings.smoothScrolling)
-        #expect(settings.scrollSpeed == 1)
+        #expect(settings.smoothness == .regular)
+        #expect(settings.trackpadSimulation)
+        #expect(settings.speed == .medium)
+        #expect(!settings.precision)
         #expect(settings.reverseVertical)
         #expect(!settings.reverseHorizontal)
+        #expect(settings.modifiers == [.horizontal: .shift, .zoom: .command, .swift: .control, .precise: .option])
         #expect(settings.bindings.isEmpty)
     }
 
@@ -23,8 +26,10 @@ struct MouseSettingsTests {
         let env = TestEnvironment()
         defer { env.cleanUp() }
         let settings = MouseSettings(defaults: env.defaults)
-        settings.smoothScrolling = false
-        settings.scrollSpeed = 2
+        settings.smoothness = .high
+        settings.speed = .high
+        settings.precision = true
+        settings.setModifier(nil, for: .zoom)
         settings.reverseHorizontal = true
         let id = try #require(settings.addBinding(button: 3, trigger: .click))
         let index = try #require(settings.bindings.firstIndex { $0.id == id })
@@ -32,20 +37,40 @@ struct MouseSettingsTests {
         settings.bindings[index].shortcut = ShortcutBinding(combo: KeyCombo(kVK_ANSI_4, [.maskAlternate, .maskCommand]), display: "⌥⌘4")
 
         let reloaded = MouseSettings(defaults: env.defaults)
-        #expect(!reloaded.smoothScrolling)
-        #expect(reloaded.scrollSpeed == 2)
+        #expect(reloaded.smoothness == .high)
+        #expect(reloaded.speed == .high)
+        #expect(reloaded.precision)
+        #expect(reloaded.modifiers[.zoom] == nil)
+        #expect(reloaded.modifiers[.horizontal] == .shift)
         #expect(reloaded.reverseHorizontal)
         #expect(reloaded.bindings == settings.bindings)
         #expect(reloaded.bindings.first?.shortcut?.display == "⌥⌘4")
     }
 
-    @Test("Speed is clamped to 0.5–3×", arguments: [(0.1, 0.5), (0.75, 0.75), (9.0, 3.0)])
-    func speedClamped(input: Double, expected: Double) {
+    @Test("Migration: old on/off smoothing and speed slider", arguments: [
+        (false, 0.5, ScrollSmoothness.off, ScrollSpeed.low),
+        (true, 1.0, .regular, .medium),
+        (true, 2.5, .regular, .high),
+    ])
+    func legacyScrollSettings(smooth: Bool, speed: Double, smoothness: ScrollSmoothness, expectedSpeed: ScrollSpeed) {
+        let env = TestEnvironment()
+        defer { env.cleanUp() }
+        env.defaults.set(smooth, forKey: "mouse.smoothScrolling")
+        env.defaults.set(speed, forKey: "mouse.scrollSpeed")
+        let settings = MouseSettings(defaults: env.defaults)
+        #expect(settings.smoothness == smoothness)
+        #expect(settings.speed == expectedSpeed)
+        #expect(env.defaults.object(forKey: "mouse.smoothScrolling") == nil)
+    }
+
+    @Test("A modifier key can only do one thing")
+    func modifierUnique() {
         let env = TestEnvironment()
         defer { env.cleanUp() }
         let settings = MouseSettings(defaults: env.defaults)
-        settings.scrollSpeed = input
-        #expect(settings.scrollSpeed == expected)
+        settings.setModifier(.shift, for: .zoom)
+        #expect(settings.modifiers[.zoom] == .shift)
+        #expect(settings.modifiers[.horizontal] == nil)
     }
 
     @Test("No event tap when there's nothing to do")
@@ -54,7 +79,8 @@ struct MouseSettingsTests {
         defer { env.cleanUp() }
         let settings = MouseSettings(defaults: env.defaults)
         settings.reverseVertical = false
-        settings.smoothScrolling = false
+        settings.smoothness = .off
+        for role in ScrollModifierRole.allCases { settings.setModifier(nil, for: role) }
         #expect(!settings.needsEventTap)
 
         // A row left on "System Default" still costs nothing.
@@ -64,7 +90,7 @@ struct MouseSettingsTests {
         #expect(settings.needsEventTap)
 
         settings.removeBinding(id)
-        settings.scrollSpeed = 1.5
+        settings.speed = .high
         #expect(settings.needsEventTap)
     }
 
@@ -88,7 +114,7 @@ struct MouseSettingsTests {
         let settings = MouseSettings(defaults: env.defaults)
         var calls = 0
         settings.onChange = { calls += 1 }
-        settings.smoothScrolling = false
+        settings.smoothness = .off
         settings.addBinding(button: 3, trigger: .click)
         #expect(calls == 2)
     }
@@ -201,74 +227,107 @@ struct MouseScrollTests {
                              wheel1: vertical, wheel2: horizontal, wheel3: 0))
     }
 
+    private func settings(_ env: TestEnvironment) -> MouseSettings {
+        let settings = MouseSettings(defaults: env.defaults)
+        settings.reverseVertical = false
+        return settings
+    }
+
+    private func notch(_ vertical: Double = 1, accelerated: Double? = nil, flags: CGEventFlags = []) -> ScrollPlanner.Input {
+        .init(wholeVertical: vertical, acceleratedVertical: accelerated ?? vertical,
+              wholeHorizontal: 0, acceleratedHorizontal: 0, flags: flags)
+    }
+
     @Test("Wheel mice are detected; continuous (trackpad-like) scrolling isn't")
     func wheelDetection() throws {
         #expect(MouseEventTap.isFromScrollWheel(try scrollEvent(units: .line, vertical: 1, horizontal: 0)))
         #expect(!MouseEventTap.isFromScrollWheel(try scrollEvent(units: .pixel, vertical: 10, horizontal: 0)))
     }
 
-    @Test("Reversing flips every delta field on one axis only")
-    func reverse() throws {
-        let event = try scrollEvent(units: .line, vertical: 3, horizontal: -2)
-        MouseEventTap.scale(event, vertical: -1, horizontal: 1)
-        #expect(event.getIntegerValueField(.scrollWheelEventDeltaAxis1) == -3)
-        #expect(event.getIntegerValueField(.scrollWheelEventPointDeltaAxis1) < 0)
-        #expect(event.getDoubleValueField(.scrollWheelEventFixedPtDeltaAxis1) < 0)
-        #expect(event.getIntegerValueField(.scrollWheelEventDeltaAxis2) == -2)
-        #expect(event.getDoubleValueField(.scrollWheelEventFixedPtDeltaAxis2) < 0)
+    @Test("A slow notch scrolls a whole line; with Precision it stays small")
+    func slowNotch() {
+        #expect(ScrollPlanner.lines(whole: 1, accelerated: 0.1, precise: false) == 1)
+        #expect(ScrollPlanner.lines(whole: 1, accelerated: 0.1, precise: true) == 0.1)
+        #expect(ScrollPlanner.lines(whole: 1, accelerated: -6.5, precise: false) == -6.5)
+        #expect(ScrollPlanner.lines(whole: 1, accelerated: 6.5, precise: true) == 6.5)
     }
 
-    @Test("Speed scales the distance; slowing down never drops a notch")
-    func speed() throws {
-        let fast = try scrollEvent(units: .line, vertical: 2, horizontal: 0)
-        let before = fast.getDoubleValueField(.scrollWheelEventFixedPtDeltaAxis1)
-        MouseEventTap.scale(fast, vertical: 2, horizontal: 1)
-        #expect(fast.getIntegerValueField(.scrollWheelEventDeltaAxis1) == 4)
-        #expect(fast.getDoubleValueField(.scrollWheelEventFixedPtDeltaAxis1) == before * 2)
-
-        let slow = try scrollEvent(units: .line, vertical: 1, horizontal: 0)
-        MouseEventTap.scale(slow, vertical: 0.5, horizontal: 1)
-        #expect(slow.getIntegerValueField(.scrollWheelEventDeltaAxis1) == 1)
-    }
-
-    @Test("A slow notch counts as a whole line; fast spinning keeps its acceleration")
-    func notchDistance() throws {
-        let slow = try scrollEvent(units: .line, vertical: 1, horizontal: 0)
-        // Whole field first: writing it makes macOS recompute the fractional one.
-        slow.setIntegerValueField(.scrollWheelEventDeltaAxis1, value: 1)
-        slow.setDoubleValueField(.scrollWheelEventFixedPtDeltaAxis1, value: 0.1)
-        #expect(slow.getDoubleValueField(.scrollWheelEventFixedPtDeltaAxis1) < 0.5)
-        #expect(MouseEventTap.lineDeltas(of: slow).vertical == 1)
-
-        let fast = try scrollEvent(units: .line, vertical: 1, horizontal: 0)
-        fast.setIntegerValueField(.scrollWheelEventDeltaAxis1, value: 1)
-        fast.setDoubleValueField(.scrollWheelEventFixedPtDeltaAxis1, value: -6.5)
-        #expect(MouseEventTap.lineDeltas(of: fast).vertical == -6.5)
-    }
-
-    @Test("Speed and direction combine into one factor per axis")
-    func factors() {
+    @Test("Speed presets scale the distance", arguments: [(ScrollSpeed.low, 0.6), (.medium, 1.0), (.high, 1.8)])
+    func speed(speed: ScrollSpeed, expected: Double) {
         let env = TestEnvironment()
         defer { env.cleanUp() }
-        let settings = MouseSettings(defaults: env.defaults)
-        settings.scrollSpeed = 2
+        let settings = settings(env)
+        settings.speed = speed
+        #expect(ScrollPlanner.plan(notch(), settings: settings) == .scroll(vertical: expected, horizontal: 0, removeFlags: []))
+    }
+
+    @Test("Reverse flips the direction")
+    func reverse() {
+        let env = TestEnvironment()
+        defer { env.cleanUp() }
+        let settings = settings(env)
         settings.reverseVertical = true
-        settings.reverseHorizontal = false
-        let factors = MouseEventTap.factors(for: settings)
-        #expect(factors.vertical == -2)
-        #expect(factors.horizontal == 2)
+        #expect(ScrollPlanner.plan(notch(2), settings: settings) == .scroll(vertical: -2, horizontal: 0, removeFlags: []))
+    }
+
+    @Test("⇧ turns the wheel horizontal and isn't passed on to the app")
+    func horizontalModifier() {
+        let env = TestEnvironment()
+        defer { env.cleanUp() }
+        let plan = ScrollPlanner.plan(notch(1, flags: .maskShift), settings: settings(env))
+        #expect(plan == .scroll(vertical: 0, horizontal: 1, removeFlags: .maskShift))
+    }
+
+    @Test("⌃ scrolls swiftly, ⌥ precisely")
+    func swiftAndPrecise() {
+        let env = TestEnvironment()
+        defer { env.cleanUp() }
+        let settings = settings(env)
+        #expect(ScrollPlanner.plan(notch(1, flags: .maskControl), settings: settings)
+                == .scroll(vertical: 3, horizontal: 0, removeFlags: .maskControl))
+        #expect(ScrollPlanner.plan(notch(1, flags: .maskAlternate), settings: settings)
+                == .scroll(vertical: 0.25, horizontal: 0, removeFlags: .maskAlternate))
+    }
+
+    @Test("⌘ zooms in the direction the wheel moves")
+    func zoom() {
+        let env = TestEnvironment()
+        defer { env.cleanUp() }
+        let settings = settings(env)
+        #expect(ScrollPlanner.plan(notch(1, flags: .maskCommand), settings: settings) == .zoom(zoomIn: true))
+        #expect(ScrollPlanner.plan(notch(-1, flags: .maskCommand), settings: settings) == .zoom(zoomIn: false))
+    }
+
+    @Test("Removed modifiers do nothing special")
+    func removedModifier() {
+        let env = TestEnvironment()
+        defer { env.cleanUp() }
+        let settings = settings(env)
+        settings.setModifier(nil, for: .zoom)
+        #expect(ScrollPlanner.plan(notch(1, flags: .maskCommand), settings: settings)
+                == .scroll(vertical: 1, horizontal: 0, removeFlags: []))
+    }
+
+    @Test("Rewriting a notch sets every field, fractional value intact")
+    func write() throws {
+        let event = try scrollEvent(units: .line, vertical: 1, horizontal: 0)
+        MouseEventTap.write(event, vertical: -2.5, horizontal: 0.3)
+        #expect(event.getIntegerValueField(.scrollWheelEventDeltaAxis1) == -3)
+        #expect(event.getDoubleValueField(.scrollWheelEventFixedPtDeltaAxis1) == -2.5)
+        #expect(event.getIntegerValueField(.scrollWheelEventPointDeltaAxis1) == -25)
+        #expect(event.getIntegerValueField(.scrollWheelEventDeltaAxis2) == 1) // never drop a notch
     }
 }
 
 @Suite("Smooth scrolling")
 struct SmoothScrollerTests {
-    private func run(_ scroller: inout SmoothScroller, maxFrames: Int = 500) -> (x: Int, y: Int, frames: Int) {
-        var x = 0, y = 0, frames = 0
+    private func run(_ scroller: inout SmoothScroller, maxFrames: Int = 500) -> (x: Int, y: Int, phases: [SmoothScroller.Phase]) {
+        var x = 0, y = 0, phases: [SmoothScroller.Phase] = []
         while let step = scroller.step() {
-            x += Int(step.dx); y += Int(step.dy); frames += 1
-            if frames > maxFrames { break }
+            x += Int(step.dx); y += Int(step.dy); phases.append(step.phase)
+            if phases.count > maxFrames { break }
         }
-        return (x, y, frames)
+        return (x, y, phases)
     }
 
     @Test("The glide covers exactly the requested distance", arguments: [40.0, 123.0, -80.0, 7.5])
@@ -276,17 +335,28 @@ struct SmoothScrollerTests {
         var scroller = SmoothScroller()
         scroller.add(dx: distance / 2, dy: distance)
         let result = run(&scroller)
-        #expect(result.y == Int(distance.rounded()))
-        #expect(abs(result.x - Int((distance / 2).rounded())) <= 1)
+        // Whole pixels only, so a fractional distance may land half a pixel off.
+        #expect(abs(Double(result.y) - distance) <= 0.5)
+        #expect(abs(Double(result.x) - distance / 2) <= 1)
     }
 
-    @Test("A glide ends quickly (under ¾ of a second at 120 fps)")
-    func ends() {
+    @Test("Phases go began → changed… → ended, like a trackpad")
+    func phases() {
         var scroller = SmoothScroller()
-        scroller.add(dx: 0, dy: 400)
-        let result = run(&scroller)
-        #expect(result.frames < 90)
+        scroller.add(dx: 0, dy: 120)
+        let phases = run(&scroller).phases
+        #expect(phases.first == .began)
+        #expect(phases.last == .ended)
+        #expect(phases.dropFirst().dropLast().allSatisfy { $0 == .changed })
         #expect(scroller.isIdle)
+    }
+
+    @Test("High smoothness glides longer than Regular, both end in time",
+          arguments: [(ScrollSmoothness.regular, 50), (.high, 100)])
+    func glideLength(smoothness: ScrollSmoothness, maxFrames: Int) throws {
+        var scroller = SmoothScroller(stepFraction: try #require(smoothness.stepFraction))
+        scroller.add(dx: 0, dy: 400)
+        #expect(run(&scroller).phases.count < maxFrames)
     }
 
     @Test("Steps shrink as the glide eases out")
@@ -305,7 +375,13 @@ struct SmoothScrollerTests {
         scroller.add(dx: 0, dy: 200)
         _ = scroller.step()
         scroller.add(dx: 0, dy: -40)
-        let result = run(&scroller)
-        #expect(result.y == -40)
+        #expect(run(&scroller).y == -40)
+    }
+
+    @Test("Trackpad phase values match macOS")
+    func phaseValues() {
+        #expect(MouseEventTap.phaseValue(.began) == 1)
+        #expect(MouseEventTap.phaseValue(.changed) == 2)
+        #expect(MouseEventTap.phaseValue(.ended) == 4)
     }
 }

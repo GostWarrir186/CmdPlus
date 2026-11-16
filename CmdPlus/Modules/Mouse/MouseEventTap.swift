@@ -1,4 +1,5 @@
 import AppKit
+import Carbon.HIToolbox
 import CoreGraphics
 
 /// Intercepts scroll and side-button events system-wide.
@@ -9,8 +10,6 @@ import CoreGraphics
 final class MouseEventTap {
     /// Marks events CmdPlus posts itself, so the tap lets them through untouched.
     nonisolated static let syntheticMarker: Int64 = 0x434D_4450 // "CMDP"
-    /// Pixels one wheel notch scrolls at 1× speed with smooth scrolling on.
-    nonisolated static let pixelsPerLine = 40.0
 
     private let settings: MouseSettings
     private var tap: CFMachPort?
@@ -106,21 +105,38 @@ final class MouseEventTap {
 
     private func handleScroll(_ event: CGEvent) -> CGEvent? {
         guard Self.isFromScrollWheel(event) else { return event }
-        let factors = Self.factors(for: settings)
 
-        guard settings.smoothScrolling else {
-            Self.scale(event, vertical: factors.vertical, horizontal: factors.horizontal)
-            return event
+        let input = ScrollPlanner.Input(
+            wholeVertical: Double(event.getIntegerValueField(.scrollWheelEventDeltaAxis1)),
+            acceleratedVertical: event.getDoubleValueField(.scrollWheelEventFixedPtDeltaAxis1),
+            wholeHorizontal: Double(event.getIntegerValueField(.scrollWheelEventDeltaAxis2)),
+            acceleratedHorizontal: event.getDoubleValueField(.scrollWheelEventFixedPtDeltaAxis2),
+            flags: event.flags
+        )
+
+        switch ScrollPlanner.plan(input, settings: settings) {
+        case .zoom(let zoomIn):
+            KeyCombo(zoomIn ? kVK_ANSI_Equal : kVK_ANSI_Minus, .maskCommand).post()
+            return nil
+
+        case .scroll(let vertical, let horizontal, let removeFlags):
+            var flags = event.flags
+            flags.subtract(removeFlags)
+
+            guard let fraction = settings.smoothness.stepFraction else {
+                Self.write(event, vertical: vertical, horizontal: horizontal)
+                event.flags = flags
+                return event
+            }
+
+            // Replace the notch with a glide.
+            scroller.stepFraction = fraction
+            scroller.add(dx: horizontal * ScrollPlanner.pixelsPerLine, dy: vertical * ScrollPlanner.pixelsPerLine)
+            glideFlags = flags
+            glideLocation = event.location
+            startGlide()
+            return nil
         }
-
-        // Replace the notch with a glide.
-        let lines = Self.lineDeltas(of: event)
-        scroller.add(dx: lines.horizontal * Self.pixelsPerLine * factors.horizontal,
-                     dy: lines.vertical * Self.pixelsPerLine * factors.vertical)
-        glideFlags = event.flags
-        glideLocation = event.location
-        startGlide()
-        return nil
     }
 
     private func startGlide() {
@@ -136,7 +152,7 @@ final class MouseEventTap {
     private func stopGlide() {
         glideTimer?.invalidate()
         glideTimer = nil
-        scroller = SmoothScroller()
+        scroller = SmoothScroller(stepFraction: scroller.stepFraction)
     }
 
     private func glideFrame() {
@@ -144,67 +160,54 @@ final class MouseEventTap {
             stopGlide()
             return
         }
-        guard step.dx != 0 || step.dy != 0,
-              let event = CGEvent(scrollWheelEvent2Source: eventSource, units: .pixel,
+        let simulateTrackpad = settings.trackpadSimulation
+        // Without trackpad phases there's nothing to "end".
+        if step.phase == .ended && !simulateTrackpad { return }
+        if step.phase != .ended && step.dx == 0 && step.dy == 0 { return }
+        guard let event = CGEvent(scrollWheelEvent2Source: eventSource, units: .pixel,
                                   wheelCount: 2, wheel1: step.dy, wheel2: step.dx, wheel3: 0)
         else { return }
+        if simulateTrackpad {
+            event.setIntegerValueField(.scrollWheelEventScrollPhase, value: Self.phaseValue(step.phase))
+        }
         event.flags = glideFlags
         event.location = glideLocation
         event.post(tap: .cghidEventTap)
     }
 
+    /// Values of `kCGScrollPhase…` (began 1, changed 2, ended 4).
+    nonisolated static func phaseValue(_ phase: SmoothScroller.Phase) -> Int64 {
+        switch phase {
+        case .began: 1
+        case .changed: 2
+        case .ended: 4
+        }
+    }
+
     /// Classic wheel mice send line-based, non-continuous scrolling. Trackpads and
-    /// Magic Mouse send continuous scrolling, so they keep the system direction.
+    /// Magic Mouse send continuous scrolling, so they keep the system behavior.
     nonisolated static func isFromScrollWheel(_ event: CGEvent) -> Bool {
         event.getIntegerValueField(.scrollWheelEventIsContinuous) == 0
     }
 
-    /// Speed times direction for each axis.
-    static func factors(for settings: MouseSettings) -> (vertical: Double, horizontal: Double) {
-        (settings.scrollSpeed * (settings.reverseVertical ? -1 : 1),
-         settings.scrollSpeed * (settings.reverseHorizontal ? -1 : 1))
+    /// Rewrites a notch to scroll the given number of lines on each axis.
+    nonisolated static func write(_ event: CGEvent, vertical: Double, horizontal: Double) {
+        write(event, lines: vertical, line: .scrollWheelEventDeltaAxis1,
+              point: .scrollWheelEventPointDeltaAxis1, fixed: .scrollWheelEventFixedPtDeltaAxis1)
+        write(event, lines: horizontal, line: .scrollWheelEventDeltaAxis2,
+              point: .scrollWheelEventPointDeltaAxis2, fixed: .scrollWheelEventFixedPtDeltaAxis2)
     }
 
-    /// Lines scrolled. A slow notch reports 1 whole line but only ~0.1 in the
-    /// fractional field, while fast spinning reports more in the fractional one —
-    /// so take whichever is larger: a notch always scrolls at least a line, and
-    /// the system's acceleration still kicks in.
-    nonisolated static func lineDeltas(of event: CGEvent) -> (vertical: Double, horizontal: Double) {
-        (lines(event, whole: .scrollWheelEventDeltaAxis1, fractional: .scrollWheelEventFixedPtDeltaAxis1),
-         lines(event, whole: .scrollWheelEventDeltaAxis2, fractional: .scrollWheelEventFixedPtDeltaAxis2))
-    }
-
-    nonisolated private static func lines(_ event: CGEvent, whole: CGEventField, fractional: CGEventField) -> Double {
-        let wholeLines = Double(event.getIntegerValueField(whole))
-        let fractionalLines = event.getDoubleValueField(fractional)
-        return abs(fractionalLines) > abs(wholeLines) ? fractionalLines : wholeLines
-    }
-
-    /// Multiplies every delta field macOS and apps may read. A factor of −1 reverses.
-    nonisolated static func scale(_ event: CGEvent, vertical: Double, horizontal: Double) {
-        if vertical != 1 {
-            scale(event, by: vertical, line: .scrollWheelEventDeltaAxis1,
-                  point: .scrollWheelEventPointDeltaAxis1, fixed: .scrollWheelEventFixedPtDeltaAxis1)
-        }
-        if horizontal != 1 {
-            scale(event, by: horizontal, line: .scrollWheelEventDeltaAxis2,
-                  point: .scrollWheelEventPointDeltaAxis2, fixed: .scrollWheelEventFixedPtDeltaAxis2)
-        }
-    }
-
-    /// Setting one delta field makes macOS recompute the others, so read all
-    /// three first and only then write them back.
-    nonisolated private static func scale(_ event: CGEvent, by factor: Double,
+    /// Setting one field makes macOS recompute the others, so the fractional
+    /// value goes last.
+    nonisolated private static func write(_ event: CGEvent, lines: Double,
                                           line: CGEventField, point: CGEventField, fixed: CGEventField) {
-        let lineValue = event.getIntegerValueField(line)
-        let pointValue = event.getIntegerValueField(point)
-        let fixedValue = event.getDoubleValueField(fixed)
-        var scaledLine = (Double(lineValue) * factor).rounded()
+        var whole = lines.rounded()
         // A notch should never vanish when slowed down.
-        if scaledLine == 0 && lineValue != 0 { scaledLine = factor * Double(lineValue) < 0 ? -1 : 1 }
-        event.setIntegerValueField(line, value: Int64(scaledLine))
-        event.setIntegerValueField(point, value: Int64((Double(pointValue) * factor).rounded()))
-        event.setDoubleValueField(fixed, value: fixedValue * factor)
+        if whole == 0 && lines != 0 { whole = lines < 0 ? -1 : 1 }
+        event.setIntegerValueField(line, value: Int64(whole))
+        event.setIntegerValueField(point, value: Int64((lines * 10).rounded()))
+        event.setDoubleValueField(fixed, value: lines)
     }
 
     // MARK: - Buttons
