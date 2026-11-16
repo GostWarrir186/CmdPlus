@@ -663,16 +663,6 @@
         }
       }
     },
-    "For the window you were using" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Для окна, в котором вы работали"
-          }
-        }
-      }
-    },
     "Forward" : {
       "localizations" : {
         "ru" : {
@@ -1009,6 +999,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Переместить и изменить размер"
+          }
+        }
+      }
+    },
+    "Move & Resize the window you were using" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переместить и изменить размер окна, в котором вы работали"
           }
         }
       }
@@ -1376,6 +1376,7 @@
       }
     },
     "Restore" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ru" : {
           "stringUnit" : {

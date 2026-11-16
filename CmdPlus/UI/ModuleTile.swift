@@ -18,30 +18,54 @@ struct ModuleTile<Content: View>: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             Button(action: action) {
-                HStack(spacing: Self.iconSpacing) {
-                    TintedIcon(systemImage: systemImage, tint: tint, size: Self.iconSize, style: .circle)
-                    VStack(alignment: .leading, spacing: 1) {
-                        Text(title)
-                            .font(.headline)
-                            .lineLimit(1)
-                        Text(subtitle)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
-                    Spacer(minLength: 8)
+                TileHeader(title: title, subtitle: subtitle, systemImage: systemImage, tint: tint) {
                     if let shortcut {
                         KeyCap(text: shortcut)
                     }
                 }
-                .contentShape(.rect)
             }
             .buttonStyle(.plain)
 
             content
         }
-        .padding(Design.Panel.tilePadding)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .glassEffect(.regular, in: .rect(cornerRadius: Design.Panel.tileRadius))
+        .modifier(TileBackground())
+    }
+}
+
+/// Icon, title and subtitle of a tile, with an optional trailing element.
+struct TileHeader<Trailing: View>: View {
+    let title: LocalizedStringResource
+    let subtitle: String
+    let systemImage: String
+    let tint: Color
+    @ViewBuilder var trailing: Trailing
+
+    var body: some View {
+        HStack(spacing: ModuleTile<EmptyView>.iconSpacing) {
+            TintedIcon(systemImage: systemImage, tint: tint, size: ModuleTile<EmptyView>.iconSize, style: .circle)
+            VStack(alignment: .leading, spacing: 1) {
+                Text(title)
+                    .font(.headline)
+                    .lineLimit(1)
+                Text(subtitle)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            }
+            Spacer(minLength: 8)
+            trailing
+        }
+        .contentShape(.rect)
+    }
+}
+
+/// Padding and Liquid Glass shared by every tile.
+struct TileBackground: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .padding(Design.Panel.tilePadding)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .glassEffect(.regular, in: .rect(cornerRadius: Design.Panel.tileRadius))
     }
 }
 

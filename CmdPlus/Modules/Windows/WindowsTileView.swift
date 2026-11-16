@@ -10,34 +10,44 @@ struct WindowsTileView: View {
     var body: some View {
         let descriptor = WindowsModule.descriptor
 
-        ModuleTile(
-            title: descriptor.title,
-            subtitle: module.hasAccess
-                ? String(localized: "For the window you were using")
-                : String(localized: "Permission needed"),
-            systemImage: descriptor.systemImage,
-            tint: descriptor.tint,
-            action: { if !module.hasAccess { module.requestAccess() } }
-        ) {
-            if module.hasAccess {
-                Menu {
-                    ForEach(Array(WindowAction.groups.enumerated()), id: \.offset) { index, group in
-                        Section {
-                            ForEach(group.actions) { action in
-                                menuItem(action)
-                            }
-                        } header: {
-                            Text(group.title)
+        if module.hasAccess {
+            // The whole tile opens the Move & Resize menu.
+            Menu {
+                ForEach(Array(WindowAction.groups.enumerated()), id: \.offset) { _, group in
+                    Section {
+                        ForEach(group.actions) { action in
+                            menuItem(action)
                         }
+                    } header: {
+                        Text(group.title)
                     }
-                } label: {
-                    Label("Move & Resize", systemImage: "macwindow.on.rectangle")
-                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                .menuStyle(.button)
-                .buttonStyle(.bordered)
-                .padding(.leading, ModuleTile<EmptyView>.iconSize + ModuleTile<EmptyView>.iconSpacing)
+            } label: {
+                TileHeader(
+                    title: descriptor.title,
+                    subtitle: String(localized: "Move & Resize"),
+                    systemImage: descriptor.systemImage,
+                    tint: descriptor.tint
+                ) {
+                    Image(systemName: "chevron.down")
+                        .font(.footnote.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .padding(.trailing, 4)
+                }
             }
+            .menuStyle(.button)
+            .menuIndicator(.hidden)
+            .buttonStyle(.plain)
+            .modifier(TileBackground())
+            .help(Text("Move & Resize the window you were using"))
+        } else {
+            ModuleTile(
+                title: descriptor.title,
+                subtitle: String(localized: "Permission needed"),
+                systemImage: descriptor.systemImage,
+                tint: descriptor.tint,
+                action: { module.requestAccess() }
+            )
         }
     }
 
