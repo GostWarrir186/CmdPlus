@@ -7,7 +7,7 @@ import SwiftUI
 @Observable
 final class HistoryViewModel {
     enum Filter: String, CaseIterable, Identifiable {
-        case all, text, images, files, pinned, secrets
+        case all, text, images, files, pinned
 
         var id: String { rawValue }
 
@@ -18,7 +18,6 @@ final class HistoryViewModel {
             case .images: "Images"
             case .files: "Files"
             case .pinned: "Pinned"
-            case .secrets: "Passwords"
             }
         }
 
@@ -29,7 +28,6 @@ final class HistoryViewModel {
             case .images: "photo"
             case .files: "doc"
             case .pinned: "pin"
-            case .secrets: "key"
             }
         }
     }
@@ -37,8 +35,6 @@ final class HistoryViewModel {
     var query = ""
     var filter: Filter = .all
     var selectedID: ClipboardItem.ID?
-    /// Passwords revealed with Touch ID. Cleared when the window closes.
-    var revealed: [ClipboardItem.ID: String] = [:]
     /// Bumped on every show — tells the view to focus the search field.
     private(set) var focusRequest = 0
 
@@ -77,11 +73,10 @@ final class HistoryViewModel {
     private static func matches(_ item: ClipboardItem, filter: Filter) -> Bool {
         switch filter {
         case .all: true
-        case .text: item.kind == .text && !item.isSecret
+        case .text: item.kind == .text
         case .images: item.kind == .image
         case .files: item.kind == .files
         case .pinned: item.isPinned
-        case .secrets: item.isSecret
         }
     }
 
@@ -90,14 +85,10 @@ final class HistoryViewModel {
     func prepareForShow() {
         query = ""
         filter = .all
-        revealed = [:]
         selectFirst()
         focusRequest += 1
     }
 
-    func didClose() {
-        revealed = [:]
-    }
 
     // MARK: - Selection and actions
 
@@ -143,15 +134,11 @@ final class HistoryViewModel {
         module?.requestPasteAccess()
     }
 
-    /// `nil` if the item can't be dragged (a password, or the file is gone).
+    /// `nil` if the item can't be dragged (for example, the file is gone).
     func dragProvider(for item: ClipboardItem) -> NSItemProvider? {
         guard let provider = module?.dragItemProvider(for: item) else { return nil }
         dragStarted()
         return provider
-    }
-
-    func canDrag(_ item: ClipboardItem) -> Bool {
-        !item.isSecret
     }
 
     func togglePin(_ item: ClipboardItem) {
@@ -163,21 +150,8 @@ final class HistoryViewModel {
             moveSelection(by: 1)
             if selectedID == item.id { moveSelection(by: -1) }
         }
-        revealed[item.id] = nil
         store?.delete(item.id)
         if visibleItems.isEmpty { selectedID = nil }
-    }
-
-    func toggleReveal(_ item: ClipboardItem) {
-        if revealed[item.id] != nil {
-            revealed[item.id] = nil
-            return
-        }
-        Task {
-            if let secret = await module?.revealSecret(item) {
-                revealed[item.id] = secret
-            }
-        }
     }
 
     /// Window keyboard handling. Returns `true` if the key was used.

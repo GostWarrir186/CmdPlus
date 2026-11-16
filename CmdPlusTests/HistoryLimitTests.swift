@@ -52,9 +52,9 @@ struct HistoryLimitTests {
         let env = TestEnvironment()
         defer { env.cleanUp() }
         let store = await env.makeStore(limit: 1)
-        store.addText("старое", source: nil)
-        store.addText("новое", source: nil)
-        #expect(store.texts == ["новое"])
+        store.addText("old", source: nil)
+        store.addText("new", source: nil)
+        #expect(store.texts == ["new"])
     }
 
     @Test("Limit of 500 holds exactly 500 items")
@@ -62,10 +62,10 @@ struct HistoryLimitTests {
         let env = TestEnvironment()
         defer { env.cleanUp() }
         let store = await env.makeStore(limit: 500)
-        for i in 1...501 { store.addText("запись \(i)", source: nil) }
+        for i in 1...501 { store.addText("item \(i)", source: nil) }
         #expect(store.items.count == 500)
-        #expect(store.items.first?.text == "запись 501")
-        #expect(!store.texts.contains("запись 1"))
+        #expect(store.items.first?.text == "item 501")
+        #expect(!store.texts.contains("item 1"))
     }
 
     @Test("Pinned items don't count toward the limit and aren't removed")
@@ -73,13 +73,13 @@ struct HistoryLimitTests {
         let env = TestEnvironment()
         defer { env.cleanUp() }
         let store = await env.makeStore(limit: 2)
-        store.addText("важное", source: nil)
+        store.addText("important", source: nil)
         store.togglePin(store.items[0].id)
         for text in ["a", "b", "c", "d"] { store.addText(text, source: nil) }
 
         #expect(store.unpinnedCount == 2)
         #expect(store.items.count == 3)
-        #expect(Set(store.texts) == ["важное", "d", "c"])
+        #expect(Set(store.texts) == ["important", "d", "c"])
     }
 
     @Test("Pinned items stay even when they exceed the limit")
@@ -91,7 +91,7 @@ struct HistoryLimitTests {
             store.addText(text, source: nil)
             store.togglePin(store.items[0].id)
         }
-        store.addText("обычная", source: nil)
+        store.addText("regular", source: nil)
         #expect(store.items.filter(\.isPinned).count == 3)
         #expect(store.unpinnedCount == 1)
     }

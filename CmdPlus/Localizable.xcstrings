@@ -91,46 +91,6 @@
         }
       }
     },
-    "⇧⌘V is already used by another app." : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Сочетание ⇧⌘V уже используется другим приложением."
-          }
-        }
-      }
-    },
-    "1 Hour" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "1 час"
-          }
-        }
-      }
-    },
-    "7 Days" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "7 дней"
-          }
-        }
-      }
-    },
-    "24 Hours" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "24 часа"
-          }
-        }
-      }
-    },
     "About" : {
       "localizations" : {
         "ru" : {
@@ -261,16 +221,6 @@
         }
       }
     },
-    "Clear clipboard history?" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Очистить историю буфера обмена?"
-          }
-        }
-      }
-    },
     "Clear History" : {
       "localizations" : {
         "ru" : {
@@ -287,6 +237,16 @@
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "Очистить историю…"
+          }
+        }
+      }
+    },
+    "Clear clipboard history?" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Очистить историю буфера обмена?"
           }
         }
       }
@@ -391,16 +351,6 @@
         }
       }
     },
-    "Couldn't save to Keychain: %@" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Не удалось сохранить в связку ключей: %@"
-          }
-        }
-      }
-    },
     "Custom…" : {
       "localizations" : {
         "ru" : {
@@ -462,16 +412,6 @@
         }
       }
     },
-    "Forever" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Всегда"
-          }
-        }
-      }
-    },
     "From 1 to 500 items. Pinned items don't count toward the limit. When you lower the limit, the oldest unpinned items are deleted right away." : {
       "localizations" : {
         "ru" : {
@@ -488,16 +428,6 @@
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "Основные"
-          }
-        }
-      }
-    },
-    "Hide" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Скрыть"
           }
         }
       }
@@ -538,16 +468,6 @@
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "Изображения"
-          }
-        }
-      }
-    },
-    "Keep Passwords For" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Хранить пароли"
           }
         }
       }
@@ -632,16 +552,6 @@
         }
       }
     },
-    "Open at Login" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Открывать при входе"
-          }
-        }
-      }
-    },
     "Open Clipboard History" : {
       "localizations" : {
         "ru" : {
@@ -662,43 +572,12 @@
         }
       }
     },
-    "Password" : {
-      "extractionState" : "stale",
+    "Open at Login" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "machine_translated",
-            "value" : "Пароль"
-          }
-        }
-      }
-    },
-    "Passwords" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Пароли"
-          }
-        }
-      }
-    },
-    "Passwords and Codes" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Пароли и коды"
-          }
-        }
-      }
-    },
-    "Passwords copied from password managers are encrypted in the Keychain of this Mac only. They are never synced to iCloud and never included in settings export. In the list they are shown as dots and revealed with Touch ID. Pinned passwords are not deleted automatically." : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Пароли, скопированные из менеджеров паролей, хранятся в зашифрованном виде только в связке ключей этого Mac. Они никогда не синхронизируются с iCloud и не попадают в экспорт настроек. В списке они скрыты точками и отображаются после проверки Touch ID. Закреплённые пароли не удаляются автоматически."
+            "value" : "Открывать при входе"
           }
         }
       }
@@ -805,16 +684,6 @@
         }
       }
     },
-    "Save Passwords and Codes" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Сохранять пароли и коды"
-          }
-        }
-      }
-    },
     "Saved Items" : {
       "localizations" : {
         "ru" : {
@@ -841,26 +710,6 @@
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "Настройки…"
-          }
-        }
-      }
-    },
-    "Show" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Показать"
-          }
-        }
-      }
-    },
-    "show a password from clipboard history" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "показать пароль из истории буфера обмена"
           }
         }
       }
@@ -981,6 +830,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Когда вы выбираете запись, CmdPlus сам вставляет её в приложение, где вы работали, — нажимает ⌘V за вас. Для этого нужно разрешение «Универсальный доступ». Без него запись только копируется. ⌥↩ — скопировать, не вставляя."
+          }
+        }
+      }
+    },
+    "⇧⌘V is already used by another app." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Сочетание ⇧⌘V уже используется другим приложением."
           }
         }
       }

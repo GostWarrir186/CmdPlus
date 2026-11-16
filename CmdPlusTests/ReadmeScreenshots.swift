@@ -62,15 +62,19 @@ struct ReadmeScreenshots {
             Color.clear.frame(height: Self.titleBarHeight)
             view
         }
-        let host = NSHostingView(rootView: padded.environment(\.colorScheme, scheme))
+        // Render controls as in a focused window, whatever app has focus right now.
+        let host = NSHostingView(rootView: padded
+            .environment(\.colorScheme, scheme)
+            .environment(\.controlActiveState, .key))
         host.frame.size = host.fittingSize
-        // A titled, key window so selections and prominent buttons render in their active colors.
-        let window = NSWindow(contentRect: host.frame, styleMask: [.titled, .fullSizeContentView], backing: .buffered, defer: false)
+        // A non-activating panel becomes the key window without stealing focus from
+        // whatever app is in front, so switches and buttons render in their active colors.
+        let window = NSPanel(contentRect: host.frame, styleMask: [.titled, .nonactivatingPanel, .fullSizeContentView],
+                             backing: .buffered, defer: false)
         window.titlebarAppearsTransparent = true
         window.titleVisibility = .hidden
         window.appearance = NSAppearance(named: scheme == .dark ? .darkAqua : .aqua)
         window.contentView = host
-        NSApp.activate()
         window.makeKeyAndOrderFront(nil)
         // Give thumbnails time to decode.
         try await Task.sleep(for: .seconds(2))
@@ -158,8 +162,9 @@ private enum DemoData {
                           sourceAppName: "Xcode"),
             ClipboardItem(kind: .files, createdAt: ago(12), filePaths: [report.path],
                           sourceAppName: "Finder"),
-            ClipboardItem(kind: .text, createdAt: ago(18), isSecret: true,
-                          sourceAppName: "Passwords"),
+            ClipboardItem(kind: .text, createdAt: ago(18),
+                          text: "#0A84FF",
+                          sourceAppName: "Figma"),
             ClipboardItem(kind: .image, createdAt: ago(25), imageFile: ocean, imageWidth: 1600, imageHeight: 1000,
                           sourceAppName: "Safari"),
             ClipboardItem(kind: .text, createdAt: ago(40),

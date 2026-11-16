@@ -10,7 +10,6 @@ struct HistorySearchTests {
         ClipboardItem(kind: .text, text: "Pull request ready for review"),
         ClipboardItem(kind: .files, filePaths: ["/Users/me/Documents/Отчёт.pdf"]),
         ClipboardItem(kind: .image, imageFile: "abc.png", sourceAppName: "Preview"),
-        ClipboardItem(kind: .text, isSecret: true, sourceAppName: "1Password"),
     ]
 
     private func search(_ query: String, filter: HistoryViewModel.Filter = .all) -> [ClipboardItem] {
@@ -51,22 +50,12 @@ struct HistorySearchTests {
         #expect(search("preview").map(\.kind) == [.image])
     }
 
-    @Test("Password text is never searchable")
-    func secretTextNotSearchable() {
-        var secret = ClipboardItem(kind: .text, isSecret: true)
-        secret.text = "hunter2" // even if text somehow ended up in the item
-        let found = HistoryViewModel.filter([secret], by: .all, terms: ["hunter2"])
-        #expect(found.isEmpty)
-        #expect(search("1password").count == 1)
-    }
-
     @Test("Type filters", arguments: [
         (HistoryViewModel.Filter.text, 3),
         (.images, 1),
         (.files, 1),
-        (.secrets, 1),
         (.pinned, 0),
-        (.all, 6),
+        (.all, 5),
     ])
     func filters(filter: HistoryViewModel.Filter, expectedCount: Int) {
         #expect(search("", filter: filter).count == expectedCount)

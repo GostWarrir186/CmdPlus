@@ -8,7 +8,7 @@ import SwiftUI
 final class HistoryPanelController: NSObject, NSWindowDelegate {
     private let panel: HistoryPanel
     let viewModel: HistoryViewModel
-    /// True during Touch ID or a drag — leave the window alone.
+    /// True during a drag — leave the window alone.
     var suppressAutoClose = false
     private var keyMonitor: Any?
     /// True while we position the window ourselves, so those moves aren't saved.
@@ -73,7 +73,6 @@ final class HistoryPanelController: NSObject, NSWindowDelegate {
     func close() {
         removeKeyMonitor()
         panel.orderOut(nil)
-        viewModel.didClose()
     }
 
     /// While an item is dragged out, make the window transparent and click-through

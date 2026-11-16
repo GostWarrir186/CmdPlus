@@ -22,6 +22,23 @@ Free and open source. Fast, private, and built only with Apple's own frameworks.
 
 </div>
 
+## Download
+
+Grab the latest `CmdPlus-x.y.z.zip` from [**Releases**](https://github.com/GostWarrir186/CmdPlus/releases/latest), unzip it and move **CmdPlus** to **Applications**.
+
+CmdPlus is free and isn't notarized by Apple, so macOS blocks the first launch. To allow it once:
+
+1. Open CmdPlus. When macOS says it can't be opened, click **Done**.
+2. Go to **System Settings → Privacy & Security**, scroll down and click **Open Anyway** next to CmdPlus.
+
+Or run this in Terminal:
+
+```sh
+xattr -dr com.apple.quarantine /Applications/CmdPlus.app
+```
+
+> After each update, macOS may ask you to grant the Accessibility permission again.
+
 ## Why CmdPlus
 
 Instead of a dozen separate menu bar apps, CmdPlus gives you one lightweight app with modules you can switch on and off.
@@ -36,12 +53,12 @@ Instead of a dozen separate menu bar apps, CmdPlus gives you one lightweight app
 Everything you copy (text, images, files) is one shortcut away.
 
 - **⇧⌘V** opens a Spotlight-style window: the list is on the left, a full preview on the right.
-- **Search by words** in any order, with matches highlighted. Filter by text, images, files, pinned or passwords.
+- **Search by words** in any order, with matches highlighted. Filter by text, images, files or pinned.
 - **Pick and it's pasted** straight into the app you were using. No extra ⌘V needed.
 - **Drag and drop** items into any app: text as text, images as PNG, files as files.
 - **Pin** what you use often. Pinned items never count toward the limit.
 - **Set your own limit** from 1 to 500 items. The oldest unpinned ones are removed first.
-- **Passwords stay safe.** Anything copied from a password manager is stored only in this Mac's Keychain. It is never synced, is shown as dots, is revealed with Touch ID and expires automatically.
+- **Passwords are skipped.** Anything a password manager marks as secret (1Password, Bitwarden, Apple Passwords and others) is never saved.
 
 <details>
 <summary><b>Keyboard shortcuts</b></summary>
@@ -106,13 +123,12 @@ CmdPlus asks for a permission only when you turn on the feature that needs it, a
 | Permission | Used for |
 | --- | --- |
 | **Accessibility** | Pasting a picked history item for you by sending ⌘V. Without it, items are only copied. |
-| **Touch ID / password** | Revealing or pasting a saved password. |
 
 ## Privacy
 
 - Settings are stored in `UserDefaults`.
 - History is stored in the app's sandbox container: `~/Library/Containers/com.azam.CmdPlus/Data/Library/Application Support/CmdPlus/`.
-- Passwords are stored only in the Keychain. They are never written to disk in plain text and never leave your Mac.
+- Passwords copied from password managers are never saved, not even temporarily.
 - Clipboard History never goes online. The only planned network access is currency rates and update checks.
 
 ## Roadmap

@@ -10,11 +10,9 @@ final class ClipboardMonitor {
         case text(String)
         case image(Data)
         case files([URL])
-        case secret(String)
     }
 
     /// Types password managers use to mark secrets (see nspasteboard.org).
-    static let concealedType = NSPasteboard.PasteboardType("org.nspasteboard.ConcealedType")
     private static let secretTypes: Set<String> = [
         "org.nspasteboard.ConcealedType",
         "org.nspasteboard.TransientType",
@@ -57,20 +55,19 @@ final class ClipboardMonitor {
         guard count != lastChangeCount else { return }
         lastChangeCount = count
         guard count != ownChangeCount else { return }
-        if let content = readContent() {
+        if let content = Self.readContent(of: pasteboard) {
             let app = NSWorkspace.shared.frontmostApplication
             onCapture?(content, SourceApp(name: app?.localizedName, bundleID: app?.bundleIdentifier))
         }
     }
 
-    private func readContent() -> Content? {
+    /// What's worth saving from a pasteboard, or `nil` to skip it.
+    static func readContent(of pasteboard: NSPasteboard) -> Content? {
         let types = pasteboard.types ?? []
         let typeIDs = Set(types.map(\.rawValue))
 
-        if !typeIDs.isDisjoint(with: Self.secretTypes) {
-            guard let text = pasteboard.string(forType: .string), !text.isEmpty else { return nil }
-            return .secret(text)
-        }
+        // Passwords from password managers are never saved — skip them entirely.
+        guard typeIDs.isDisjoint(with: Self.secretTypes) else { return nil }
 
         if types.contains(.fileURL),
            let urls = pasteboard.readObjects(

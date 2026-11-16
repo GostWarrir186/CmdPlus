@@ -1,7 +1,7 @@
 # macOS
 .DS_Store
 
-# Xcode — личные настройки и сборки
+# Xcode — personal settings and builds
 xcuserdata/
 DerivedData/
 build/
@@ -12,7 +12,7 @@ build/
 .build/
 .swiftpm/
 
-# Секреты — никогда не коммитить
+# Secrets — never commit
 *.p12
 *.cer
 *.mobileprovision

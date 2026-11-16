@@ -46,7 +46,7 @@ struct ImageLoaderTests {
 
     @Test("Missing or broken file returns nil without crashing")
     func missingFile() async {
-        let url = FileManager.default.temporaryDirectory.appending(path: "нет-такого-\(UUID().uuidString).png")
+        let url = FileManager.default.temporaryDirectory.appending(path: "missing-\(UUID().uuidString).png")
         #expect(await ImageLoader.load(url, size: .preview) == nil)
     }
 }

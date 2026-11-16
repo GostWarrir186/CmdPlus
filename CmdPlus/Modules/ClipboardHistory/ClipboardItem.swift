@@ -7,7 +7,6 @@ nonisolated enum ClipboardKind: String, Codable, Sendable {
 }
 
 /// One history entry, stored in history.json.
-/// Passwords never store their text here — it lives only in the Keychain.
 nonisolated struct ClipboardItem: Identifiable, Codable, Equatable, Sendable {
     let id: UUID
     var kind: ClipboardKind
@@ -19,6 +18,7 @@ nonisolated struct ClipboardItem: Identifiable, Codable, Equatable, Sendable {
     var imageHeight: Int?
     var filePaths: [String]?
     var isPinned: Bool
+    /// Legacy: a password entry from an older version. Such items are dropped on load.
     var isSecret: Bool
     /// Used to spot duplicates. Not stored for passwords.
     var contentHash: String?
@@ -59,10 +59,10 @@ nonisolated struct ClipboardItem: Identifiable, Codable, Equatable, Sendable {
         (filePaths ?? []).map { URL(filePath: $0) }
     }
 
-    /// What search looks at. For passwords that's only the source app name.
+    /// What search looks at.
     var searchableText: String {
         var parts: [String] = []
-        if !isSecret, let text { parts.append(text) }
+        if let text { parts.append(text) }
         if let filePaths { parts.append(contentsOf: filePaths) }
         if let sourceAppName { parts.append(sourceAppName) }
         return parts.joined(separator: "\n")

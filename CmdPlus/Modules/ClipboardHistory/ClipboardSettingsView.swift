@@ -58,29 +58,6 @@ struct ClipboardSettingsView: View {
                     }
                 }
             }
-
-            Section {
-                Toggle("Save Passwords and Codes", isOn: $settings.captureSecrets)
-                Picker("Keep Passwords For", selection: $settings.secretRetention) {
-                    ForEach(SecretRetention.allCases) { retention in
-                        Text(retention.title).tag(retention)
-                    }
-                }
-                .disabled(!settings.captureSecrets)
-
-                if let error = store.vaultError {
-                    Label {
-                        Text("Couldn't save to Keychain: \(error)")
-                    } icon: {
-                        Image(systemName: "exclamationmark.triangle")
-                    }
-                    .foregroundStyle(.orange)
-                }
-            } header: {
-                Text("Passwords and Codes")
-            } footer: {
-                Text("Passwords copied from password managers are encrypted in the Keychain of this Mac only. They are never synced to iCloud and never included in settings export. In the list they are shown as dots and revealed with Touch ID. Pinned passwords are not deleted automatically.")
-            }
         }
         .confirmationDialog("Clear clipboard history?", isPresented: $isConfirmingClear) {
             Button("Clear History", role: .destructive) {
@@ -88,9 +65,6 @@ struct ClipboardSettingsView: View {
             }
         } message: {
             Text("Pinned items will be kept.")
-        }
-        .onChange(of: settings.secretRetention) {
-            store.purgeExpiredSecrets()
         }
         // Permission is granted in System Settings, so re-check when the user comes back.
         .onAppear { module.refreshPasteAccess() }

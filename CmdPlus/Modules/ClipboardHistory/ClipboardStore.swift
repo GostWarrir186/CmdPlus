@@ -1,18 +1,17 @@
 import AppKit
 import CryptoKit
 import Observation
+import Security
 
 /// History storage: items in memory plus files on disk.
 ///
 /// Lives in `Application Support/CmdPlus/ClipboardHistory/` (inside the sandbox
-/// container): `history.json` for items (no passwords) and `images/` for PNGs.
+/// container): `history.json` for items and `images/` for PNGs.
 @Observable
 final class ClipboardStore {
     /// Newest first.
     private(set) var items: [ClipboardItem] = []
     private(set) var isLoaded = false
-    /// Last Keychain error, shown in Settings.
-    var vaultError: String?
 
     let settings: ClipboardSettings
     let directory: URL
@@ -51,12 +50,29 @@ final class ClipboardStore {
             }
         }.value
 
+        // Migration: password support was removed. Drop old password entries
+        // and their Keychain items.
+        let legacyPasswords = loaded.filter(\.isSecret)
+        if !legacyPasswords.isEmpty {
+            Self.deleteLegacyKeychainItems()
+        }
+
         // Anything copied while loading stays on top.
         let capturedIDs = Set(items.map(\.id))
-        items += loaded.filter { !capturedIDs.contains($0.id) }
+        items += loaded.filter { !$0.isSecret && !capturedIDs.contains($0.id) }
         isLoaded = true
-        purgeExpiredSecrets()
+        if !legacyPasswords.isEmpty { scheduleSave() }
         applyLimit()
+    }
+
+    /// Removes every Keychain item older versions stored for clipboard passwords.
+    private static func deleteLegacyKeychainItems() {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: "com.azam.CmdPlus.clipboard-secret",
+            kSecUseDataProtectionKeychain as String: true,
+        ]
+        SecItemDelete(query as CFDictionary)
     }
 
     /// Debounced to once a second so we don't hit the disk on every copy.
@@ -125,24 +141,6 @@ final class ClipboardStore {
         }
     }
 
-    /// The password goes to the Keychain; history only gets a placeholder entry.
-    func addSecret(_ secret: String, source: SourceApp?) {
-        let item = ClipboardItem(
-            kind: .text,
-            isSecret: true,
-            sourceAppName: source?.name,
-            sourceBundleID: source?.bundleID
-        )
-        do {
-            try SecretVault.store(secret, account: item.id.uuidString)
-            vaultError = nil
-            insert(item)
-        } catch {
-            // Couldn't encrypt it — so don't keep it at all. No plain-text passwords.
-            vaultError = error.localizedDescription
-        }
-    }
-
     private func insert(_ newItem: ClipboardItem) {
         var item = newItem
         // Same content already exists — move the old entry to the top.
@@ -170,10 +168,7 @@ final class ClipboardStore {
     func touch(_ id: ClipboardItem.ID) {
         guard let index = items.firstIndex(where: { $0.id == id }) else { return }
         var item = items.remove(at: index)
-        if !item.isSecret {
-            // Don't bump the date for passwords, or they'd never expire.
-            item.createdAt = .now
-        }
+        item.createdAt = .now
         items.insert(item, at: 0)
         scheduleSave()
     }
@@ -188,18 +183,6 @@ final class ClipboardStore {
         let removed = items.filter { !$0.isPinned }
         items.removeAll { !$0.isPinned }
         removed.forEach(removeFiles(of:))
-        scheduleSave()
-    }
-
-    /// Removes passwords past their retention period. Pinned ones are kept.
-    func purgeExpiredSecrets() {
-        guard let interval = settings.secretRetention.interval else { return }
-        let cutoff = Date.now.addingTimeInterval(-interval)
-        let expired = items.filter { $0.isSecret && !$0.isPinned && $0.createdAt < cutoff }
-        guard !expired.isEmpty else { return }
-        let expiredIDs = Set(expired.map(\.id))
-        items.removeAll { expiredIDs.contains($0.id) }
-        expired.forEach(removeFiles(of:))
         scheduleSave()
     }
 
@@ -232,14 +215,11 @@ final class ClipboardStore {
         return true
     }
 
-    /// Cleans up what an item leaves behind: its image file or Keychain entry.
+    /// Deletes an item's image file once nothing else uses it.
     private func removeFiles(of item: ClipboardItem) {
         if let url = imageURL(for: item),
            !items.contains(where: { $0.imageFile == item.imageFile }) {
             try? FileManager.default.removeItem(at: url)
-        }
-        if item.isSecret {
-            SecretVault.delete(account: item.id.uuidString)
         }
     }
 

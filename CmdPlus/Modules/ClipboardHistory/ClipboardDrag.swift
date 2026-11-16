@@ -4,9 +4,8 @@ import UniformTypeIdentifiers
 extension ClipboardHistoryModule {
     /// What a dragged item carries: text as text, images as PNG (a file in Finder,
     /// an image in editors), files as file URLs — only the first one, since SwiftUI
-    /// drags a single item. Passwords can't be dragged; they need Touch ID.
+    /// drags a single item.
     func dragItemProvider(for item: ClipboardItem) -> NSItemProvider? {
-        guard !item.isSecret else { return nil }
         switch item.kind {
         case .text:
             guard let text = item.text else { return nil }

@@ -1,32 +1,39 @@
-# CmdPlus — инструкции для Claude
+# CmdPlus — instructions for Claude
 
-## Что это
-CmdPlus — бесплатное open-source macOS-приложение: набор утилит в строке меню вместо зоопарка отдельных программ.
-Автор — новичок в Swift: объясняй по-русски, коротко, что сделал и как проверить.
+## What this is
+CmdPlus is a free, open-source macOS app: a set of menu bar utilities instead of a zoo of separate apps.
+The author is new to Swift: explain in Russian, briefly — what you did and how to check it.
 
-## Жёсткие правила
-- Swift + SwiftUI, только системные компоненты Apple. Стиль macOS 26 (Liquid Glass), минимальная версия macOS 26.0.
-- Приложение живёт в строке меню (MenuBarExtra), без иконки в Dock (LSUIElement = YES).
-- Всё локально: никаких серверов, аккаунтов и аналитики. В сеть ходят только курсы валют и проверка обновлений.
-- Модульная архитектура: каждый модуль включается/выключается в настройках; выключенный модуль не загружается.
-- Пароли и коды из буфера — только в Keychain этого Мака: kSecAttrSynchronizable = false,
-  kSecAttrAccessibleWhenUnlockedThisDeviceOnly. Показ по Touch ID. Никогда не попадают в экспорт настроек.
-- Не меняй подпись, Team и Bundle ID (com.azam.CmdPlus).
-- Данные: настройки — UserDefaults, история и прочее — ~/Library/Application Support/CmdPlus.
-  При изменении формата данных — миграция при первом запуске.
-- Разрешения (Универсальный доступ и т.п.) запрашивать только в момент включения модуля, с понятным объяснением.
-- Тихий автозапуск через SMAppService, без окон при старте; тяжёлые модули грузить лениво.
-- Локализация через String Catalog (сейчас ru + en). Никаких строк, захардкоженных в интерфейсе.
-- Секреты, ключи, сертификаты — никогда не коммитить.
+## Hard rules
+- Swift + SwiftUI, Apple system components only. macOS 26 style (Liquid Glass), minimum macOS 26.0.
+- The app lives in the menu bar (MenuBarExtra), with no Dock icon (LSUIElement = YES).
+- Everything stays local: no servers, accounts or analytics. Only currency rates and update checks go online.
+- Modular architecture: every module can be turned on/off in Settings; a disabled module isn't loaded.
+- Clipboard passwords and codes are never saved (password storage was removed in 0.1.0). If it ever comes back:
+  this Mac's Keychain only, kSecAttrSynchronizable = false, kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
+  revealed with Touch ID, never included in settings export.
+- Don't change signing, Team or Bundle ID (com.azam.CmdPlus).
+- Data: settings in UserDefaults, history and the rest in ~/Library/Application Support/CmdPlus.
+  When a data format changes, migrate on first launch.
+- Ask for permissions (Accessibility, etc.) only when the module is turned on, with a clear explanation.
+- Quiet launch at login via SMAppService, no windows at launch; load heavy modules lazily.
+- Keep it light on resources but good-looking.
+- Localization via String Catalog (currently ru + en). No hard-coded UI strings.
+- Never commit secrets, keys or certificates.
+- Repo text is in English: code comments, commit messages, README. No Claude co-author lines in commits.
 
-## Как работать
-- Одна задача за раз. Маленькие понятные изменения, без переписывания всего подряд.
-- После изменений — собери проект и прогони тесты (если есть). Логику покрывай тестами на Swift Testing.
-- В конце шага — коротко: что сделано, как проверить вручную, что дальше.
+## How to work
+- One task at a time. Small, clear changes — no rewriting everything at once.
+- After changes, build and run the tests. Cover logic with Swift Testing.
+- At the end of each step, briefly: what was done, how to check it manually, what's next.
 
-## Порядок разработки
-1. Каркас (строка меню, панель-плитки, окно настроек) + История буфера (⌘⇧V, поиск по словам, лимит 1–500 вводит пользователь, закреплённые не считаются).
-2. Реверс мыши  3. Управление окнами  4. Конвертер файлов  5. Монитор системы
-6. Мелкие модули: Сон и питание, QR и Wi-Fi, Курсы валют, Пипетка, Конвертер текста, Скрыть иконки, Совместимость с Windows
-7. Доводка до 1.0: онбординг, языки, «Что нового», экспорт настроек, иконка, README, релиз на GitHub
-Позже: анализ диска, PDF-редактор, сжатие видео, переназначение клавиш, запись экрана, OCR.
+## Releases
+- Free distribution only: `scripts/build-release.sh <version>` builds an ad-hoc signed zip,
+  then publish it as a GitHub release.
+
+## Roadmap
+1. ✅ App shell (menu bar, tile panel, Settings window) + Clipboard History (⇧⌘V, word search, user-set 1–500 limit, pinned items don't count).
+2. Reverse mouse scrolling  3. Window management  4. File converter  5. System monitor
+6. Small modules: sleep and power, QR and Wi-Fi, currency rates, color picker, text converter, hide menu bar icons, Windows compatibility
+7. Polish for 1.0: onboarding, languages, "What's New", settings export, app icon, README, GitHub release
+Later: disk analyzer, PDF editor, video compression, key remapping, screen recording, OCR.

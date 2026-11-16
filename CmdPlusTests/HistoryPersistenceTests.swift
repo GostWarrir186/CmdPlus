@@ -9,9 +9,9 @@ struct HistoryPersistenceTests {
         let env = TestEnvironment()
         defer { env.cleanUp() }
         let store = await env.makeStore(limit: 10)
-        store.addText("первая", source: SourceApp(name: "Safari", bundleID: "com.apple.Safari"))
+        store.addText("first", source: SourceApp(name: "Safari", bundleID: "com.apple.Safari"))
         store.addFiles([URL(filePath: "/tmp/a.txt")], source: nil)
-        store.addText("закреплённая", source: nil)
+        store.addText("pinned", source: nil)
         store.togglePin(store.items[0].id)
         store.save(synchronously: true)
 
@@ -34,7 +34,7 @@ struct HistoryPersistenceTests {
     func noSaveBeforeLoad() throws {
         let env = TestEnvironment()
         defer { env.cleanUp() }
-        let saved = [ClipboardItem(kind: .text, text: "старая запись")]
+        let saved = [ClipboardItem(kind: .text, text: "old item")]
         try env.writeHistory(saved)
 
         let store = ClipboardStore(settings: env.makeSettings(), directory: env.directory)
@@ -49,25 +49,25 @@ struct HistoryPersistenceTests {
         let env = TestEnvironment()
         defer { env.cleanUp() }
         try FileManager.default.createDirectory(at: env.directory, withIntermediateDirectories: true)
-        try Data("не json".utf8).write(to: env.historyURL)
+        try Data("not json".utf8).write(to: env.historyURL)
 
         let store = await env.makeStore()
         #expect(store.items.isEmpty)
         let backup = env.directory.appending(path: "history.corrupt.json")
         #expect(FileManager.default.fileExists(atPath: backup.path))
-        #expect(try Data(contentsOf: backup) == Data("не json".utf8))
+        #expect(try Data(contentsOf: backup) == Data("not json".utf8))
     }
 
     @Test("Items copied during load stay on top")
     func captureDuringLoad() async throws {
         let env = TestEnvironment()
         defer { env.cleanUp() }
-        try env.writeHistory([ClipboardItem(kind: .text, text: "из файла")])
+        try env.writeHistory([ClipboardItem(kind: .text, text: "from file")])
 
         let store = ClipboardStore(settings: env.makeSettings(limit: 10), directory: env.directory)
-        store.addText("свежее", source: nil)
+        store.addText("fresh", source: nil)
         await store.load()
-        #expect(store.texts == ["свежее", "из файла"])
+        #expect(store.texts == ["fresh", "from file"])
     }
 
     @Test("Current limit is applied on load")
@@ -80,50 +80,34 @@ struct HistoryPersistenceTests {
         #expect(store.texts == ["1", "2"])
     }
 
-    @Test("Expired passwords are removed; pinned and fresh ones stay")
-    func expiredSecretsPurged() async throws {
+    @Test("Migration: password entries from older versions are dropped on load")
+    func legacyPasswordsDropped() async throws {
         let env = TestEnvironment()
         defer { env.cleanUp() }
-        let old = Date.now.addingTimeInterval(-2 * 60 * 60)
-        let saved = [
-            ClipboardItem(kind: .text, createdAt: .now, isSecret: true, sourceAppName: "свежий"),
-            ClipboardItem(kind: .text, createdAt: old, isSecret: true, sourceAppName: "старый"),
-            ClipboardItem(kind: .text, createdAt: old, isPinned: true, isSecret: true, sourceAppName: "закреплён"),
-            ClipboardItem(kind: .text, createdAt: old, text: "обычный старый текст"),
-        ]
-        try env.writeHistory(saved)
+        try env.writeHistory([
+            ClipboardItem(kind: .text, isSecret: true, sourceAppName: "1Password"),
+            ClipboardItem(kind: .text, isPinned: true, isSecret: true, sourceAppName: "1Password"),
+            ClipboardItem(kind: .text, text: "regular text"),
+        ])
 
-        let settings = env.makeSettings(limit: 10)
-        settings.secretRetention = .oneHour
-        let store = await env.makeStore(settings: settings)
-
-        #expect(store.items.map(\.sourceAppName) == ["свежий", "закреплён", nil])
-        #expect(store.items.last?.text == "обычный старый текст")
-    }
-
-    @Test("\"Forever\" retention keeps passwords")
-    func foreverKeepsSecrets() async throws {
-        let env = TestEnvironment()
-        defer { env.cleanUp() }
-        let ancient = Date.now.addingTimeInterval(-365 * 24 * 60 * 60)
-        try env.writeHistory([ClipboardItem(kind: .text, createdAt: ancient, isSecret: true)])
-        let settings = env.makeSettings(limit: 10)
-        settings.secretRetention = .forever
-        let store = await env.makeStore(settings: settings)
-        #expect(store.items.count == 1)
-    }
-
-    @Test("Passwords never reach history.json in plain text")
-    func secretTextNotWritten() async throws {
-        let env = TestEnvironment()
-        defer { env.cleanUp() }
-        try env.writeHistory([ClipboardItem(kind: .text, isSecret: true, sourceAppName: "1Password")])
         let store = await env.makeStore(limit: 10)
-        store.addText("обычный", source: nil)
+        #expect(store.texts == ["regular text"])
+
+        // The cleaned-up history is written back to disk.
         store.save(synchronously: true)
-        let json = try String(contentsOf: env.historyURL, encoding: .utf8)
-        #expect(json.contains("обычный"))
-        #expect(store.items.first { $0.isSecret }?.text == nil)
+        let saved = try JSONDecoder().decode([ClipboardItem].self, from: Data(contentsOf: env.historyURL))
+        #expect(!saved.contains { $0.isSecret })
+    }
+
+    @Test("Migration: old password settings are removed")
+    func legacyPasswordSettingsRemoved() {
+        let env = TestEnvironment()
+        defer { env.cleanUp() }
+        env.defaults.set(true, forKey: "clipboard.captureSecrets")
+        env.defaults.set("oneDay", forKey: "clipboard.secretRetention")
+        _ = env.makeSettings()
+        #expect(env.defaults.object(forKey: "clipboard.captureSecrets") == nil)
+        #expect(env.defaults.object(forKey: "clipboard.secretRetention") == nil)
     }
 
     @Test("Delete and clear unpinned")

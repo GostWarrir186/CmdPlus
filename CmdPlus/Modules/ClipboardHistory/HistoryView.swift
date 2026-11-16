@@ -35,7 +35,6 @@ struct HistoryView: View {
                         HistoryPreview(
                             item: selected,
                             terms: terms,
-                            revealedSecret: model.revealed[selected.id],
                             imageURL: model.store?.imageURL(for: selected),
                             model: model
                         )
@@ -66,7 +65,7 @@ struct HistoryView: View {
         guard let item, let store = model.store,
               let index = items.firstIndex(where: { $0.id == item.id }) else { return }
         let range = max(index - 2, 0)...min(index + 2, items.count - 1)
-        let urls = items[range].compactMap { $0.kind == .image && !$0.isSecret ? store.imageURL(for: $0) : nil }
+        let urls = items[range].compactMap { $0.kind == .image ? store.imageURL(for: $0) : nil }
         ImageLoader.prefetch(urls, size: .preview)
     }
 
@@ -312,24 +311,19 @@ private struct HistoryRow: View {
 
     @ViewBuilder
     private var title: some View {
-        if item.isSecret {
-            Text(verbatim: "••••••••••••")
-                .font(.body.monospaced())
-        } else {
-            switch item.kind {
-            case .text:
-                let preview = SearchHighlighter.preview(of: item.text ?? "", terms: terms, limit: 120)
-                Text(SearchHighlighter.highlight(preview, terms: terms))
-            case .image:
-                if let width = item.imageWidth, let height = item.imageHeight {
-                    Text("Image") + Text(verbatim: " \(width)×\(height)")
-                } else {
-                    Text("Image")
-                }
-            case .files:
-                let names = item.fileURLs.map(\.lastPathComponent).joined(separator: ", ")
-                Text(SearchHighlighter.highlight(names, terms: terms))
+        switch item.kind {
+        case .text:
+            let preview = SearchHighlighter.preview(of: item.text ?? "", terms: terms, limit: 120)
+            Text(SearchHighlighter.highlight(preview, terms: terms))
+        case .image:
+            if let width = item.imageWidth, let height = item.imageHeight {
+                Text("Image") + Text(verbatim: " \(width)×\(height)")
+            } else {
+                Text("Image")
             }
+        case .files:
+            let names = item.fileURLs.map(\.lastPathComponent).joined(separator: ", ")
+            Text(SearchHighlighter.highlight(names, terms: terms))
         }
     }
 
@@ -345,17 +339,12 @@ private struct HistoryRow: View {
 }
 
 extension View {
-    /// Makes an item draggable (except passwords), with its icon as the drag preview.
-    @ViewBuilder
+    /// Makes an item draggable, with its icon as the drag preview.
     fileprivate func draggableItem(_ item: ClipboardItem, model: HistoryViewModel, imageURL: URL?) -> some View {
-        if model.canDrag(item) {
-            onDrag {
-                model.dragProvider(for: item) ?? NSItemProvider()
-            } preview: {
-                HistoryItemIcon(item: item, imageURL: imageURL, size: 48)
-            }
-        } else {
-            self
+        onDrag {
+            model.dragProvider(for: item) ?? NSItemProvider()
+        } preview: {
+            HistoryItemIcon(item: item, imageURL: imageURL, size: 48)
         }
     }
 }
@@ -368,26 +357,22 @@ private struct HistoryItemIcon: View {
 
     var body: some View {
         Group {
-            if item.isSecret {
-                TintedIcon(systemImage: "key.fill", tint: .orange, size: size)
-            } else {
-                switch item.kind {
-                case .text:
-                    TintedIcon(systemImage: "text.alignleft", tint: .gray, size: size)
-                case .image:
-                    if let imageURL {
-                        ThumbnailView(url: imageURL, size: size)
-                    } else {
-                        TintedIcon(systemImage: "photo", tint: .purple, size: size)
-                    }
-                case .files:
-                    if let path = item.filePaths?.first {
-                        Image(nsImage: NSWorkspace.shared.icon(forFile: path))
-                            .resizable()
-                            .scaledToFit()
-                    } else {
-                        TintedIcon(systemImage: "doc", tint: .blue, size: size)
-                    }
+            switch item.kind {
+            case .text:
+                TintedIcon(systemImage: "text.alignleft", tint: .gray, size: size)
+            case .image:
+                if let imageURL {
+                    ThumbnailView(url: imageURL, size: size)
+                } else {
+                    TintedIcon(systemImage: "photo", tint: .purple, size: size)
+                }
+            case .files:
+                if let path = item.filePaths?.first {
+                    Image(nsImage: NSWorkspace.shared.icon(forFile: path))
+                        .resizable()
+                        .scaledToFit()
+                } else {
+                    TintedIcon(systemImage: "doc", tint: .blue, size: size)
                 }
             }
         }
@@ -400,7 +385,6 @@ private struct HistoryItemIcon: View {
 private struct HistoryPreview: View {
     let item: ClipboardItem
     let terms: [String]
-    let revealedSecret: String?
     let imageURL: URL?
     let model: HistoryViewModel
 
@@ -426,47 +410,26 @@ private struct HistoryPreview: View {
 
     @ViewBuilder
     private var content: some View {
-        if item.isSecret {
-            secretContent
-        } else {
-            switch item.kind {
-            case .text:
-                ScrollView {
-                    Text(SearchHighlighter.highlight(String((item.text ?? "").prefix(Self.maxTextLength)), terms: terms))
-                        .font(.body)
-                        .lineSpacing(2)
-                        .textSelection(.enabled)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(16)
-                }
-            case .image:
-                if let imageURL {
-                    PreviewImage(url: imageURL)
-                        .draggableItem(item, model: model, imageURL: imageURL)
-                        .padding(16)
-                } else {
-                    ContentUnavailableView("Image", systemImage: "photo")
-                }
-            case .files:
-                filesContent
+        switch item.kind {
+        case .text:
+            ScrollView {
+                Text(SearchHighlighter.highlight(String((item.text ?? "").prefix(Self.maxTextLength)), terms: terms))
+                    .font(.body)
+                    .lineSpacing(2)
+                    .textSelection(.enabled)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(16)
             }
-        }
-    }
-
-    private var secretContent: some View {
-        VStack(spacing: 14) {
-            TintedIcon(systemImage: "key.fill", tint: .orange, size: 48)
-            Text(verbatim: revealedSecret ?? "••••••••••••")
-                .font(.title3.monospaced())
-                .textSelection(.enabled)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 16)
-            Button(revealedSecret == nil ? "Show" : "Hide",
-                   systemImage: revealedSecret == nil ? "eye" : "eye.slash") {
-                model.toggleReveal(item)
+        case .image:
+            if let imageURL {
+                PreviewImage(url: imageURL)
+                    .draggableItem(item, model: model, imageURL: imageURL)
+                    .padding(16)
+            } else {
+                ContentUnavailableView("Image", systemImage: "photo")
             }
-            .buttonStyle(.bordered)
-            .buttonBorderShape(.capsule)
+        case .files:
+            filesContent
         }
     }
 
@@ -507,17 +470,15 @@ private struct HistoryPreview: View {
                 title: "Copied",
                 value: item.createdAt.formatted(date: .abbreviated, time: .shortened)
             )
-            if !item.isSecret {
-                switch item.kind {
-                case .text:
-                    DetailRow(title: "Characters", value: (item.text?.count ?? 0).formatted())
-                case .image:
-                    if let width = item.imageWidth, let height = item.imageHeight {
-                        DetailRow(title: "Dimensions", value: "\(width)×\(height)")
-                    }
-                case .files:
-                    DetailRow(title: "Files", value: item.fileURLs.count.formatted())
+            switch item.kind {
+            case .text:
+                DetailRow(title: "Characters", value: (item.text?.count ?? 0).formatted())
+            case .image:
+                if let width = item.imageWidth, let height = item.imageHeight {
+                    DetailRow(title: "Dimensions", value: "\(width)×\(height)")
                 }
+            case .files:
+                DetailRow(title: "Files", value: item.fileURLs.count.formatted())
             }
         }
         .font(.caption)
