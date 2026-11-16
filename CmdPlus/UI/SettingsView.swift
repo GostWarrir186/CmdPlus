@@ -6,9 +6,13 @@ import SwiftUI
 /// a `NavigationSplitView` (its divider is always draggable).
 struct SettingsView: View {
     @Environment(ModuleManager.self) private var modules
-    @State private var selection: SettingsPane? = .general
+    @State private var selection: SettingsPane?
 
     static let sidebarWidth: CGFloat = 270
+
+    init(selection: SettingsPane = .general) {
+        _selection = State(initialValue: selection)
+    }
 
     var body: some View {
         HStack(spacing: 0) {

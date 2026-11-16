@@ -15,7 +15,7 @@ final class ClipboardHistoryModule: AppModule {
         make: { ClipboardHistoryModule() }
     )
 
-    let settings = ClipboardSettings()
+    let settings: ClipboardSettings
     let store: ClipboardStore
     private(set) var hotKeyFailed = false
     private(set) var hasPasteAccess = PasteSimulator.hasAccess
@@ -30,8 +30,10 @@ final class ClipboardHistoryModule: AppModule {
     @ObservationIgnored private var panelController: HistoryPanelController?
     @ObservationIgnored private var maintenanceTask: Task<Void, Never>?
 
-    init() {
-        store = ClipboardStore(settings: settings)
+    /// Tests and README screenshots pass their own settings and folder.
+    init(settings: ClipboardSettings = ClipboardSettings(), directory: URL = ClipboardStore.defaultDirectory) {
+        self.settings = settings
+        store = ClipboardStore(settings: settings, directory: directory)
     }
 
     // MARK: - AppModule
