@@ -2,70 +2,66 @@ import SwiftUI
 
 /// Окно настроек в стиле Системных настроек:
 /// слева «Основные» и список модулей с тумблерами, справа — параметры выбранного пункта.
+///
+/// Боковая панель фиксированной ширины, как в Системных настройках: её нельзя
+/// ни сузить, ни скрыть. Поэтому здесь не `NavigationSplitView` (у него край
+/// всегда можно перетащить), а простая раскладка: панель + разделитель + содержимое.
 struct SettingsView: View {
     @Environment(ModuleManager.self) private var modules
     @State private var selection: SettingsPane? = .general
-    /// Боковая панель всегда видна: кнопку скрытия убрали, а перетаскиванием
-    /// края её тоже нельзя схлопнуть — иначе вернуть её было бы нечем.
-    @State private var columnVisibility: NavigationSplitViewVisibility = .all
+
+    static let sidebarWidth: CGFloat = 270
 
     var body: some View {
-        NavigationSplitView(columnVisibility: $columnVisibility) {
-            List(selection: $selection) {
-                NavigationLink(value: SettingsPane.general) {
-                    SidebarRow(title: "General", systemImage: "gearshape.fill", tint: .gray)
-                }
-
-                Section("Modules") {
-                    ForEach(modules.descriptors) { descriptor in
-                        NavigationLink(value: SettingsPane.module(descriptor.id)) {
-                            SidebarRow(
-                                title: descriptor.title,
-                                systemImage: descriptor.systemImage,
-                                tint: descriptor.tint
-                            ) {
-                                Toggle(isOn: modules.binding(for: descriptor.id)) {
-                                    Text(descriptor.title)
-                                }
-                                .labelsHidden()
-                                .toggleStyle(.switch)
-                                .controlSize(.mini)
-                            }
-                        }
-                    }
-                }
-            }
-            .navigationSplitViewColumnWidth(min: 260, ideal: 290, max: 360)
-            // Как в Системных настройках: боковую панель нельзя скрыть.
-            .toolbar(removing: .sidebarToggle)
-        } detail: {
-            switch selection {
-            case .module(let id):
-                if let descriptor = modules.descriptors.first(where: { $0.id == id }) {
-                    ModuleSettingsDetail(descriptor: descriptor)
-                }
-            case .general, nil:
-                GeneralSettingsView()
-            }
-        }
-        .onChange(of: columnVisibility) { _, newValue in
-            if newValue != .all { columnVisibility = .all }
+        HStack(spacing: 0) {
+            sidebar
+                .frame(width: Self.sidebarWidth)
+            Divider()
+            detail
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .frame(minWidth: 760, minHeight: 500)
+    }
+
+    private var sidebar: some View {
+        List(selection: $selection) {
+            SidebarRow(title: "General", systemImage: "gearshape.fill", tint: .gray)
+                .tag(SettingsPane.general)
+
+            Section("Modules") {
+                ForEach(modules.descriptors) { descriptor in
+                    // Тумблер модуля — в шапке его страницы справа, в боковой панели его нет.
+                    SidebarRow(title: descriptor.title, systemImage: descriptor.systemImage, tint: descriptor.tint)
+                        .tag(SettingsPane.module(descriptor.id))
+                }
+            }
+        }
+        .listStyle(.sidebar)
+    }
+
+    @ViewBuilder
+    private var detail: some View {
+        switch selection {
+        case .module(let id):
+            if let descriptor = modules.descriptors.first(where: { $0.id == id }) {
+                ModuleSettingsDetail(descriptor: descriptor)
+            }
+        case .general, nil:
+            GeneralSettingsView()
+        }
     }
 }
 
 /// Строка боковой панели как в Системных настройках:
 /// длинное название переносится на вторую строку, а иконка стоит
-/// напротив первой строки текста. Справа — необязательный элемент.
+/// напротив первой строки текста.
 /// Размер иконки следует настройке «Размер значков боковой панели», чтобы
 /// иконка и текст масштабировались вместе.
-private struct SidebarRow<Accessory: View>: View {
+private struct SidebarRow: View {
     @Environment(\.sidebarRowSize) private var rowSize
     let title: LocalizedStringResource
     let systemImage: String
     let tint: Color
-    @ViewBuilder var accessory: Accessory
 
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
@@ -76,9 +72,9 @@ private struct SidebarRow<Accessory: View>: View {
                 }
             // Без ограничения строк: название целиком, как в Системных настройках.
             Text(title)
+                .lineLimit(nil)
                 .fixedSize(horizontal: false, vertical: true)
-            Spacer(minLength: 6)
-            accessory
+            Spacer(minLength: 0)
         }
     }
 
@@ -88,12 +84,6 @@ private struct SidebarRow<Accessory: View>: View {
         case .large: 24
         default: 20
         }
-    }
-}
-
-extension SidebarRow where Accessory == EmptyView {
-    init(title: LocalizedStringResource, systemImage: String, tint: Color) {
-        self.init(title: title, systemImage: systemImage, tint: tint) { EmptyView() }
     }
 }
 

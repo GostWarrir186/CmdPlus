@@ -81,11 +81,18 @@ struct KeyCap: View {
 
 /// Иконка в цветной подложке: кружок (как в Пункте управления)
 /// или скруглённый квадрат (как в Системных настройках).
+///
+/// Квадратная иконка следует теме, как в Системных настройках macOS 26:
+/// - светлая тема — цветная подложка, белый символ;
+/// - тёмная тема — тёмная подложка с тонкой рамкой, цветной символ.
+/// Кружки Пункта управления остаются цветными в обеих темах.
 struct TintedIcon: View {
     enum Style {
         case circle
         case roundedSquare
     }
+
+    @Environment(\.colorScheme) private var colorScheme
 
     let systemImage: String
     let tint: Color
@@ -101,10 +108,31 @@ struct TintedIcon: View {
             .fontWeight(.semibold)
             .scaledToFit()
             .frame(width: size * 0.58, height: size * 0.58)
-            .foregroundStyle(.white)
+            .foregroundStyle(isDarkTile ? AnyShapeStyle(tint.gradient) : AnyShapeStyle(.white))
             .frame(width: size, height: size)
-            .background(tint.gradient, in: shape)
+            .background(background, in: shape)
+            .overlay {
+                if isDarkTile {
+                    shape.stroke(.white.opacity(0.12), lineWidth: 0.5)
+                }
+            }
             .accessibilityHidden(true)
+    }
+
+    private var isDarkTile: Bool {
+        style == .roundedSquare && colorScheme == .dark
+    }
+
+    private var background: AnyShapeStyle {
+        if isDarkTile {
+            AnyShapeStyle(LinearGradient(
+                colors: [Color(white: 0.22), Color(white: 0.13)],
+                startPoint: .top,
+                endPoint: .bottom
+            ))
+        } else {
+            AnyShapeStyle(tint.gradient)
+        }
     }
 
     private var shape: AnyShape {
