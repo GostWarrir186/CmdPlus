@@ -231,6 +231,21 @@ struct MouseScrollTests {
         #expect(slow.getIntegerValueField(.scrollWheelEventDeltaAxis1) == 1)
     }
 
+    @Test("A slow notch counts as a whole line; fast spinning keeps its acceleration")
+    func notchDistance() throws {
+        let slow = try scrollEvent(units: .line, vertical: 1, horizontal: 0)
+        // Whole field first: writing it makes macOS recompute the fractional one.
+        slow.setIntegerValueField(.scrollWheelEventDeltaAxis1, value: 1)
+        slow.setDoubleValueField(.scrollWheelEventFixedPtDeltaAxis1, value: 0.1)
+        #expect(slow.getDoubleValueField(.scrollWheelEventFixedPtDeltaAxis1) < 0.5)
+        #expect(MouseEventTap.lineDeltas(of: slow).vertical == 1)
+
+        let fast = try scrollEvent(units: .line, vertical: 1, horizontal: 0)
+        fast.setIntegerValueField(.scrollWheelEventDeltaAxis1, value: 1)
+        fast.setDoubleValueField(.scrollWheelEventFixedPtDeltaAxis1, value: -6.5)
+        #expect(MouseEventTap.lineDeltas(of: fast).vertical == -6.5)
+    }
+
     @Test("Speed and direction combine into one factor per axis")
     func factors() {
         let env = TestEnvironment()
@@ -265,12 +280,12 @@ struct SmoothScrollerTests {
         #expect(abs(result.x - Int((distance / 2).rounded())) <= 1)
     }
 
-    @Test("A glide ends quickly (well under half a second at 120 fps)")
+    @Test("A glide ends quickly (under ¾ of a second at 120 fps)")
     func ends() {
         var scroller = SmoothScroller()
         scroller.add(dx: 0, dy: 400)
         let result = run(&scroller)
-        #expect(result.frames < 60)
+        #expect(result.frames < 90)
         #expect(scroller.isIdle)
     }
 

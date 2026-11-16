@@ -165,10 +165,19 @@ final class MouseEventTap {
          settings.scrollSpeed * (settings.reverseHorizontal ? -1 : 1))
     }
 
-    /// Lines scrolled, including the system's acceleration.
+    /// Lines scrolled. A slow notch reports 1 whole line but only ~0.1 in the
+    /// fractional field, while fast spinning reports more in the fractional one —
+    /// so take whichever is larger: a notch always scrolls at least a line, and
+    /// the system's acceleration still kicks in.
     nonisolated static func lineDeltas(of event: CGEvent) -> (vertical: Double, horizontal: Double) {
-        (event.getDoubleValueField(.scrollWheelEventFixedPtDeltaAxis1),
-         event.getDoubleValueField(.scrollWheelEventFixedPtDeltaAxis2))
+        (lines(event, whole: .scrollWheelEventDeltaAxis1, fractional: .scrollWheelEventFixedPtDeltaAxis1),
+         lines(event, whole: .scrollWheelEventDeltaAxis2, fractional: .scrollWheelEventFixedPtDeltaAxis2))
+    }
+
+    nonisolated private static func lines(_ event: CGEvent, whole: CGEventField, fractional: CGEventField) -> Double {
+        let wholeLines = Double(event.getIntegerValueField(whole))
+        let fractionalLines = event.getDoubleValueField(fractional)
+        return abs(fractionalLines) > abs(wholeLines) ? fractionalLines : wholeLines
     }
 
     /// Multiplies every delta field macOS and apps may read. A factor of −1 reverses.

@@ -6,8 +6,8 @@ import Foundation
 /// flowing instead of stuttering. Every frame moves a fixed share of what's
 /// left; fractions are carried over so the total always matches exactly.
 nonisolated struct SmoothScroller {
-    /// Share of the remaining distance covered per frame (at 120 fps ≈ 0.2 s glide).
-    static let stepFraction = 0.18
+    /// Share of the remaining distance covered per frame (at 120 fps ≈ 0.3 s glide).
+    static let stepFraction = 0.1
 
     private var remainingX = 0.0
     private var remainingY = 0.0

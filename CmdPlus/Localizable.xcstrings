@@ -91,6 +91,16 @@
         }
       }
     },
+    "⇧⌘V is already used by another app." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Сочетание ⇧⌘V уже используется другим приложением."
+          }
+        }
+      }
+    },
     "About" : {
       "localizations" : {
         "ru" : {
@@ -251,6 +261,9 @@
         }
       }
     },
+    "Cancel" : {
+
+    },
     "Characters" : {
       "localizations" : {
         "ru" : {
@@ -271,6 +284,16 @@
         }
       }
     },
+    "Clear clipboard history?" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Очистить историю буфера обмена?"
+          }
+        }
+      }
+    },
     "Clear History" : {
       "localizations" : {
         "ru" : {
@@ -287,16 +310,6 @@
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "Очистить историю…"
-          }
-        }
-      }
-    },
-    "Clear clipboard history?" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Очистить историю буфера обмена?"
           }
         }
       }
@@ -792,6 +805,16 @@
         }
       }
     },
+    "Open at Login" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Открывать при входе"
+          }
+        }
+      }
+    },
     "Open Clipboard History" : {
       "localizations" : {
         "ru" : {
@@ -808,16 +831,6 @@
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "Открыть «Объекты входа»"
-          }
-        }
-      }
-    },
-    "Open at Login" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Открывать при входе"
           }
         }
       }
@@ -964,16 +977,6 @@
         }
       }
     },
-    "Reverse Vertical Scrolling" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Обратная вертикальная прокрутка"
-          }
-        }
-      }
-    },
     "Reverse scrolling off" : {
       "localizations" : {
         "ru" : {
@@ -990,6 +993,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Обратная прокрутка включена"
+          }
+        }
+      }
+    },
+    "Reverse Vertical Scrolling" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обратная вертикальная прокрутка"
           }
         }
       }
@@ -1220,16 +1233,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Когда вы выбираете запись, CmdPlus сам вставляет её в приложение, где вы работали, — нажимает ⌘V за вас. Для этого нужно разрешение «Универсальный доступ». Без него запись только копируется. ⌥↩ — скопировать, не вставляя."
-          }
-        }
-      }
-    },
-    "⇧⌘V is already used by another app." : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Сочетание ⇧⌘V уже используется другим приложением."
           }
         }
       }
