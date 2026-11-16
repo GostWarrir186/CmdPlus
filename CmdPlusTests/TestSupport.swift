@@ -6,7 +6,7 @@ import Foundation
 struct TestEnvironment {
     let directory: URL
     let defaults: UserDefaults
-    private let suiteName: String
+    let suiteName: String
 
     init() {
         suiteName = "CmdPlusTests.\(UUID().uuidString)"

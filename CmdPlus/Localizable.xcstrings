@@ -382,6 +382,16 @@
         }
       }
     },
+    "CmdPlus needs to restart to change the language." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чтобы сменить язык, CmdPlus нужно перезапустить."
+          }
+        }
+      }
+    },
     "CmdPlus starts silently: only the menu bar icon appears, no windows." : {
       "localizations" : {
         "ru" : {
@@ -649,6 +659,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Сочетание клавиш…"
+          }
+        }
+      }
+    },
+    "Language" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Язык"
           }
         }
       }
@@ -1041,6 +1061,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Удалить"
+          }
+        }
+      }
+    },
+    "Restart Now" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перезапустить"
           }
         }
       }

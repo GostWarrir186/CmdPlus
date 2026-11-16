@@ -3,6 +3,7 @@ import SwiftUI
 struct GeneralSettingsView: View {
     @State private var launchAtLogin = LaunchAtLogin()
     @AppStorage(AppTheme.storageKey) private var theme: AppTheme = .system
+    @State private var language = AppLanguage.saved()
 
     var body: some View {
         Form {
@@ -39,6 +40,25 @@ struct GeneralSettingsView: View {
                 .pickerStyle(.segmented)
             }
 
+            Section {
+                Picker("Language", selection: $language) {
+                    ForEach(AppLanguage.allCases) { language in
+                        if let name = language.nativeName {
+                            Text(verbatim: name).tag(language)
+                        } else {
+                            Text("System").tag(language)
+                        }
+                    }
+                }
+                if language.needsRelaunch {
+                    LabeledContent("CmdPlus needs to restart to change the language.") {
+                        Button("Restart Now") { AppLanguage.relaunch() }
+                    }
+                }
+            } header: {
+                Text("Language")
+            }
+
             Section("About") {
                 LabeledContent("Version", value: appVersion)
                 Text("All data stays on this Mac. CmdPlus does not use any servers.")
@@ -50,6 +70,7 @@ struct GeneralSettingsView: View {
         .navigationTitle(Text("General"))
         .onAppear { launchAtLogin.refresh() }
         .onChange(of: theme) { _, newTheme in newTheme.apply() }
+        .onChange(of: language) { _, newLanguage in newLanguage.save() }
     }
 
     private var appVersion: String {
