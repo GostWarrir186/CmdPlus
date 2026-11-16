@@ -181,6 +181,26 @@
         }
       }
     },
+    "Almost Maximize" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Почти развернуть"
+          }
+        }
+      }
+    },
+    "Another app already uses this shortcut." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Это сочетание уже занято другой программой."
+          }
+        }
+      }
+    },
     "Appearance" : {
       "localizations" : {
         "ru" : {
@@ -231,6 +251,36 @@
         }
       }
     },
+    "Bottom Half" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нижняя половина"
+          }
+        }
+      }
+    },
+    "Bottom Left" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Внизу слева"
+          }
+        }
+      }
+    },
+    "Bottom Right" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Внизу справа"
+          }
+        }
+      }
+    },
     "Button %lld" : {
       "localizations" : {
         "ru" : {
@@ -252,6 +302,26 @@
       }
     },
     "Cancel" : {},
+    "Center" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "По центру"
+          }
+        }
+      }
+    },
+    "Center Third" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Средняя треть"
+          }
+        }
+      }
+    },
     "Characters" : {
       "localizations" : {
         "ru" : {
@@ -368,6 +438,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "CmdPlus нужно разрешение «Универсальный доступ», чтобы менять прокрутку и реагировать на кнопки мыши. Ничего не записывается и никуда не отправляется."
+          }
+        }
+      }
+    },
+    "CmdPlus needs the Accessibility permission to move and resize other apps' windows." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CmdPlus нужно разрешение «Универсальный доступ», чтобы двигать окна других программ и менять их размер."
           }
         }
       }
@@ -502,6 +582,16 @@
         }
       }
     },
+    "Dragging a window to the edge of the screen to tile it is built into macOS." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Раскладывать окна перетаскиванием к краю экрана умеет сама macOS."
+          }
+        }
+      }
+    },
     "Files" : {
       "localizations" : {
         "ru" : {
@@ -549,6 +639,16 @@
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "От 1 до 500 записей. Закреплённые записи не учитываются в лимите. При уменьшении лимита самые старые незакреплённые записи удаляются сразу."
+          }
+        }
+      }
+    },
+    "Gaps Between Windows" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отступы между окнами"
           }
         }
       }
@@ -673,12 +773,62 @@
         }
       }
     },
+    "Large" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Большие"
+          }
+        }
+      }
+    },
     "Launchpad" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Launchpad"
+          }
+        }
+      }
+    },
+    "Layout for the active window" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Раскладка для активного окна"
+          }
+        }
+      }
+    },
+    "Left Half" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Левая половина"
+          }
+        }
+      }
+    },
+    "Left Third" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Левая треть"
+          }
+        }
+      }
+    },
+    "Left Two Thirds" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Левые две трети"
           }
         }
       }
@@ -709,6 +859,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Низкая"
+          }
+        }
+      }
+    },
+    "Maximize" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Развернуть"
           }
         }
       }
@@ -823,6 +983,16 @@
         }
       }
     },
+    "Next Display" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "На другой монитор"
+          }
+        }
+      }
+    },
     "No Items" : {
       "localizations" : {
         "ru" : {
@@ -849,6 +1019,16 @@
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "Нет результатов"
+          }
+        }
+      }
+    },
+    "None" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет"
           }
         }
       }
@@ -1045,6 +1225,16 @@
         }
       }
     },
+    "Record Shortcut" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Записать сочетание"
+          }
+        }
+      }
+    },
     "Regular" : {
       "localizations" : {
         "ru" : {
@@ -1071,6 +1261,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Перезапустить"
+          }
+        }
+      }
+    },
+    "Restore" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вернуть как было"
+          }
+        }
+      }
+    },
+    "Restore Default Shortcuts" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вернуть стандартные сочетания"
           }
         }
       }
@@ -1111,6 +1321,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Обратная прокрутка включена"
+          }
+        }
+      }
+    },
+    "Right Half" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Правая половина"
+          }
+        }
+      }
+    },
+    "Right Third" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Правая треть"
+          }
+        }
+      }
+    },
+    "Right Two Thirds" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Правые две трети"
           }
         }
       }
@@ -1215,6 +1455,16 @@
         }
       }
     },
+    "Small" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Маленькие"
+          }
+        }
+      }
+    },
     "Smooth, adjustable scrolling and actions for mouse buttons." : {
       "localizations" : {
         "ru" : {
@@ -1231,6 +1481,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Плавность"
+          }
+        }
+      }
+    },
+    "Snap windows to halves, quarters and thirds with shortcuts." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Раскладывайте окна по половинам, четвертям и третям сочетаниями клавиш."
           }
         }
       }
@@ -1301,6 +1561,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Тема"
+          }
+        }
+      }
+    },
+    "Top Half" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Верхняя половина"
+          }
+        }
+      }
+    },
+    "Top Left" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вверху слева"
+          }
+        }
+      }
+    },
+    "Top Right" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вверху справа"
           }
         }
       }
@@ -1391,6 +1681,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Когда вы выбираете запись, CmdPlus сам вставляет её в приложение, где вы работали, — нажимает ⌘V за вас. Для этого нужно разрешение «Универсальный доступ». Без него запись только копируется. ⌥↩ — скопировать, не вставляя."
+          }
+        }
+      }
+    },
+    "Windows" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Окна"
           }
         }
       }

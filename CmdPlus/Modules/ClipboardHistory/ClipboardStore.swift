@@ -5,8 +5,8 @@ import Security
 
 /// History storage: items in memory plus files on disk.
 ///
-/// Lives in `Application Support/CmdPlus/ClipboardHistory/` (inside the sandbox
-/// container): `history.json` for items and `images/` for PNGs.
+/// Lives in `~/Library/Application Support/CmdPlus/ClipboardHistory/`:
+/// `history.json` for items and `images/` for PNGs.
 @Observable
 final class ClipboardStore {
     /// Newest first.

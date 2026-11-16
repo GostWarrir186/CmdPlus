@@ -68,14 +68,8 @@ struct ShortcutRecorder: View {
     }
 
     static func keyName(_ keyCode: Int, characters: String?) -> String {
-        let special: [Int: String] = [
-            kVK_Return: "↩", kVK_Tab: "⇥", kVK_Space: "Space", kVK_Delete: "⌫", kVK_ForwardDelete: "⌦",
-            kVK_LeftArrow: "←", kVK_RightArrow: "→", kVK_UpArrow: "↑", kVK_DownArrow: "↓",
-            kVK_Home: "↖", kVK_End: "↘", kVK_PageUp: "⇞", kVK_PageDown: "⇟",
-            kVK_F1: "F1", kVK_F2: "F2", kVK_F3: "F3", kVK_F4: "F4", kVK_F5: "F5", kVK_F6: "F6",
-            kVK_F7: "F7", kVK_F8: "F8", kVK_F9: "F9", kVK_F10: "F10", kVK_F11: "F11", kVK_F12: "F12",
-        ]
-        if let name = special[keyCode] { return name }
+        let known = KeyCombo.keyName(keyCode)
+        if !known.hasPrefix("#") { return known }
         return (characters ?? "?").uppercased()
     }
 }

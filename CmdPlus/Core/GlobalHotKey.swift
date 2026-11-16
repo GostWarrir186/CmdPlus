@@ -1,7 +1,7 @@
 import Carbon.HIToolbox
 
-/// A system-wide shortcut. Carbon's `RegisterEventHotKey` works inside the
-/// sandbox and doesn't need Accessibility permission.
+/// A system-wide shortcut. Carbon's `RegisterEventHotKey` doesn't need the
+/// Accessibility permission.
 final class GlobalHotKey {
     private var hotKeyRef: EventHotKeyRef?
     private let identifier: UInt32

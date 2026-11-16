@@ -13,6 +13,7 @@ The author is new to Swift: explain in Russian, briefly — what you did and how
   this Mac's Keychain only, kSecAttrSynchronizable = false, kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
   revealed with Touch ID, never included in settings export.
 - Don't change signing, Team or Bundle ID (com.azam.CmdPlus).
+- No App Sandbox (since 0.3.0): it blocks moving other apps' windows. Distribution is via GitHub only.
 - Data: settings in UserDefaults, history and the rest in ~/Library/Application Support/CmdPlus.
   When a data format changes, migrate on first launch.
 - Ask for permissions (Accessibility, etc.) only when the module is turned on, with a clear explanation.
@@ -25,6 +26,7 @@ The author is new to Swift: explain in Russian, briefly — what you did and how
 ## How to work
 - One task at a time. Small, clear changes — no rewriting everything at once.
 - After changes, build and run the tests. Cover logic with Swift Testing.
+- When a module is added or changes, update its README section (and screenshots via the ReadmeScreenshots test).
 - At the end of each step, briefly: what was done, how to check it manually, what's next.
 
 ## Releases
@@ -33,7 +35,7 @@ The author is new to Swift: explain in Russian, briefly — what you did and how
 
 ## Roadmap
 1. ✅ App shell (menu bar, tile panel, Settings window) + Clipboard History (⇧⌘V, word search, user-set 1–500 limit, pinned items don't count).
-2. ✅ Mouse: smooth/reversible scrolling, speed, actions for any extra button  3. Window management  4. File converter  5. System monitor
+2. ✅ Mouse: smooth/reversible scrolling, speed, actions for any extra button  3. ✅ Windows: layouts with shortcuts and menu bar tile  4. File converter  5. System monitor
 6. Small modules: sleep and power, QR and Wi-Fi, currency rates, color picker, text converter, hide menu bar icons, Windows compatibility
 7. Polish for 1.0: onboarding, languages, "What's New", settings export, app icon, README, GitHub release
 Later: disk analyzer, PDF editor, video compression, key remapping, screen recording, OCR.

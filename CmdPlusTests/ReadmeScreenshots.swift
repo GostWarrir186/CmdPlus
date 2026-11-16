@@ -50,6 +50,36 @@ struct ReadmeScreenshots {
             scheme: .dark
         )
 
+        let mouseSettings = MouseSettings(defaults: env.defaults)
+        mouseSettings.bindings = [
+            ButtonBinding(button: 3, trigger: .click, action: .back),
+            ButtonBinding(button: 3, trigger: .doubleClick, action: .missionControl),
+            ButtonBinding(button: 4, trigger: .click, action: .nextSpace),
+        ]
+        try await snapshot(
+            Showcase(scheme: .dark) {
+                MouseSettingsView(module: MouseModule(settings: mouseSettings))
+                    .environment(ModuleManager.shared)
+                    .frame(width: 640, height: 1190)
+                    .background(Color(nsColor: .windowBackgroundColor))
+                    .clipShape(.rect(cornerRadius: 16))
+            },
+            name: "mouse",
+            scheme: .dark
+        )
+
+        try await snapshot(
+            Showcase(scheme: .dark) {
+                WindowsSettingsView(module: WindowsModule(settings: WindowSettings(defaults: env.defaults)))
+                    .environment(ModuleManager.shared)
+                    .frame(width: 640, height: 1085)
+                    .background(Color(nsColor: .windowBackgroundColor))
+                    .clipShape(.rect(cornerRadius: 16))
+            },
+            name: "windows",
+            scheme: .dark
+        )
+
         try await snapshot(AppLogo(), name: "logo", scheme: .light)
     }
 

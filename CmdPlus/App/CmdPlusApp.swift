@@ -4,7 +4,13 @@ import SwiftUI
 @main
 struct CmdPlusApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
-    @State private var modules = ModuleManager.shared
+    @State private var modules: ModuleManager
+
+    init() {
+        // Must run before anything reads settings — ModuleManager does on creation.
+        SandboxMigration.runIfNeeded()
+        _modules = State(initialValue: ModuleManager.shared)
+    }
 
     var body: some Scene {
         MenuBarExtra("CmdPlus", systemImage: "command.square.fill") {

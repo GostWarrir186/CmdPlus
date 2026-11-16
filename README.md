@@ -48,7 +48,17 @@ Instead of a dozen separate menu bar apps, CmdPlus gives you one lightweight app
 - 🔒 **Private.** Everything stays on your Mac. No accounts, no servers, no analytics.
 - 🧩 **Modular.** Use only what you need, and turn the rest off in Settings.
 
-## Clipboard History
+## Modules
+
+| | Module | What it does |
+| --- | --- | --- |
+| 📋 | [Clipboard History](#clipboard-history) | Everything you copy, one shortcut away |
+| 🖱️ | [Mouse](#mouse) | Smooth scrolling and actions for any mouse button |
+| 🪟 | [Windows](#windows) | Snap windows to halves, quarters and thirds |
+
+Every module can be turned on or off in **Settings**. Mouse and Windows are off until you turn them on.
+
+### Clipboard History
 
 Everything you copy (text, images, files) is one shortcut away.
 
@@ -77,6 +87,10 @@ Everything you copy (text, images, files) is one shortcut away.
 
 </details>
 
+<div align="center">
+<img src="docs/images/settings.png" width="520" alt="Clipboard History settings: shortcut, history limit, pasting and storage">
+</div>
+
 ### Mouse
 
 Make a regular mouse feel right on a Mac.
@@ -87,11 +101,49 @@ Make a regular mouse feel right on a Mac.
 - **Reverse scrolling** for the wheel only. Trackpads and Magic Mouse keep the system settings.
 - **Assign any extra button**: hover the **+** field and press the middle button, button 4, 5 or more. Single and double clicks can do different things.
 - Actions include Look Up, Middle Click, Back/Forward, Mission Control, Application Windows, Show Desktop, Launchpad, switching Spaces, Clipboard History, Copy/Paste/Undo, New/Close Tab — or any **keyboard shortcut** you record.
-- Off by default. When there's nothing to do, it doesn't watch the mouse at all.
+- When there's nothing to do, it doesn't watch the mouse at all.
 
 <div align="center">
-<img src="docs/images/settings.png" width="560" alt="Clipboard History settings: shortcut, history limit, pasting and storage">
+<img src="docs/images/mouse.png" width="520" alt="Mouse settings: smoothness, speed, keyboard modifiers and button actions">
 </div>
+
+### Windows
+
+Put the window you're working in exactly where you want it — from the keyboard or the menu bar.
+
+- **Halves, quarters, thirds and two thirds**, plus Maximize, Almost Maximize and Center.
+- **Restore** puts a window back where it was before you snapped it.
+- **Next Display** moves a window to your other screen, keeping its place and size.
+- **Gaps** between windows: none, small or large.
+- Every shortcut can be re-recorded or removed. Defaults match Rectangle, so switching is easy.
+- The menu bar tile has one-click buttons for the most common layouts.
+
+<details>
+<summary><b>Default shortcuts</b></summary>
+<br>
+
+| Shortcut | Layout |
+| --- | --- |
+| <kbd>⌃</kbd><kbd>⌥</kbd><kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd> | Left, right, top, bottom half |
+| <kbd>⌃</kbd><kbd>⌥</kbd><kbd>U</kbd> <kbd>I</kbd> <kbd>J</kbd> <kbd>K</kbd> | Top left, top right, bottom left, bottom right |
+| <kbd>⌃</kbd><kbd>⌥</kbd><kbd>D</kbd> <kbd>F</kbd> <kbd>G</kbd> | Left, center, right third |
+| <kbd>⌃</kbd><kbd>⌥</kbd><kbd>E</kbd> <kbd>T</kbd> | Left, right two thirds |
+| <kbd>⌃</kbd><kbd>⌥</kbd><kbd>↩</kbd> | Maximize |
+| <kbd>⌃</kbd><kbd>⌥</kbd><kbd>C</kbd> | Center |
+| <kbd>⌃</kbd><kbd>⌥</kbd><kbd>⌫</kbd> | Restore |
+| <kbd>⌃</kbd><kbd>⌥</kbd><kbd>⌘</kbd><kbd>→</kbd> | Next display |
+
+</details>
+
+<div align="center">
+<img src="docs/images/windows.png" width="520" alt="Windows settings: gaps and a shortcut for every layout">
+</div>
+
+### General
+
+- **Open at Login**, quietly — just the menu bar icon, no windows.
+- **Appearance**: System, Light or Dark.
+- **Language**: System, English or Русский.
 
 ## Requirements
 
@@ -134,12 +186,13 @@ CmdPlus asks for a permission only when you turn on the feature that needs it, a
 
 | Permission | Used for |
 | --- | --- |
-| **Accessibility** | Clipboard History: pasting a picked item for you by sending ⌘V (without it, items are only copied). Mouse: changing scroll direction and handling side buttons. |
+| **Accessibility** | Clipboard History: pasting a picked item for you by sending ⌘V (without it, items are only copied). Mouse: changing scrolling and handling buttons. Windows: moving and resizing other apps' windows. |
 
 ## Privacy
 
 - Settings are stored in `UserDefaults`.
-- History is stored in the app's sandbox container: `~/Library/Containers/com.azam.CmdPlus/Data/Library/Application Support/CmdPlus/`.
+- History is stored in `~/Library/Application Support/CmdPlus/`.
+- CmdPlus doesn't use the App Sandbox: macOS doesn't let sandboxed apps move other apps' windows. That's also why it's distributed here and not on the App Store.
 - Passwords copied from password managers are never saved, not even temporarily.
 - Clipboard History never goes online. The only planned network access is currency rates and update checks.
 
@@ -147,7 +200,7 @@ CmdPlus asks for a permission only when you turn on the feature that needs it, a
 
 - [x] App shell and **Clipboard History**
 - [x] **Mouse**: smooth and reversible scrolling, actions for any extra button
-- [ ] Window management
+- [x] **Windows**: layouts with keyboard shortcuts and from the menu bar
 - [ ] File converter
 - [ ] System monitor
 - [ ] Small tools: sleep and power, QR and Wi-Fi, currency rates, color picker, text converter, hide menu bar icons, Windows-friendly shortcuts
