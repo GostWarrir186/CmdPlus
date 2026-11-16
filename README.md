@@ -117,7 +117,7 @@ Put the window you're working in exactly where you want it — laid out like mac
 - A short highlight shows where the window landed.
 - **Gaps** between windows: none, small or large.
 - Every shortcut can be re-recorded or removed. Defaults match Rectangle, so switching is easy.
-- The menu bar tile has a **Move & Resize** menu with every layout and its shortcut.
+- The menu bar tile shows every layout as a **small picture** with its name — click one. Hover to see the shortcut.
 
 <details>
 <summary><b>Default shortcuts</b></summary>

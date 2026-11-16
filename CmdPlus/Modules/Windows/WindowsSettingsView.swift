@@ -28,7 +28,7 @@ struct WindowsSettingsView: View {
                     Image(systemName: "keyboard")
                 }
                 Label {
-                    Text("Or open the Move & Resize menu from the CmdPlus icon in the menu bar.")
+                    Text("Or click the CmdPlus icon in the menu bar and pick a layout in the Windows tile.")
                 } icon: {
                     Image(systemName: "menubar.rectangle")
                 }

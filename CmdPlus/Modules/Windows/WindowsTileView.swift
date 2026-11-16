@@ -1,45 +1,59 @@
 import Carbon.HIToolbox
 import SwiftUI
 
-/// Menu bar tile with a "Move & Resize" menu, laid out like macOS's own
-/// Window menu: every layout with its icon and shortcut.
+/// Menu bar tile. Click it to show a compact grid of layouts — each a tiny
+/// picture of where the window goes, with its name.
 struct WindowsTileView: View {
     let module: WindowsModule
     @Environment(\.dismiss) private var dismiss
+    @AppStorage("windows.tileExpanded") private var isExpanded = true
 
     var body: some View {
         let descriptor = WindowsModule.descriptor
 
         if module.hasAccess {
-            // The whole tile opens the Move & Resize menu.
-            Menu {
-                ForEach(Array(WindowAction.groups.enumerated()), id: \.offset) { _, group in
-                    Section {
-                        ForEach(group.actions) { action in
-                            menuItem(action)
-                        }
-                    } header: {
-                        Text(group.title)
+            VStack(alignment: .leading, spacing: 10) {
+                Button {
+                    withAnimation(.snappy(duration: 0.2)) { isExpanded.toggle() }
+                } label: {
+                    TileHeader(
+                        title: descriptor.title,
+                        subtitle: String(localized: "Move & Resize"),
+                        systemImage: descriptor.systemImage,
+                        tint: descriptor.tint
+                    ) {
+                        Image(systemName: "chevron.down")
+                            .font(.footnote.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                            .rotationEffect(.degrees(isExpanded ? 180 : 0))
+                            .padding(.trailing, 4)
                     }
                 }
-            } label: {
-                TileHeader(
-                    title: descriptor.title,
-                    subtitle: String(localized: "Move & Resize"),
-                    systemImage: descriptor.systemImage,
-                    tint: descriptor.tint
-                ) {
-                    Image(systemName: "chevron.down")
-                        .font(.footnote.weight(.semibold))
-                        .foregroundStyle(.secondary)
-                        .padding(.trailing, 4)
+                .buttonStyle(.plain)
+
+                if isExpanded {
+                    VStack(alignment: .leading, spacing: 10) {
+                        ForEach(Array(WindowAction.groups.enumerated()), id: \.offset) { _, group in
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(group.title)
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(.secondary)
+                                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 4, alignment: .top),
+                                                         count: 5),
+                                          alignment: .leading, spacing: 4) {
+                                    ForEach(group.actions) { action in
+                                        LayoutButton(action: action, shortcut: module.settings.shortcuts[action]) {
+                                            run(action)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .transition(.opacity)
                 }
             }
-            .menuStyle(.button)
-            .menuIndicator(.hidden)
-            .buttonStyle(.plain)
             .modifier(TileBackground())
-            .help(Text("Move & Resize the window you were using"))
         } else {
             ModuleTile(
                 title: descriptor.title,
@@ -48,24 +62,6 @@ struct WindowsTileView: View {
                 tint: descriptor.tint,
                 action: { module.requestAccess() }
             )
-        }
-    }
-
-    @ViewBuilder
-    private func menuItem(_ action: WindowAction) -> some View {
-        let button = Button {
-            run(action)
-        } label: {
-            Label {
-                Text(action.title)
-            } icon: {
-                Image(systemName: action.systemImage)
-            }
-        }
-        if let shortcut = module.settings.shortcuts[action]?.swiftUIShortcut {
-            button.keyboardShortcut(shortcut)
-        } else {
-            button
         }
     }
 
@@ -79,28 +75,39 @@ struct WindowsTileView: View {
     }
 }
 
-extension KeyCombo {
-    /// The same shortcut for SwiftUI, so menus can show it next to an item.
-    var swiftUIShortcut: KeyboardShortcut? {
-        let special: [Int: KeyEquivalent] = [
-            kVK_LeftArrow: .leftArrow, kVK_RightArrow: .rightArrow, kVK_UpArrow: .upArrow,
-            kVK_DownArrow: .downArrow, kVK_Return: .return, kVK_Delete: .delete, kVK_Tab: .tab,
-            kVK_Space: .space, kVK_Escape: .escape, kVK_Home: .home, kVK_End: .end,
-            kVK_PageUp: .pageUp, kVK_PageDown: .pageDown, kVK_ForwardDelete: .deleteForward,
-        ]
-        let key: KeyEquivalent
-        if let named = special[Int(keyCode)] {
-            key = named
-        } else {
-            let name = KeyCombo.keyName(Int(keyCode))
-            guard name.count == 1, let character = name.lowercased().first else { return nil }
-            key = KeyEquivalent(character)
+/// Picture + short name. The shortcut shows on hover.
+private struct LayoutButton: View {
+    let action: WindowAction
+    let shortcut: KeyCombo?
+    let perform: () -> Void
+    @State private var isHovered = false
+
+    var body: some View {
+        Button(action: perform) {
+            VStack(spacing: 3) {
+                LayoutPictogram(action: action, size: CGSize(width: 44, height: 28))
+                Text(action.shortTitle)
+                    .font(.system(size: 9.5))
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.85)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .foregroundStyle(isHovered ? .primary : .secondary)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 4)
+            .background(Color.primary.opacity(isHovered ? 0.08 : 0), in: .rect(cornerRadius: 8))
+            .contentShape(.rect)
         }
-        var modifiers: SwiftUI.EventModifiers = []
-        if flags.contains(.maskCommand) { modifiers.insert(.command) }
-        if flags.contains(.maskShift) { modifiers.insert(.shift) }
-        if flags.contains(.maskAlternate) { modifiers.insert(.option) }
-        if flags.contains(.maskControl) { modifiers.insert(.control) }
-        return KeyboardShortcut(key, modifiers: modifiers)
+        .buttonStyle(.plain)
+        .onHover { isHovered = $0 }
+        .help(Text(verbatim: helpText))
+        .accessibilityLabel(Text(action.title))
+    }
+
+    private var helpText: String {
+        let title = String(localized: action.title)
+        guard let shortcut else { return title }
+        return "\(title)  \(shortcut.displayString)"
     }
 }

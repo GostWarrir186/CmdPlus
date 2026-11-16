@@ -1003,16 +1003,6 @@
         }
       }
     },
-    "Move & Resize the window you were using" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Переместить и изменить размер окна, в котором вы работали"
-          }
-        }
-      }
-    },
     "Move Left a Space" : {
       "localizations" : {
         "ru" : {
@@ -1183,12 +1173,12 @@
         }
       }
     },
-    "Or open the Move & Resize menu from the CmdPlus icon in the menu bar." : {
+    "Or click the CmdPlus icon in the menu bar and pick a layout in the Windows tile." : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Или откройте меню «Переместить и изменить размер» из значка CmdPlus в строке меню."
+            "value" : "Или нажмите на значок CmdPlus в строке меню и выберите схему в плитке «Окна»."
           }
         }
       }
@@ -1300,6 +1290,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Нажмите сочетание клавиш"
+          }
+        }
+      }
+    },
+    "Previous Size" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прежний размер"
           }
         }
       }

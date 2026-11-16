@@ -147,14 +147,16 @@ struct WindowShortcutTests {
         #expect(reloaded.shortcuts == WindowSettings.defaultShortcuts)
     }
 
-    @Test("Shortcuts show up in menus the same way")
-    func menuShortcuts() throws {
-        let left = try #require(WindowSettings.defaultShortcuts[.leftHalf]?.swiftUIShortcut)
-        #expect(left.key == .leftArrow)
-        #expect(left.modifiers == [.control, .option])
-        let quarters = try #require(WindowSettings.defaultShortcuts[.quarters]?.swiftUIShortcut)
-        #expect(quarters.key == KeyEquivalent("q"))
-        #expect(quarters.modifiers == [.control, .option, .shift])
+    @Test("Every layout has a picture; arranged ones show one area per window")
+    func pictograms() {
+        let screen = CGRect(x: 0, y: 0, width: 46, height: 30)
+        for action in WindowAction.allCases where action != .restore && action != .nextDisplay {
+            let regions = LayoutPictogram.regions(for: action, in: screen)
+            #expect(regions?.count == (action.arrangement?.count ?? 1), "\(action)")
+            regions?.forEach { #expect(screen.contains($0)) }
+        }
+        // Top half is drawn at the top in SwiftUI coordinates.
+        #expect(LayoutPictogram.regions(for: .topHalf, in: screen)?.first?.minY ?? 99 < 5)
     }
 
     @Test("Key combos convert to Carbon hotkey modifiers")

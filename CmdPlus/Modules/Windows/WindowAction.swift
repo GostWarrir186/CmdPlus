@@ -63,6 +63,11 @@ nonisolated enum WindowAction: String, CaseIterable, Identifiable, Sendable, Cod
         }
     }
 
+    /// Shorter name for tight spots like the menu bar grid.
+    var shortTitle: LocalizedStringResource {
+        self == .restore ? "Previous Size" : title
+    }
+
     var systemImage: String {
         switch self {
         case .leftHalf: "rectangle.lefthalf.filled"
@@ -133,7 +138,8 @@ nonisolated enum WindowAction: String, CaseIterable, Identifiable, Sendable, Cod
         return CGRect(x: minX, y: minY, width: maxX - minX, height: maxY - minY)
     }
 
-    private func rawFrame(in screen: CGRect, current: CGRect, gap: CGFloat) -> CGRect? {
+    /// Unrounded layout math — also used to draw tiny previews.
+    func rawFrame(in screen: CGRect, current: CGRect, gap: CGFloat) -> CGRect? {
         let area = screen.insetBy(dx: gap, dy: gap)
         let halfW = (area.width - gap) / 2
         let halfH = (area.height - gap) / 2
