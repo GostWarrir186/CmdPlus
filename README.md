@@ -77,6 +77,15 @@ Everything you copy (text, images, files) is one shortcut away.
 
 </details>
 
+### Mouse
+
+Make a regular mouse feel right on a Mac.
+
+- **Reverse scrolling** for mice with a scroll wheel, vertical and horizontal separately. Trackpads and Magic Mouse keep the direction set in System Settings.
+- **Side buttons** (the two extra buttons on many mice) can do something useful: Back/Forward, Mission Control, App Windows, switch desktops, Show Desktop, open Clipboard History, Copy/Paste/Undo, New/Close Tab — or nothing at all.
+- Click the tile in the menu bar to turn reverse scrolling on or off.
+- Off by default. When there's nothing to do, it doesn't watch the mouse at all.
+
 <div align="center">
 <img src="docs/images/settings.png" width="560" alt="Clipboard History settings: shortcut, history limit, pasting and storage">
 </div>
@@ -122,7 +131,7 @@ CmdPlus asks for a permission only when you turn on the feature that needs it, a
 
 | Permission | Used for |
 | --- | --- |
-| **Accessibility** | Pasting a picked history item for you by sending ⌘V. Without it, items are only copied. |
+| **Accessibility** | Clipboard History: pasting a picked item for you by sending ⌘V (without it, items are only copied). Mouse: changing scroll direction and handling side buttons. |
 
 ## Privacy
 
@@ -134,7 +143,7 @@ CmdPlus asks for a permission only when you turn on the feature that needs it, a
 ## Roadmap
 
 - [x] App shell and **Clipboard History**
-- [ ] Reverse mouse scrolling
+- [x] **Mouse**: reverse scrolling and side-button actions
 - [ ] Window management
 - [ ] File converter
 - [ ] System monitor

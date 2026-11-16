@@ -26,5 +26,6 @@ struct ModuleDescriptor: Identifiable {
 enum ModuleRegistry {
     static let all: [ModuleDescriptor] = [
         ClipboardHistoryModule.descriptor,
+        MouseModule.descriptor,
     ]
 }

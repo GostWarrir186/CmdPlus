@@ -171,6 +171,16 @@
         }
       }
     },
+    "App Windows" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Окна приложения"
+          }
+        }
+      }
+    },
     "Appearance" : {
       "localizations" : {
         "ru" : {
@@ -197,6 +207,26 @@
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "Применить"
+          }
+        }
+      }
+    },
+    "Back" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Назад"
+          }
+        }
+      }
+    },
+    "Back Button" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кнопка «Назад»"
           }
         }
       }
@@ -281,12 +311,32 @@
         }
       }
     },
+    "Close Tab" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закрыть вкладку"
+          }
+        }
+      }
+    },
     "CmdPlus" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "CmdPlus"
+          }
+        }
+      }
+    },
+    "CmdPlus needs the Accessibility permission to change scrolling direction and to react to mouse buttons. Nothing is recorded or sent anywhere." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CmdPlus нужно разрешение «Универсальный доступ», чтобы менять направление прокрутки и реагировать на кнопки мыши. Ничего не записывается и никуда не отправляется."
           }
         }
       }
@@ -391,6 +441,16 @@
         }
       }
     },
+    "Do Nothing" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ничего не делать"
+          }
+        }
+      }
+    },
     "Files" : {
       "localizations" : {
         "ru" : {
@@ -408,6 +468,26 @@
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "Фильтр"
+          }
+        }
+      }
+    },
+    "Forward" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вперёд"
+          }
+        }
+      }
+    },
+    "Forward Button" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кнопка «Вперёд»"
           }
         }
       }
@@ -502,12 +582,52 @@
         }
       }
     },
+    "Mission Control" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mission Control"
+          }
+        }
+      }
+    },
     "Modules" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "Модули"
+          }
+        }
+      }
+    },
+    "Mouse" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Мышь"
+          }
+        }
+      }
+    },
+    "New Tab" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Новая вкладка"
+          }
+        }
+      }
+    },
+    "Next Desktop" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Следующий рабочий стол"
           }
         }
       }
@@ -548,6 +668,16 @@
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "Количество записей"
+          }
+        }
+      }
+    },
+    "Only mice with a scroll wheel are affected. Trackpads and Magic Mouse keep the direction set in System Settings." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Действует только на мыши с колёсиком. Трекпад и Magic Mouse прокручивают так, как задано в Системных настройках."
           }
         }
       }
@@ -612,6 +742,16 @@
         }
       }
     },
+    "Permission needed" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нужно разрешение"
+          }
+        }
+      }
+    },
     "Pin" : {
       "localizations" : {
         "ru" : {
@@ -663,6 +803,16 @@
         }
       }
     },
+    "Previous Desktop" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Предыдущий рабочий стол"
+          }
+        }
+      }
+    },
     "Quick Pick" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -684,12 +834,72 @@
         }
       }
     },
+    "Reverse Horizontal Scrolling" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обратная горизонтальная прокрутка"
+          }
+        }
+      }
+    },
+    "Reverse Vertical Scrolling" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обратная вертикальная прокрутка"
+          }
+        }
+      }
+    },
+    "Reverse scrolling for mice and actions for side buttons." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обратная прокрутка для мыши и действия на боковые кнопки."
+          }
+        }
+      }
+    },
+    "Reverse scrolling off" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обратная прокрутка выключена"
+          }
+        }
+      }
+    },
+    "Reverse scrolling on" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обратная прокрутка включена"
+          }
+        }
+      }
+    },
     "Saved Items" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "Сохранённые записи"
+          }
+        }
+      }
+    },
+    "Scrolling" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прокрутка"
           }
         }
       }
@@ -714,12 +924,32 @@
         }
       }
     },
+    "Show Desktop" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показать рабочий стол"
+          }
+        }
+      }
+    },
     "Show in Finder" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "Показать в Finder"
+          }
+        }
+      }
+    },
+    "Side Buttons" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Боковые кнопки"
           }
         }
       }
@@ -754,12 +984,32 @@
         }
       }
     },
+    "System Default" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Как в системе"
+          }
+        }
+      }
+    },
     "Text" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "Текст"
+          }
+        }
+      }
+    },
+    "The two extra buttons on the side of many mice. Choose “System Default” to leave a button as it is." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Две дополнительные кнопки сбоку у многих мышей. «Как в системе» — оставить кнопку как есть."
           }
         }
       }
@@ -800,6 +1050,26 @@
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "Включите модуль, чтобы изменить его настройки."
+          }
+        }
+      }
+    },
+    "Turn reverse scrolling on or off" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Включить или выключить обратную прокрутку"
+          }
+        }
+      }
+    },
+    "Undo" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отменить"
           }
         }
       }
